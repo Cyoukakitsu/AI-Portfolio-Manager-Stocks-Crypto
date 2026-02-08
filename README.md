@@ -1,36 +1,61 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Portfolio Manager（Stocks & Crypto）
 
-## Getting Started
+🚧 **開発中（Work in Progress）**
 
-First, run the development server:
+株式および暗号資産（Crypto）を対象とした  
+**AI活用型ポートフォリオ管理Webアプリ**です。  
+モダンなフロントエンド技術を用いて、実用性と拡張性を重視して開発しています。
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 📖 概要（Overview）
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+本プロジェクトは、以下を目的としたダッシュボード型アプリケーションです。
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 株式・暗号資産のポートフォリオ管理
+- 資産状況の可視化
+- AIによる分析・インサイトの提供
+- リスクや配分バランスの把握
 
-## Learn More
+個人開発として段階的に機能追加を行っています。
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 🛠 使用技術（Tech Stack）
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### フロントエンド
+- **Next.js**（App Router）
+- **TypeScript**
+- **Tailwind CSS**
+- **shadcn/ui**
 
-## Deploy on Vercel
+### バックエンド / インフラ（予定）
+- **Supabase**（認証・データベース）
+- 金融資産データAPI（株式・暗号資産）
+- AI関連API（チャット・分析・インサイト生成）
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## ✨ 実装予定の機能（Planned Features）
+
+- 📊 ポートフォリオダッシュボード
+- 📈 株式・暗号資産の価格・推移表示
+- 🤖 AIによる投資インサイト生成
+- ⚖️ リスク分析・アセット配分確認
+- 🌙 ダークモード / ライトモード対応
+
+---
+
+## 📂 開発状況（Project Status）
+
+本プロジェクトは **初期開発フェーズ** です。  
+
+タスク管理および開発の進捗は **GitHub Issues** を用いて管理し、  
+機能ごとに段階的な実装を行っています。
+
+---
+
+## 📜 ライセンス（License）
+
+MIT License

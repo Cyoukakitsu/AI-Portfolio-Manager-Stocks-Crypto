@@ -1,7 +1,10 @@
+import Header from "@/components/Header";
+
 const layout = async ({ children }: { children: React.ReactNode }) => {
   return (
-    <main>
-      <section className="w-full min-h-screen flex flex-col">
+    <main className="min-h-screen text-gray-400">
+      <Header />
+      <section className="mx-auto max-w-screen-2xl px-4 md:px-6 lg:px-8 py-10">
         {children}
       </section>
     </main>

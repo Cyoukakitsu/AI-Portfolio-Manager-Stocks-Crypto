@@ -1,11 +1,20 @@
-import Header from "@/components/Header";
+import Image from "next/image";
+import Link from "next/link";
 
 const layout = async ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="min-h-screen text-gray-400">
-      <Header />
-      <section className="mx-auto max-w-screen-2xl px-4 md:px-6 lg:px-8 py-10">
-        {children}
+    <main>
+      <Link href="/" className="pt-6 lg:pt-8 mb-8  lg:mb-12">
+        <Image
+          src="/header-icon.svg"
+          alt="Logo"
+          width={140}
+          height={32}
+          className="h-8 w-auto"
+        />
+      </Link>
+      <section className=" flex min-h-screen items-center justify-center bg-muted">
+        <div className="w-full max-w-md">{children}</div>
       </section>
     </main>
   );

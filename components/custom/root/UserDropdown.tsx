@@ -29,7 +29,6 @@ const UserDropdown = () => {
     <DropdownMenu>
       <DropdownMenuTrigger className="flex items-center gap-3 text-gray-400 hover:text-yellow-500 bg-transparent border-none cursor-pointer px-4 py-2 rounded-md hover:bg-accent">
         <Avatar className="w-8 h-8">
-          {/* <AvatarImage src="https://github.com/shadcn.png" /> */}
           <AvatarFallback className="bg-yellow-500 text-yellow-900 text-sm font-bold">
             {user.name
               .split(" ")

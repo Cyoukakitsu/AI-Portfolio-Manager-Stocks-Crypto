@@ -1,6 +1,9 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { SignUpFormValues, signUpSchema } from "@/lib/schemas/sign-up";
+
 import {
   Card,
   CardContent,
@@ -15,9 +18,25 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const SignInForm = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignUpFormValues>({
+    resolver: zodResolver(signUpSchema),
+    defaultValues: {
+      name: "",
+      email: "",
+    },
+  });
+  const onSubmit = async (data: SignUpFormValues) => {
+    console.log(data);
+  };
+
   return (
     <div className={cn("flex flex-col gap-6")}>
       <Card>
@@ -28,17 +47,22 @@ const SignInForm = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <form>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
+              {/* email */}
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
                 <Input
-                  id="email"
+                  {...register("email")}
                   type="email"
-                  placeholder="m@example.com"
-                  required
+                  placeholder="fujimoto@example.com"
                 />
+                {errors.email && (
+                  <FieldDescription>{errors.email.message}</FieldDescription>
+                )}
               </Field>
+
+              {/* password */}
               <Field>
                 <div className="flex items-center">
                   <FieldLabel htmlFor="password">Password</FieldLabel>
@@ -49,10 +73,17 @@ const SignInForm = () => {
                     Forgot your password?
                   </a>
                 </div>
-                <Input id="password" type="password" required />
+                <Input {...register("password")} type="password" />
+                {errors.password && (
+                  <FieldDescription>{errors.password.message}</FieldDescription>
+                )}
               </Field>
+
+              {/* buttons */}
               <Field>
-                <Button type="submit">Login</Button>
+                <Button type="submit" disabled={isSubmitting}>
+                  {isSubmitting ? "Loading..." : "Login"}
+                </Button>
                 <Button variant="outline" type="button">
                   Login with Google
                 </Button>

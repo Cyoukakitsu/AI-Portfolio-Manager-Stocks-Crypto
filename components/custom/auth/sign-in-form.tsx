@@ -2,8 +2,11 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { SignUpFormValues, signUpSchema } from "@/lib/schemas/sign-up";
 
+import { signInSchema, SignInFormValues } from "@/lib/schemas/sign-in";
+import { signIn } from "@/services/apiAuth";
+
+import { cn } from "@/lib/utils";
 import {
   Card,
   CardContent,
@@ -19,22 +22,27 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 
 const SignInForm = () => {
+  // react hook form + zod
   const {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<SignUpFormValues>({
-    resolver: zodResolver(signUpSchema),
+  } = useForm<SignInFormValues>({
+    resolver: zodResolver(signInSchema),
     defaultValues: {
-      name: "",
       email: "",
+      password: "",
     },
   });
-  const onSubmit = async (data: SignUpFormValues) => {
-    console.log(data);
+
+  // onSubmit logic
+  const onSubmit = async (data: SignInFormValues) => {
+    const result = await signIn(data);
+    if (result?.error) {
+      alert(result.error);
+    }
   };
 
   return (

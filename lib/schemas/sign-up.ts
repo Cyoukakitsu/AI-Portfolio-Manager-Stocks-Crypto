@@ -1,3 +1,5 @@
+// SignUp Zod Validation rules
+
 import { z } from "zod";
 
 export const signUpSchema = z

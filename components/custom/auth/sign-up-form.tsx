@@ -1,8 +1,11 @@
 "use client";
 
 import { useForm } from "react-hook-form";
-import { SignUpFormValues, signUpSchema } from "@/lib/schemas/sign-up";
 import { zodResolver } from "@hookform/resolvers/zod";
+
+import { SignUpFormValues, signUpSchema } from "@/lib/schemas/sign-up";
+import { useRouter } from "next/navigation";
+import { signUp } from "@/services/apiAuth";
 
 import {
   Card,
@@ -21,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const SignUpForm = () => {
+  // react hook form + zod
   const {
     register,
     handleSubmit,
@@ -34,8 +38,18 @@ const SignUpForm = () => {
       confirmPassword: "",
     },
   });
+
+  // onSubmit logic, redirect to /sign-in if success
+  const router = useRouter();
   const onSubmit = async (data: SignUpFormValues) => {
-    console.log(data);
+    const result = await signUp(data);
+    if (result.error) {
+      alert(
+        typeof result.error === "string" ? result.error : "Validation failed",
+      );
+    } else {
+      router.push("/sign-in");
+    }
   };
 
   return (
@@ -84,7 +98,7 @@ const SignUpForm = () => {
                 </p>
               ) : (
                 <FieldDescription>
-                  Must be at least 8 characters long.
+                  Must be at least 6 characters long.
                 </FieldDescription>
               )}
             </Field>

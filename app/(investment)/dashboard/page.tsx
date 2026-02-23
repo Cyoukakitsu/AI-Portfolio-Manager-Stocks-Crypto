@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/components/custom/dashboard/app-siadbar";
+import DataTable from "@/components/custom/dashboard/data-table";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -43,7 +44,7 @@ export default function Dashboard() {
             <div className="bg-muted/50 aspect-video rounded-xl" />
             <div className="bg-muted/50 aspect-video rounded-xl" />
           </div>
-          <div className="bg-muted/50 min-h-screen flex-1 rounded-xl md:min-h-min" />
+          <DataTable />
         </div>
       </SidebarInset>
     </SidebarProvider>

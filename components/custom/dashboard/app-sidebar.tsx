@@ -1,4 +1,5 @@
 import * as React from "react";
+import Link from "next/link";
 
 import { SearchForm } from "@/components/custom/dashboard/search-form";
 import {
@@ -18,12 +19,12 @@ import {
 const data = {
   navMain: [
     {
-      title: "Your Dashboard",
+      title: "Your assets",
       url: "#",
       items: [
         {
-          title: "Installation",
-          url: "#",
+          title: "Personal Portfolio",
+          url: "/dashboard/assets",
         },
         {
           title: "Project Structure",
@@ -37,11 +38,11 @@ const data = {
       items: [
         {
           title: "Stock Market Overview",
-          url: "#",
+          url: "/dashboard/stocks",
         },
         {
           title: "Data Fetching",
-          url: "#",
+          url: "#crypto",
           isActive: true,
         },
       ],
@@ -52,7 +53,7 @@ const data = {
       items: [
         {
           title: "Cypto Market Overview",
-          url: "#",
+          url: "/dashboard/crypto",
         },
         {
           title: "Data Fetching",
@@ -81,7 +82,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
                       isActive={item.isActive}
-                      render={<a href={item.url}>{item.title}</a>}
+                      render={<Link href={item.url}>{item.title}</Link>}
                     />
                   </SidebarMenuItem>
                 ))}

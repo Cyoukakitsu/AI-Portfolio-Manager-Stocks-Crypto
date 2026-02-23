@@ -24,7 +24,7 @@ export async function createAsset(formData: AssetFormData) {
   const { error } = await supabase.from("assets").insert([formData]);
   if (error) throw new Error(error.message);
 
-  revalidatePath("/dashboard");
+  revalidatePath("/assets");
 }
 
 //✅ 删除资产
@@ -33,7 +33,7 @@ export async function deleteAsset(id: string) {
   const { error } = await supabase.from("assets").delete().eq("id", id);
 
   if (error) throw new Error(error.message);
-  revalidatePath("/dashboard");
+  revalidatePath("/assets");
 }
 
 //✅ 更新资产
@@ -42,5 +42,5 @@ export async function updateAsset(id: string, formData: AssetFormData) {
   const { error } = await supabase.from("assets").update(formData).eq("id", id);
 
   if (error) throw new Error(error.message);
-  revalidatePath("/dashboard");
+  revalidatePath("/assets");
 }

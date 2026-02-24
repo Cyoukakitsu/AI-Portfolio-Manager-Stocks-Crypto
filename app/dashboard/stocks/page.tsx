@@ -2,80 +2,86 @@ import AdvancedChart from "@/components/custom/stocks/AdvancedChart";
 import MarketDataStock from "@/components/custom/stocks/MarketDataStock";
 import StockHeatmap from "@/components/custom/stocks/StockHeatmap";
 import TopStories from "@/components/custom/stocks/TopStories";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BarChart2, Flame, Newspaper, TrendingUp } from "lucide-react";
 
 export default function Stocks() {
   return (
-    <div className="min-h-screen bg-linear-to-br from-slate-50 to-slate-100 p-4 md:p-6 lg:p-8">
-      <div className="max-w-500 mx-auto">
-        {/* ページタイトル */}
-        <div className="mb-6">
-          <h1 className="text-3xl md:text-4xl font-bold text-slate-800 mb-2">
-            株式市場ダッシュボード
-          </h1>
-          <p className="text-slate-600">リアルタイムの市場データとニュース</p>
-        </div>
+    <div className="flex flex-1 flex-col gap-6 p-6">
+      {/* Page Title */}
+      <div>
+        <h1 className="text-2xl font-bold tracking-tight">Stock Market</h1>
+        <p className="text-sm text-muted-foreground mt-1">
+          Real-time market data and news
+        </p>
+      </div>
 
-        {/* メインチャートエリア */}
-        <div className="mb-6">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200">
-            <div className="p-4 border-b border-slate-200 bg-linear-to-r from-blue-50 to-indigo-50">
-              <h2 className="text-xl font-semibold text-slate-800">
-                📈 リアルタイムチャート
-              </h2>
-            </div>
-            <div className="p-4" style={{ height: "600px" }}>
-              <AdvancedChart />
-            </div>
+      {/* Main Chart */}
+      <Card>
+        <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-3 border-b">
+          <TrendingUp className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-base font-semibold">
+            Live Chart
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="h-150 p-4">
+            <AdvancedChart />
           </div>
-        </div>
+        </CardContent>
+      </Card>
 
-        {/* ヒートマップとニュース - 2カラムレイアウト */}
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
-          {/* 株式ヒートマップ */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200">
-            <div className="p-4 border-b border-slate-200 bg-linear-to-r from-green-50 to-emerald-50">
-              <h2 className="text-xl font-semibold text-slate-800">
-                🔥 ヒートマップ
-              </h2>
-            </div>
-            <div className="p-4" style={{ height: "500px" }}>
+      {/* Heatmap + News */}
+      <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-3 border-b">
+            <Flame className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base font-semibold">
+              Heatmap
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="h-125 p-4">
               <StockHeatmap />
             </div>
-          </div>
+          </CardContent>
+        </Card>
 
-          {/* トップニュース */}
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200">
-            <div className="p-4 border-b border-slate-200 bg-linear-to-r from-amber-50 to-yellow-50">
-              <h2 className="text-xl font-semibold text-slate-800">
-                📰 トップニュース
-              </h2>
-            </div>
-            <div className="p-4" style={{ height: "500px" }}>
+        <Card>
+          <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-3 border-b">
+            <Newspaper className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base font-semibold">
+              Top Stories
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0">
+            <div className="h-125 p-4">
               <TopStories />
             </div>
-          </div>
-        </div>
-
-        {/* 市場データ */}
-        <div className="mb-6">
-          <div className="bg-white rounded-xl shadow-lg overflow-hidden border border-slate-200">
-            <div className="p-4 border-b border-slate-200 bg-linear-to-r from-purple-50 to-pink-50">
-              <h2 className="text-xl font-semibold text-slate-800">
-                💼 市場データ
-              </h2>
-            </div>
-            <div className="p-4" style={{ height: "500px" }}>
-              <MarketDataStock />
-            </div>
-          </div>
-        </div>
-
-        {/* フッター */}
-        <div className="text-center text-slate-500 text-sm mt-8 pb-4">
-          Powered by TradingView | 最終更新:{" "}
-          {new Date().toLocaleString("ja-JP")}
-        </div>
+          </CardContent>
+        </Card>
       </div>
+
+      {/* Market Data */}
+      <Card>
+        <CardHeader className="flex flex-row items-center gap-2 space-y-0 pb-3 border-b">
+          <BarChart2 className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-base font-semibold">
+            Market Data
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="p-0">
+          <div className="h-125 p-4">
+            <MarketDataStock />
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Footer */}
+      <p className="text-center text-xs text-muted-foreground pb-2">
+        Powered by TradingView &middot; Updated{" "}
+        {new Date().toLocaleString("en-US")}
+      </p>
     </div>
   );
 }

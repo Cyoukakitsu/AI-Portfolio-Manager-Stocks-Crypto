@@ -56,5 +56,5 @@ export async function signIn(formatData: SignInFormValues) {
       error: error.message,
     };
   }
-  redirect("/assets");
+  redirect("/dashboard/assets");
 }

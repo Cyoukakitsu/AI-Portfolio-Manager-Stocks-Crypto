@@ -1,5 +1,6 @@
 import * as React from "react";
 import Link from "next/link";
+import { LayoutDashboard, TrendingUp, Bitcoin } from "lucide-react";
 
 import { SearchForm } from "@/components/custom/dashboard/search-form";
 import {
@@ -15,50 +16,38 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-// This is sample data.
 const data = {
   navMain: [
     {
-      title: "Your assets",
+      title: "Your Assets",
+      icon: LayoutDashboard,
       url: "#",
       items: [
         {
           title: "Personal Portfolio",
           url: "/dashboard/assets",
         },
-        {
-          title: "Project Structure",
-          url: "#",
-        },
       ],
     },
     {
-      title: "Stock",
+      title: "Stocks",
+      icon: TrendingUp,
       url: "#",
       items: [
         {
-          title: "Stock Market Overview",
+          title: "Market Overview",
           url: "/dashboard/stocks",
         },
-        {
-          title: "Data Fetching",
-          url: "#crypto",
-          isActive: true,
-        },
       ],
     },
     {
-      title: "Cypto",
+      title: "Crypto",
+      icon: Bitcoin,
       url: "#",
       items: [
         {
-          title: "Cypto Market Overview",
+          title: "Market Overview",
           url: "/dashboard/crypto",
-        },
-        {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
         },
       ],
     },
@@ -69,19 +58,29 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar {...props}>
       <SidebarHeader>
+        <div className="flex items-center gap-2 px-2 py-3">
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+            <TrendingUp className="h-4 w-4" />
+          </div>
+          <div className="flex flex-col leading-none">
+            <span className="font-semibold text-sm">AI Portfolio</span>
+            <span className="text-xs text-muted-foreground">Manager</span>
+          </div>
+        </div>
         <SearchForm />
       </SidebarHeader>
       <SidebarContent>
-        {/* We create a SidebarGroup for each parent. */}
-        {data.navMain.map((item) => (
-          <SidebarGroup key={item.title}>
-            <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
+        {data.navMain.map((section) => (
+          <SidebarGroup key={section.title}>
+            <SidebarGroupLabel className="flex items-center gap-1.5">
+              <section.icon className="h-3.5 w-3.5" />
+              {section.title}
+            </SidebarGroupLabel>
             <SidebarGroupContent>
               <SidebarMenu>
-                {item.items.map((item) => (
+                {section.items.map((item) => (
                   <SidebarMenuItem key={item.title}>
                     <SidebarMenuButton
-                      isActive={item.isActive}
                       render={<Link href={item.url}>{item.title}</Link>}
                     />
                   </SidebarMenuItem>

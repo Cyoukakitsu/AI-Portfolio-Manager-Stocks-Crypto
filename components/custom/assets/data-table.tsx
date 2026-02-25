@@ -12,7 +12,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AssetForm } from "@/components/custom/assets/data-form";
-import { deleteAsset } from "@/lib/assets";
+import { deleteAsset } from "@/services/assets";
 import type { Asset } from "@/types/global";
 
 type Props = {

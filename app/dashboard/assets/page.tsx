@@ -2,7 +2,7 @@ import { AssetsTable } from "@/components/custom/assets/data-table";
 import { AssetForm } from "@/components/custom/assets/data-form";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { getAssets } from "@/lib/assets";
+import { getAssets } from "@/services/assets";
 import { LayoutDashboard, TrendingUp, Bitcoin } from "lucide-react";
 
 export default async function Assets() {

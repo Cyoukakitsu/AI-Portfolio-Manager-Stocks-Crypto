@@ -33,48 +33,65 @@ function MarketDataStocks() {
       showSymbolLogo: true,
       symbolsGroups: [
         {
-          name: "Financial",
+          name: "Electronic Technology",
           symbols: [
             {
-              name: "NYSE:JPM",
-              displayName: "JPMorgan Chase",
+              name: "NASDAQ:NVDA",
+              displayName: "NVIDIA",
             },
-            {
-              name: "NYSE:WFC",
-              displayName: "Wells Fargo Co New",
-            },
-            {
-              name: "NYSE:BAC",
-              displayName: "Bank Amer Corp",
-            },
-            {
-              name: "NYSE:HSBC",
-              displayName: "Hsbc Hldgs Plc",
-            },
-            {
-              name: "NYSE:C",
-              displayName: "Citigroup Inc",
-            },
-            {
-              name: "NYSE:MA",
-              displayName: "Mastercard Incorporated",
-            },
-          ],
-        },
-        {
-          name: "Technology",
-          symbols: [
             {
               name: "NASDAQ:AAPL",
               displayName: "Apple",
             },
             {
-              name: "NASDAQ:GOOGL",
-              displayName: "Alphabet",
+              name: "NASDAQ:AVGO",
+              displayName: "Broadcom",
             },
+            {
+              name: "NASDAQ:AMD",
+              displayName: "AMD",
+            },
+            {
+              name: "NYSE:TSM",
+              displayName: "Taiwan Semiconductor",
+            },
+          ],
+        },
+        {
+          name: "Finance",
+          symbols: [
+            {
+              name: "NYSE:BRK.B",
+              displayName: "Berkshire Hathaway",
+            },
+            {
+              name: "NYSE:JPM",
+              displayName: "JPMorgan Chase",
+            },
+            {
+              name: "NYSE:V",
+              displayName: "Visa",
+            },
+            {
+              name: "NYSE:MA",
+              displayName: "Mastercard",
+            },
+            {
+              name: "NYSE:BAC",
+              displayName: "Bank of America",
+            },
+          ],
+        },
+        {
+          name: "Technology Services",
+          symbols: [
             {
               name: "NASDAQ:MSFT",
               displayName: "Microsoft",
+            },
+            {
+              name: "NASDAQ:GOOGL",
+              displayName: "Alphabet",
             },
             {
               name: "NASDAQ:META",
@@ -82,36 +99,11 @@ function MarketDataStocks() {
             },
             {
               name: "NYSE:ORCL",
-              displayName: "Oracle Corp",
+              displayName: "Oracle",
             },
             {
-              name: "NASDAQ:INTC",
-              displayName: "Intel Corp",
-            },
-          ],
-        },
-        {
-          name: "Services",
-          symbols: [
-            {
-              name: "NASDAQ:AMZN",
-              displayName: "Amazon",
-            },
-            {
-              name: "NYSE:BABA",
-              displayName: "Alibaba Group Hldg Ltd",
-            },
-            {
-              name: "NYSE:T",
-              displayName: "At&t Inc",
-            },
-            {
-              name: "NYSE:WMT",
-              displayName: "Walmart",
-            },
-            {
-              name: "NYSE:V",
-              displayName: "Visa",
+              name: "NYSE:IBM",
+              displayName: "IBM",
             },
           ],
         },

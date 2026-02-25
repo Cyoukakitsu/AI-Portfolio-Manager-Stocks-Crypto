@@ -5,7 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { SignUpFormValues, signUpSchema } from "@/lib/schemas/sign-up";
 import { useRouter } from "next/navigation";
-import { signUp } from "@/services/apiAuth";
+import { signUp } from "@/services/auth";
 
 import {
   Card,

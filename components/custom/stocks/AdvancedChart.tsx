@@ -14,11 +14,11 @@ function AdvancedChart() {
       <div className="tradingview-widget-container__widget"></div>
       <div className="tradingview-widget-copyright">
         <a
-          href="https://www.tradingview.com/symbols/NASDAQ-AAPL/"
+          href="https://www.tradingview.com/symbols/VANTAGE-SP500/"
           rel="noopener nofollow"
           target="_blank"
         >
-        <span class="blue-text">AAPL stock chart</span>  
+        <span class="blue-text">AAPL stock chart</span>
         </a>
         <span class="trademark"> by TradingView</span>
       </div>`;

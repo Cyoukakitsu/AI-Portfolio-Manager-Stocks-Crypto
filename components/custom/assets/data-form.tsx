@@ -18,7 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { createAsset, updateAsset } from "@/lib/assets";
+import { createAsset, updateAsset } from "@/services/assets";
 import type { Asset, AssetFormData } from "@/types/global";
 
 type Props = {

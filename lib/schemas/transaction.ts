@@ -13,4 +13,4 @@ export const updateTransactionSchema = transactionSchema.omit({
 });
 
 export type TransactionFormData = z.infer<typeof transactionSchema>;
-export type UpdataTransaction = z.infer<typeof updateTransactionSchema>;
+export type UpdateTransactionFormData = z.infer<typeof updateTransactionSchema>;

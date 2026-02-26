@@ -67,7 +67,7 @@ export default async function Assets() {
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <h2 className="text-lg font-semibold">All Assets</h2>
-          <AssetForm trigger={<Button size="sm">新增资产</Button>} />
+          <AssetForm trigger={<Button size="sm">Add Asset</Button>} />
         </div>
         <AssetsTable assets={list} />
       </div>

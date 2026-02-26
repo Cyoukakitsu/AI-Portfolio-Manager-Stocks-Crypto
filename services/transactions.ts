@@ -3,7 +3,7 @@
 import type { Transaction } from "@/types/global";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { transactionSchema } from "@/lib/schemas/transaction";
+import { transactionSchema, updateTransactionSchema } from "@/lib/schemas/transaction";
 
 export async function getTransactions(assetId: string) {
   const supabase = await createClient();
@@ -17,8 +17,9 @@ export async function getTransactions(assetId: string) {
   const { data, error } = await supabase
     .from("transactions")
     .select("*")
-    // 只取属于当前用户的数据，防止越权读取
+    // 双重过滤：同时验证 asset_id 和 user_id，防止越权读取他人交易记录（IDOR）
     .eq("asset_id", assetId)
+    .eq("user_id", user.id)
     .order("traded_at", { ascending: false }); // 最新交易排在前面
 
   if (error) throw new Error(error.message);
@@ -58,8 +59,8 @@ export async function updateTransaction(id: string, rawData: unknown) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("User not found");
 
-  // 更新时使用 updateTransactionSchema（不含 asset_id）
-  const result = transactionSchema.safeParse(rawData);
+  // 更新时使用 updateTransactionSchema（不含 asset_id，防止交易被换绑到其他资产）
+  const result = updateTransactionSchema.safeParse(rawData);
   if (!result.success) throw new Error(result.error.message);
 
   const { error } = await supabase

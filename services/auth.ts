@@ -30,7 +30,7 @@ export async function signUp(formatData: unknown) {
   if (error) {
     // 不返回 error.message，避免将 Supabase 内部错误信息暴露给前端
     return {
-      error: error.message,
+      error: "Registration failed. Please try again.",
     };
   }
   return {
@@ -59,7 +59,7 @@ export async function signIn(formatData: unknown) {
     // 不区分「邮箱不存在」还是「密码错误」
     // 统一返回模糊提示，防止黑客通过不同错误信息判断账号是否存在（撞库攻击）
     return {
-      error: error.message,
+      error: "Invalid credentials. Please check your email and password.",
     };
   }
   redirect("/dashboard/assets");

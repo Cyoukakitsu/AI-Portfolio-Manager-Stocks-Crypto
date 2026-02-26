@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { toast } from "sonner";
+
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Dialog,
   DialogContent,
@@ -18,134 +21,168 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Field,
+  FieldLabel,
+  FieldError,
+  FieldGroup,
+} from "@/components/ui/field";
+
 import { createAsset, updateAsset } from "@/services/assets";
-import type { Asset, AssetFormData } from "@/types/global";
+import { assetSchema, type AssetFormData } from "@/lib/schemas/asset";
+import type { Asset } from "@/types/global";
 
 type Props = {
-  // 如果传了 asset，就是编辑模式；没传就是新增模式
   asset?: Asset;
-  // 自定义触发按钮（从外部传进来）
-  trigger: React.ReactNode;
+  trigger?: React.ReactNode; // 改为可选，外部控制 open 时不需要传
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  onSuccess?: () => void;
 };
 
-export function AssetForm({ asset, trigger }: Props) {
-  const [open, setOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
+export function AssetForm({
+  asset,
+  trigger,
+  open: externalOpen,
+  onOpenChange,
+  onSuccess,
+}: Props) {
+  const [internalOpen, setInternalOpen] = useState(false);
+  const open = externalOpen ?? internalOpen;
+  const setOpen = onOpenChange ?? setInternalOpen;
 
-  // 表单初始值：编辑时用现有数据，新增时用空字符串
-  const [formData, setFormData] = useState<AssetFormData>({
-    symbol: asset?.symbol ?? "",
-    fullname: asset?.fullname ?? "",
-    asset_type: asset?.asset_type ?? "",
-  });
-
-  // 当 asset prop 变化时（切换编辑不同行），同步更新表单状态
-  useEffect(() => {
-    setFormData({
+  const form = useForm<AssetFormData>({
+    resolver: zodResolver(assetSchema),
+    defaultValues: {
       symbol: asset?.symbol ?? "",
       fullname: asset?.fullname ?? "",
-      asset_type: asset?.asset_type ?? "",
-    });
-  }, [asset]);
+      asset_type:
+        (asset?.asset_type as AssetFormData["asset_type"]) ?? undefined,
+    },
+  });
 
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault(); // 阻止表单默认的页面刷新行为
-
-    // 手动验证 asset_type（Select 组件不支持原生 required）
-    if (!formData.asset_type) {
-      alert("请选择资产类型");
-      return;
+  useEffect(() => {
+    if (open) {
+      form.reset({
+        symbol: asset?.symbol ?? "",
+        fullname: asset?.fullname ?? "",
+        asset_type:
+          (asset?.asset_type as AssetFormData["asset_type"]) ?? undefined,
+      });
     }
+  }, [open, asset, form]);
 
-    setLoading(true);
-
+  async function onSubmit(data: AssetFormData) {
     try {
       if (asset) {
-        // 编辑模式
-        await updateAsset(asset.id, formData);
+        await updateAsset(asset.id, data);
+        toast.success("资产更新成功");
       } else {
-        // 新增模式
-        await createAsset(formData);
-        // 新增成功后重置表单，避免下次打开时显示旧数据
-        setFormData({ symbol: "", fullname: "", asset_type: "" });
+        await createAsset(data);
+        toast.success("资产添加成功");
       }
-      setOpen(false); // 操作成功后关闭弹窗
+
+      if (!asset) {
+        form.reset();
+      }
+      setOpen(false);
+      onSuccess?.();
     } catch (err) {
-      console.error(err);
-      alert("操作失败，请检查控制台");
-    } finally {
-      setLoading(false);
+      console.error("Failed to save asset:", err);
+      toast.error("操作失败，请重试");
     }
   }
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger render={trigger as React.ReactElement} />
+      {/* trigger 可选：有传时渲染触发按钮，外部控制 open 时不需要 */}
+      {trigger && <DialogTrigger render={trigger as React.ReactElement} />}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{asset ? "编辑资产" : "新增资产"}</DialogTitle>
+          <DialogTitle>{asset ? "Edit Asset" : "Add Asset"}</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-1">
-            <Label htmlFor="symbol">Symbol（代码）</Label>
-            <Input
-              id="symbol"
-              value={formData.symbol}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, symbol: e.target.value }))
-              }
-              placeholder="例：BTC、NVDA"
-              required
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <FieldGroup>
+            <Controller
+              name="symbol"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="symbol">Symbol</FieldLabel>
+                  <Input
+                    {...field}
+                    id="symbol"
+                    placeholder="e.g. BTC, NVDA"
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
-          </div>
 
-          <div className="space-y-1">
-            <Label htmlFor="fullname">全名</Label>
-            <Input
-              id="fullname"
-              value={formData.fullname}
-              onChange={(e) =>
-                setFormData((prev) => ({ ...prev, fullname: e.target.value }))
-              }
-              placeholder="例：Bitcoin、NVIDIA"
-              required
+            <Controller
+              name="fullname"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel htmlFor="fullname">Full Name</FieldLabel>
+                  <Input
+                    {...field}
+                    id="fullname"
+                    placeholder="e.g. Bitcoin, NVIDIA"
+                    aria-invalid={fieldState.invalid}
+                  />
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
             />
-          </div>
 
-          <div className="space-y-1">
-            <Label>资产类型</Label>
-            <Select
-              value={formData.asset_type}
-              onValueChange={(value) =>
-                setFormData((prev) => ({ ...prev, asset_type: value ?? "" }))
-              }
-              required
-            >
-              <SelectTrigger>
-                <SelectValue placeholder="选择类型" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="crypto">Crypto</SelectItem>
-                <SelectItem value="stock">Stock</SelectItem>
-                <SelectItem value="etf">ETF</SelectItem>
-                <SelectItem value="cash">Cash</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+            <Controller
+              name="asset_type"
+              control={form.control}
+              render={({ field, fieldState }) => (
+                <Field data-invalid={fieldState.invalid}>
+                  <FieldLabel>Asset Type</FieldLabel>
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger aria-invalid={fieldState.invalid}>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="crypto">Crypto</SelectItem>
+                      <SelectItem value="stock">Stock</SelectItem>
+                      <SelectItem value="etf">ETF</SelectItem>
+                      <SelectItem value="cash">Cash</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  {fieldState.invalid && (
+                    <FieldError errors={[fieldState.error]} />
+                  )}
+                </Field>
+              )}
+            />
 
-          <div className="flex justify-end gap-2 pt-2">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => setOpen(false)}
-            >
-              取消
-            </Button>
-            <Button type="submit" disabled={loading}>
-              {loading ? "处理中..." : asset ? "保存" : "新增"}
-            </Button>
-          </div>
+            <div className="flex justify-end gap-2 pt-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button type="submit" disabled={form.formState.isSubmitting}>
+                {form.formState.isSubmitting
+                  ? "Processing..."
+                  : asset
+                    ? "Save"
+                    : "Add"}
+              </Button>
+            </div>
+          </FieldGroup>
         </form>
       </DialogContent>
     </Dialog>

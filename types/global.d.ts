@@ -19,6 +19,3 @@ export type Transaction = {
   traded_at: string;
   created_at: string;
 };
-
-// 新增/编辑时用的类型❌  用Zod验证✅
-// export type AssetFormData = Omit<Asset, "id" | "created_at">;

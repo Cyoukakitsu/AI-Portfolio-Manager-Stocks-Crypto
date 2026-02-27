@@ -87,9 +87,8 @@ export function AssetForm({
       }
       setOpen(false);
       onSuccess?.();
-    } catch (err) {
-      console.error("Failed to save asset:", err);
-      toast.error("操作失败，请重试");
+    } catch {
+      toast.error("Failed to add asset, please try again");
     }
   }
 
@@ -148,7 +147,10 @@ export function AssetForm({
               render={({ field, fieldState }) => (
                 <Field data-invalid={fieldState.invalid}>
                   <FieldLabel>Asset Type</FieldLabel>
-                  <Select value={field.value} onValueChange={field.onChange}>
+                  <Select
+                    value={field.value ?? ""}
+                    onValueChange={field.onChange}
+                  >
                     <SelectTrigger aria-invalid={fieldState.invalid}>
                       <SelectValue placeholder="Select type" />
                     </SelectTrigger>

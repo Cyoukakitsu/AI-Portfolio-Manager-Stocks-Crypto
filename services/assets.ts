@@ -2,7 +2,6 @@
 
 import { createClient } from "../lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import type { Asset } from "@/types/global";
 import { assetSchema } from "@/lib/schemas/asset";
 
 //  读取所有资产
@@ -17,13 +16,48 @@ export async function getAssets() {
 
   const { data, error } = await supabase
     .from("assets")
-    .select("*")
+    .select(
+      `
+    *,
+    transactions (
+      price,
+      quantity,
+      type
+    )
+  `,
+    )
     // 只取属于当前用户的数据，防止越权读取
     .eq("user_id", user.id)
     .order("created_at", { ascending: false }); // 最新的排在前面
 
   if (error) throw new Error(error.message);
-  return data as Asset[]; // 返回所有资产
+  const assetsWithAvgPrice = data.map((asset) => {
+    const buyTx = asset.transactions.filter(
+      (tx: { type: string }) => tx.type === "buy",
+    );
+    const totalCost = buyTx.reduce(
+      (sum: number, tx: { price: number; quantity: number }) =>
+        sum + tx.price * tx.quantity,
+      0,
+    );
+    const totalQty = buyTx.reduce(
+      (sum: number, tx: { quantity: number }) => sum + tx.quantity,
+      0,
+    );
+    const avg_price = totalQty > 0 ? totalCost / totalQty : null;
+
+    return {
+      id: asset.id,
+      user_id: asset.user_id,
+      symbol: asset.symbol,
+      fullname: asset.fullname,
+      asset_type: asset.asset_type,
+      created_at: asset.created_at,
+      avg_price,
+    };
+  });
+
+  return assetsWithAvgPrice;
 }
 
 // 新增资产
@@ -50,7 +84,11 @@ export async function createAsset(rawData: unknown) {
     },
   ]);
 
-  if (error) throw new Error(error.message);
+  if (error) {
+    if (error.code === "23505")
+      throw new Error("该 Symbol 已存在，请使用其他名称");
+    throw new Error(error.message);
+  }
   revalidatePath("/assets");
 }
 

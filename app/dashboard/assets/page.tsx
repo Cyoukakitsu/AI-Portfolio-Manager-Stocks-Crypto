@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAssets } from "@/services/assets";
 import { LayoutDashboard, TrendingUp, Bitcoin } from "lucide-react";
+import { ProfitAreaChart } from "@/components/custom/assets/Profit-area-chart";
+import { AllocationRadarChart } from "@/components/custom/assets/allocation-radar-chart";
 
 export default async function Assets() {
   const assets = await getAssets();
@@ -61,6 +63,15 @@ export default async function Assets() {
             </p>
           </CardContent>
         </Card>
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-3">
+        <div className="md:col-span-2">
+          <ProfitAreaChart />
+        </div>
+        <div className="md:col-span-1">
+          <AllocationRadarChart />
+        </div>
       </div>
 
       {/* Table Section */}

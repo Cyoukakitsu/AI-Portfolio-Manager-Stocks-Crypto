@@ -1,6 +1,6 @@
 "use client";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
 import { CalendarIcon, Minus, Plus } from "lucide-react";
@@ -26,6 +26,7 @@ import {
   FieldError,
   FieldGroup,
 } from "@/components/ui/field";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { createTransaction } from "@/services/transactions";
 import {
@@ -57,6 +58,8 @@ export function TransactionForm({
     },
   });
 
+  const currentType = useWatch({ control: form.control, name: "type" });
+
   async function onSubmit(data: TransactionFormData) {
     try {
       await createTransaction(data);
@@ -64,8 +67,7 @@ export function TransactionForm({
       form.reset();
       onOpenChange(false);
       onSuccess?.();
-    } catch (err) {
-      console.error(err);
+    } catch {
       toast.error("Failed to add transaction, please try again");
     }
   }
@@ -74,11 +76,39 @@ export function TransactionForm({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Record a Buy Transaction</DialogTitle>
+          <DialogTitle>
+            {currentType === "buy"
+              ? "Record Buy Transaction"
+              : "Record Sell Transaction"}
+          </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
+            {/* Buy / Sell 切换 Tab  */}
+            <Controller
+              name="type"
+              control={form.control}
+              render={({ field }) => (
+                <Tabs
+                  value={field.value}
+                  onValueChange={(val) =>
+                    // Tabs 的 onValueChange 返回 string，断言回联合类型
+                    field.onChange(val as "buy" | "sell")
+                  }
+                >
+                  <TabsList className="w-full">
+                    <TabsTrigger value="buy" className="flex-1">
+                      Buy
+                    </TabsTrigger>
+                    <TabsTrigger value="sell" className="flex-1">
+                      Sell
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              )}
+            />
+
             <div className="flex gap-4">
               {/* Quantity：加减按钮 + 隐藏原生箭头的数字输入框 */}
               <Controller
@@ -135,7 +165,9 @@ export function TransactionForm({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="flex-1">
-                    <FieldLabel>Purchase Date</FieldLabel>
+                    <FieldLabel>
+                      {currentType === "buy" ? "Purchase Date" : "Sell Date"}
+                    </FieldLabel>
                     <Popover>
                       <PopoverTrigger
                         render={
@@ -184,7 +216,9 @@ export function TransactionForm({
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="flex-1">
-                    <FieldLabel>Purchase Price</FieldLabel>
+                    <FieldLabel>
+                      {currentType === "buy" ? "Purchase Price" : "Sell Price"}
+                    </FieldLabel>
                     <Input
                       type="number"
                       step="0.01"
@@ -192,7 +226,6 @@ export function TransactionForm({
                       value={field.value ?? ""}
                       onChange={(e) => {
                         const val = e.target.value;
-                        // 修复2（同上）：允许清空，不强制转回 0
                         field.onChange(val === "" ? "" : parseFloat(val));
                       }}
                     />

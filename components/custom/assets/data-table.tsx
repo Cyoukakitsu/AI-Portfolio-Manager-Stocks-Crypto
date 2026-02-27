@@ -28,8 +28,9 @@ import {
 import { AssetForm } from "@/components/custom/assets/data-form";
 import { TransactionForm } from "@/components/custom/assets/transaction-form";
 import { deleteAsset } from "@/services/assets";
-import { getTransactions } from "@/services/transactions";
+import { deleteTransaction, getTransactions } from "@/services/transactions";
 import type { Asset, Transaction } from "@/types/global";
+import { toast } from "sonner";
 
 type Props = {
   assets: Asset[];
@@ -62,8 +63,7 @@ export function AssetsTable({ assets }: Props) {
     try {
       const data = await getTransactions(assetId);
       setTransactionsMap((prev) => ({ ...prev, [assetId]: data }));
-    } catch (err) {
-      console.error(err);
+    } catch {
     } finally {
       setLoadingId(null);
     }
@@ -74,8 +74,8 @@ export function AssetsTable({ assets }: Props) {
     try {
       const data = await getTransactions(assetId);
       setTransactionsMap((prev) => ({ ...prev, [assetId]: data }));
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toast.error("Failed to add transaction, please try again");
     }
     // 刷新 Server Component 数据（例如总资产统计等）
     router.refresh();
@@ -86,8 +86,21 @@ export function AssetsTable({ assets }: Props) {
     try {
       await deleteAsset(id);
       router.refresh(); // 删除后刷新列表
-    } catch (err) {
-      console.error(err);
+    } catch {}
+  }
+
+  async function handleDeleteTransaction(
+    transactionId: string,
+    assetId: string,
+  ) {
+    if (!confirm("Are you sure you want to delete this transaction?")) return;
+    try {
+      await deleteTransaction(transactionId);
+      const data = await getTransactions(assetId);
+      setTransactionsMap((prev) => ({ ...prev, [assetId]: data }));
+      toast.success("Transaction deleted");
+    } catch {
+      toast.error("Failed to delete transaction");
     }
   }
 
@@ -114,6 +127,7 @@ export function AssetsTable({ assets }: Props) {
             <TableHead>Full Name</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Created At</TableHead>
+            <TableHead>Avg Price</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -142,6 +156,11 @@ export function AssetsTable({ assets }: Props) {
                   <TableCell>
                     {new Date(asset.created_at).toLocaleDateString("en-US")}
                   </TableCell>
+                  <TableCell>
+                    {asset.avg_price != null
+                      ? `$${asset.avg_price.toFixed(2)}`
+                      : "—"}
+                  </TableCell>
                   <TableCell className="text-right space-x-1">
                     {/* ⋮ 菜单 */}
                     <DropdownMenu>
@@ -169,7 +188,7 @@ export function AssetsTable({ assets }: Props) {
                           onClick={() => setTransactionOpenId(asset.id)}
                         >
                           <Plus className="w-4 h-4 mr-2" />
-                          Record Buy Transaction
+                          Record Transaction
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-destructive"
@@ -199,7 +218,7 @@ export function AssetsTable({ assets }: Props) {
                 {/* 展开行：交易记录 */}
                 {expandedId === asset.id && (
                   <TableRow key={`${asset.id}-expanded`}>
-                    <TableCell colSpan={5} className="bg-muted/30 p-4">
+                    <TableCell colSpan={6} className="bg-muted/30 p-4">
                       {loadingId === asset.id ? (
                         <p className="text-sm text-muted-foreground">
                           Loading...
@@ -216,6 +235,7 @@ export function AssetsTable({ assets }: Props) {
                               <TableHead>Price</TableHead>
                               <TableHead>Quantity</TableHead>
                               <TableHead>Type</TableHead>
+                              <TableHead />
                             </TableRow>
                           </TableHeader>
                           <TableBody>
@@ -234,6 +254,18 @@ export function AssetsTable({ assets }: Props) {
                                   >
                                     {tx.type === "buy" ? "Buy" : "Sell"}
                                   </Badge>
+                                </TableCell>
+                                <TableCell className="text-right">
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="text-destructive hover:text-destructive"
+                                    onClick={() =>
+                                      handleDeleteTransaction(tx.id, asset.id)
+                                    }
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </Button>
                                 </TableCell>
                               </TableRow>
                             ))}

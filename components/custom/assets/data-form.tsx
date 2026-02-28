@@ -1,12 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useForm, Controller } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import {
   Dialog,
   DialogContent,
@@ -31,6 +30,7 @@ import {
 import { createAsset, updateAsset } from "@/services/assets";
 import { assetSchema, type AssetFormData } from "@/lib/schemas/asset";
 import type { Asset } from "@/types/global";
+import { SymbolSearch } from "./symbol-search";
 
 type Props = {
   asset?: Asset;
@@ -59,6 +59,11 @@ export function AssetForm({
       asset_type:
         (asset?.asset_type as AssetFormData["asset_type"]) ?? undefined,
     },
+  });
+  const fullname = useWatch({ control: form.control, name: "fullname" });
+  const currentAssetType = useWatch({
+    control: form.control,
+    name: "asset_type",
   });
 
   useEffect(() => {
@@ -92,6 +97,17 @@ export function AssetForm({
     }
   }
 
+  function mapFinnhubType(
+    type: string,
+  ): AssetFormData["asset_type"] | undefined {
+    const map: Record<string, AssetFormData["asset_type"]> = {
+      "Common Stock": "stock",
+      ETP: "etf",
+      Crypto: "crypto",
+    };
+    return map[type];
+  }
+
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {/* trigger 可选：有传时渲染触发按钮，外部控制 open 时不需要 */}
@@ -103,70 +119,66 @@ export function AssetForm({
 
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
-            <Controller
-              name="symbol"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="symbol">Symbol</FieldLabel>
-                  <Input
-                    {...field}
-                    id="symbol"
-                    placeholder="e.g. BTC, NVDA"
-                    aria-invalid={fieldState.invalid}
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+            <Field data-invalid={!!form.formState.errors.symbol}>
+              <FieldLabel>Symbol</FieldLabel>
+              <SymbolSearch
+                defaultValue={asset?.symbol ?? ""}
+                onSelect={(result) => {
+                  // 选中搜索结果时，同时填入三个字段
+                  form.setValue("symbol", result.symbol, {
+                    shouldValidate: true,
+                  });
+                  form.setValue("fullname", result.fullname, {
+                    shouldValidate: true,
+                  });
+                  const mappedType = mapFinnhubType(result.type);
+                  if (mappedType) {
+                    form.setValue("asset_type", mappedType, {
+                      shouldValidate: true,
+                    });
+                  }
+                }}
+              />
+              {form.formState.errors.symbol && (
+                <FieldError errors={[form.formState.errors.symbol]} />
               )}
-            />
+            </Field>
 
-            <Controller
-              name="fullname"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel htmlFor="fullname">Full Name</FieldLabel>
-                  <Input
-                    {...field}
-                    id="fullname"
-                    placeholder="e.g. Bitcoin, NVIDIA"
-                    aria-invalid={fieldState.invalid}
-                  />
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
-              )}
-            />
+            <Field>
+              <FieldLabel>Full Name</FieldLabel>
+              <p className="text-sm px-3 py-2 border rounded-md bg-muted/30 text-muted-foreground min-h-9">
+                {fullname || "Auto-filled after selection"}
+              </p>
+            </Field>
 
-            <Controller
-              name="asset_type"
-              control={form.control}
-              render={({ field, fieldState }) => (
-                <Field data-invalid={fieldState.invalid}>
-                  <FieldLabel>Asset Type</FieldLabel>
-                  <Select
-                    value={field.value ?? ""}
-                    onValueChange={field.onChange}
-                  >
-                    <SelectTrigger aria-invalid={fieldState.invalid}>
-                      <SelectValue placeholder="Select type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="crypto">Crypto</SelectItem>
-                      <SelectItem value="stock">Stock</SelectItem>
-                      <SelectItem value="etf">ETF</SelectItem>
-                      <SelectItem value="cash">Cash</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  {fieldState.invalid && (
-                    <FieldError errors={[fieldState.error]} />
-                  )}
-                </Field>
+            <Field data-invalid={!!form.formState.errors.asset_type}>
+              <FieldLabel>Asset Type</FieldLabel>
+              <Select
+                value={currentAssetType ?? ""}
+                onValueChange={(val) =>
+                  form.setValue(
+                    "asset_type",
+                    val as AssetFormData["asset_type"],
+                    {
+                      shouldValidate: true,
+                    },
+                  )
+                }
+              >
+                <SelectTrigger>
+                  <SelectValue placeholder="Select type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="crypto">Crypto</SelectItem>
+                  <SelectItem value="stock">Stock</SelectItem>
+                  <SelectItem value="etf">ETF</SelectItem>
+                  <SelectItem value="cash">Cash</SelectItem>
+                </SelectContent>
+              </Select>
+              {form.formState.errors.asset_type && (
+                <FieldError errors={[form.formState.errors.asset_type]} />
               )}
-            />
+            </Field>
 
             <div className="flex justify-end gap-2 pt-2">
               <Button

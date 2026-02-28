@@ -31,10 +31,21 @@ export async function getAssets() {
     .order("created_at", { ascending: false }); // 最新的排在前面
 
   if (error) throw new Error(error.message);
+
   const assetsWithAvgPrice = data.map((asset) => {
-    const buyTx = asset.transactions.filter(
+    const transactions = asset.transactions as {
+      price: number;
+      quantity: number;
+      type: string;
+    }[];
+
+    const buyTx = transactions.filter(
       (tx: { type: string }) => tx.type === "buy",
     );
+    const sellTx = transactions.filter(
+      (tx: { type: string }) => tx.type === "sell",
+    );
+
     const totalCost = buyTx.reduce(
       (sum: number, tx: { price: number; quantity: number }) =>
         sum + tx.price * tx.quantity,
@@ -46,6 +57,13 @@ export async function getAssets() {
     );
     const avg_price = totalQty > 0 ? totalCost / totalQty : null;
 
+    const totalSellCost = sellTx.reduce(
+      (sum, tx) => sum + tx.price * tx.quantity,
+      0,
+    );
+
+    const total_cost = totalCost - totalSellCost;
+
     return {
       id: asset.id,
       user_id: asset.user_id,
@@ -54,6 +72,7 @@ export async function getAssets() {
       asset_type: asset.asset_type,
       created_at: asset.created_at,
       avg_price,
+      total_cost,
     };
   });
 

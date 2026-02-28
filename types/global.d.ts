@@ -7,6 +7,7 @@ export type Asset = {
   asset_type: string;
   created_at: string;
   avg_price: number | null;
+  total_cost: number;
 };
 
 // 对应 Supabase transactions 表的结构

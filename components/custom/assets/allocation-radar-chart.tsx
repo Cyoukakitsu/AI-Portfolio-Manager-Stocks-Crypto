@@ -14,14 +14,11 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import type { Asset } from "@/types/global";
 
-// 占位假数据，之后替换成从资产列表计算的真实比例
-const placeholderData = [
-  { type: "Crypto", value: 40 },
-  { type: "Stock", value: 30 },
-  { type: "ETF", value: 20 },
-  { type: "Cash", value: 10 },
-];
+type Prop = {
+  assets: Asset[];
+};
 
 const chartConfig = {
   value: {
@@ -30,7 +27,18 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-export function AllocationRadarChart() {
+export function AllocationRadarChart({ assets }: Prop) {
+  const costByType = assets.reduce<Record<string, number>>((acc, asset) => {
+    const type = asset.asset_type;
+    acc[type] = (acc[type] ?? 0) + asset.total_cost;
+    return acc;
+  }, {});
+
+  const chartData = Object.entries(costByType).map(([type, value]) => ({
+    type,
+    value: Math.max(0, value), // 防止卖出超过买入时出现负值
+  }));
+
   return (
     <Card>
       <CardHeader>
@@ -39,7 +47,7 @@ export function AllocationRadarChart() {
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
-          <RadarChart data={placeholderData}>
+          <RadarChart data={chartData}>
             <PolarGrid />
             <PolarAngleAxis dataKey="type" />
             <ChartTooltip content={<ChartTooltipContent />} />

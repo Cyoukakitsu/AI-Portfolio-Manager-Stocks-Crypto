@@ -70,7 +70,7 @@ export default async function Assets() {
           <ProfitAreaChart />
         </div>
         <div className="md:col-span-1">
-          <AllocationRadarChart />
+          <AllocationRadarChart assets={list} />
         </div>
       </div>
 

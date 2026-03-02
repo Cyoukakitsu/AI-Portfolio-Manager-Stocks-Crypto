@@ -1,5 +1,11 @@
 "use client";
 
+// 注册表单组件
+//
+// 与 SignInForm 的核心区别：
+//   - Schema 增加了 .refine() 跨字段校验（密码确认），不能用单字段规则完成
+//   - 注册成功后由客户端执行 router.push("/sign-in")，因为 Server Action 不需要在内部 redirect
+
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -24,7 +30,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 const SignUpForm = () => {
-  // react hook form + zod
   const {
     register,
     handleSubmit,
@@ -39,11 +44,14 @@ const SignUpForm = () => {
     },
   });
 
-  // onSubmit logic, redirect to /sign-in if success
   const router = useRouter();
+
+  // 注册成功后跳转到登录页，而非直接登录，
+  // 原因：Supabase 默认需要邮件验证，跳转到登录页更符合此流程
   const onSubmit = async (data: SignUpFormValues) => {
     const result = await signUp(data);
     if (result.error) {
+      // Server Action 返回的 error 可能是字符串或对象，统一处理
       alert(
         typeof result.error === "string" ? result.error : "Validation failed",
       );
@@ -71,6 +79,7 @@ const SignUpForm = () => {
                 <p className="text-sm text-red-500">{errors.name.message}</p>
               )}
             </Field>
+
             {/* email */}
             <Field>
               <FieldLabel htmlFor="email">Email</FieldLabel>
@@ -79,6 +88,7 @@ const SignUpForm = () => {
                 type="email"
                 placeholder="fujimoto@example.com"
               />
+              {/* 有错误时显示错误，否则显示提示文字（两者互斥，避免 UI 跳动） */}
               {errors.email ? (
                 <p className="text-sm text-red-500">{errors.email.message}</p>
               ) : (
@@ -88,7 +98,7 @@ const SignUpForm = () => {
               )}
             </Field>
 
-            {/* Password */}
+            {/* password */}
             <Field>
               <FieldLabel htmlFor="password">Password</FieldLabel>
               <Input {...register("password")} type="password" />
@@ -103,7 +113,7 @@ const SignUpForm = () => {
               )}
             </Field>
 
-            {/* confirm password */}
+            {/* confirmPassword：错误由 Zod .refine() 产生，挂载在 confirmPassword 字段上 */}
             <Field>
               <FieldLabel htmlFor="confirm-password">
                 Confirm Password

@@ -1,5 +1,12 @@
 "use client";
 
+// 登录表单组件
+//
+// 架构：react-hook-form（表单状态管理）+ Zod（校验规则）+ Server Action（提交逻辑）
+// 校验在两处发生：
+//   1. 客户端：Zod 实时校验，给出即时错误提示
+//   2. 服务端 Server Action 中：二次校验，防止绕过前端直接请求
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -24,7 +31,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const SignInForm = () => {
-  // react hook form + zod
+  // zodResolver 将 Zod schema 接入 react-hook-form，
+  // 使 handleSubmit 自动在提交前运行校验，errors 对象自动填充错误信息
   const {
     register,
     handleSubmit,
@@ -37,7 +45,8 @@ const SignInForm = () => {
     },
   });
 
-  // onSubmit logic
+  // 登录成功后 Server Action 内部执行 redirect()，无需在这里跳转
+  // 登录失败时 Server Action 返回 { error }，在这里展示给用户
   const onSubmit = async (data: SignInFormValues) => {
     const result = await signIn(data);
     if (result?.error) {
@@ -55,11 +64,13 @@ const SignInForm = () => {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {/* handleSubmit 包裹 onSubmit，确保校验通过后才执行提交逻辑 */}
           <form onSubmit={handleSubmit(onSubmit)}>
             <FieldGroup>
               {/* email */}
               <Field>
                 <FieldLabel htmlFor="email">Email</FieldLabel>
+                {/* register("email") 将 input 注册到 react-hook-form，自动处理 value/onChange/ref */}
                 <Input
                   {...register("email")}
                   type="email"
@@ -87,7 +98,7 @@ const SignInForm = () => {
                 )}
               </Field>
 
-              {/* buttons */}
+              {/* 提交期间禁用按钮，防止重复提交 */}
               <Field>
                 <Button type="submit" disabled={isSubmitting}>
                   {isSubmitting ? "Loading..." : "Login"}

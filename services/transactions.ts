@@ -1,14 +1,21 @@
 "use server";
 
+// Server Actions：交易记录的增删改查
+//
+// 设计上与 assets.ts 保持一致的安全模型：
+//   - 所有写操作先 Zod 校验，再由服务端注入 user_id
+//   - 所有读/写/删操作同时过滤 user_id，防止 IDOR 越权
+
 import type { Transaction } from "@/types/global";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import { transactionSchema, updateTransactionSchema } from "@/lib/schemas/transaction";
 
+// 查询某个资产下当前用户的所有交易记录
 export async function getTransactions(assetId: string) {
   const supabase = await createClient();
 
-  // 从 session 取得当前登录用户，用于 IDOR 防护
+  // 从服务端 session 取得当前用户，而非信任客户端传参
   const {
     data: { user },
   } = await supabase.auth.getUser();
@@ -17,13 +24,13 @@ export async function getTransactions(assetId: string) {
   const { data, error } = await supabase
     .from("transactions")
     .select("*")
-    // 双重过滤：同时验证 asset_id 和 user_id，防止越权读取他人交易记录（IDOR）
+    // 双重过滤：防止用户通过伪造 assetId 读取他人交易记录（IDOR）
     .eq("asset_id", assetId)
     .eq("user_id", user.id)
     .order("traded_at", { ascending: false }); // 最新交易排在前面
 
   if (error) throw new Error(error.message);
-  return data as Transaction[]; // 返回交易记录
+  return data as Transaction[];
 }
 
 // 新增交易记录
@@ -35,11 +42,11 @@ export async function createTransaction(rawData: unknown) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("User not found");
 
-  //零信任原则：用 Zod 验证并剥离所有非法字段
+  // 零信任：用 Zod 验证并剥离所有非法字段
   const result = transactionSchema.safeParse(rawData);
   if (!result.success) throw new Error(result.error.message);
 
-  // result.data 是干净数据，user_id 只从服务端 session 取
+  // user_id 只从服务端 session 取，不允许客户端注入
   const { error } = await supabase.from("transactions").insert([
     {
       ...result.data,
@@ -59,7 +66,8 @@ export async function updateTransaction(id: string, rawData: unknown) {
   } = await supabase.auth.getUser();
   if (!user) throw new Error("User not found");
 
-  // 更新时使用 updateTransactionSchema（不含 asset_id，防止交易被换绑到其他资产）
+  // 使用 updateTransactionSchema（去掉了 asset_id），
+  // 防止用户通过更新请求将交易迁移到其他资产（改变外键归属）
   const result = updateTransactionSchema.safeParse(rawData);
   if (!result.success) throw new Error(result.error.message);
 
@@ -86,7 +94,7 @@ export async function deleteTransaction(id: string) {
     .from("transactions")
     .delete()
     .eq("id", id)
-    // 同样加上 user_id 过滤，防止越权删除
+    // 同样加 user_id 过滤，防止越权删除他人数据
     .eq("user_id", user.id);
 
   if (error) throw new Error(error.message);

@@ -1,5 +1,16 @@
 "use client";
 
+// 资产列表表格组件
+//
+// 核心交互：
+//   - 每行可展开，展开后显示该资产的历史交易记录（懒加载）
+//   - 通过 DropdownMenu 提供编辑、记录交易、删除三个操作
+//
+// 状态管理策略：
+//   - transactionsMap 作为本地缓存，避免每次展开都重新请求
+//   - 删除/新增交易后主动清除缓存并重新拉取，保证数据准确
+//   - router.refresh() 通知 Next.js 重新渲染 Server Component（如资产总览统计）
+
 import { Fragment, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
@@ -10,7 +21,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button, buttonVariants } from "@/components/ui/button"; // 新增导入 buttonVariants
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -37,18 +48,25 @@ type Props = {
 };
 
 export function AssetsTable({ assets }: Props) {
-  const router = useRouter(); // 用于删除/编辑后刷新数据
+  const router = useRouter();
 
+  // expandedId：当前展开的资产 ID（同时只能展开一行）
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  // transactionOpenId：当前打开"记录交易"Dialog 的资产 ID
   const [transactionOpenId, setTransactionOpenId] = useState<string | null>(
     null,
   );
+  // editingId：当前打开"编辑资产"Dialog 的资产 ID
   const [editingId, setEditingId] = useState<string | null>(null);
+  // transactionsMap：以 assetId 为 key 的交易记录缓存，避免重复请求
   const [transactionsMap, setTransactionsMap] = useState<
     Record<string, Transaction[]>
   >({});
+  // loadingId：正在拉取交易记录的资产 ID（用于显示 Loading 状态）
   const [loadingId, setLoadingId] = useState<string | null>(null);
 
+  // 展开/收起某一行：点同一行为收起，点另一行为切换展开
+  // 懒加载：只在首次展开时才请求交易数据，已缓存的不重复请求
   async function handleExpand(assetId: string) {
     if (expandedId === assetId) {
       setExpandedId(null);
@@ -57,11 +75,13 @@ export function AssetsTable({ assets }: Props) {
 
     setExpandedId(assetId);
 
+    // 命中缓存则跳过请求
     if (transactionsMap[assetId]) return;
 
     setLoadingId(assetId);
     try {
       const data = await getTransactions(assetId);
+      // 用函数式更新合并进现有缓存，而不是覆盖整个 map
       setTransactionsMap((prev) => ({ ...prev, [assetId]: data }));
     } catch {
     } finally {
@@ -69,15 +89,16 @@ export function AssetsTable({ assets }: Props) {
     }
   }
 
+  // 交易新增成功后：刷新该资产的交易缓存 + 通知 Server Component 更新
   async function handleTransactionSuccess(assetId: string) {
-    // 清除缓存，下次展开时重新拉取
     try {
       const data = await getTransactions(assetId);
       setTransactionsMap((prev) => ({ ...prev, [assetId]: data }));
     } catch {
       toast.error("Failed to add transaction, please try again");
     }
-    // 刷新 Server Component 数据（例如总资产统计等）
+    // router.refresh() 让 Next.js 重新请求 Server Component 数据，
+    // 更新资产列表中显示的 avg_price 和 total_cost
     router.refresh();
   }
 
@@ -85,10 +106,11 @@ export function AssetsTable({ assets }: Props) {
     if (!confirm("Are you sure you want to delete this asset?")) return;
     try {
       await deleteAsset(id);
-      router.refresh(); // 删除后刷新列表
+      router.refresh();
     } catch {}
   }
 
+  // 删除交易后：立即重新拉取该资产的交易列表，保证展开区域数据准确
   async function handleDeleteTransaction(
     transactionId: string,
     assetId: string,
@@ -104,18 +126,19 @@ export function AssetsTable({ assets }: Props) {
     }
   }
 
-  // 编辑成功后的回调
   function handleEditSuccess() {
+    // 编辑资产（symbol/name/type）只影响 Server Component 部分，触发整页刷新即可
     router.refresh();
   }
 
+  // 根据资产类型返回 Badge 的视觉样式，使不同类型在视觉上可区分
   function getBadgeVariant(type: string) {
     const map: Record<string, "default" | "secondary" | "outline"> = {
       crypto: "default",
       stock: "secondary",
       etf: "outline",
     };
-    return map[type] ?? "outline";
+    return map[type] ?? "outline"; // 未知类型降级为 outline
   }
 
   return (
@@ -143,6 +166,8 @@ export function AssetsTable({ assets }: Props) {
             </TableRow>
           ) : (
             assets.map((asset) => (
+              // Fragment 作为容器，让主行和展开行共享同一个 key，
+              // 避免在 Table 中插入非 <tr> 的包裹元素（违反 HTML 规范）
               <Fragment key={asset.id}>
                 {/* 主行 */}
                 <TableRow>
@@ -157,18 +182,19 @@ export function AssetsTable({ assets }: Props) {
                     {new Date(asset.created_at).toLocaleDateString("en-US")}
                   </TableCell>
                   <TableCell>
+                    {/* avg_price 为 null 说明还没有买入记录，显示破折号 */}
                     {asset.avg_price != null
                       ? `$${asset.avg_price.toFixed(2)}`
                       : "—"}
                   </TableCell>
                   <TableCell className="text-right space-x-1">
-                    {/* ⋮ 菜单 */}
+                    {/* ⋮ 操作菜单 */}
                     <DropdownMenu>
                       {/*
-                        修复点：移除内层的 <Button>
-                        DropdownMenuTrigger 本身会渲染 <button>，
-                        再套 <Button> 会造成 <button> 嵌套 <button>，
-                        用 buttonVariants() 只借样式类名，不产生额外元素
+                        用 buttonVariants() 而非 <Button> 包裹 DropdownMenuTrigger：
+                        DropdownMenuTrigger 本身渲染 <button>，若再嵌套 <Button>（也是 <button>），
+                        会产生 <button> 内嵌 <button> 的非法 HTML，浏览器行为不可预测。
+                        buttonVariants() 只借 CSS 类名，不产生额外 DOM 元素。
                       */}
                       <DropdownMenuTrigger
                         className={buttonVariants({
@@ -200,7 +226,7 @@ export function AssetsTable({ assets }: Props) {
                       </DropdownMenuContent>
                     </DropdownMenu>
 
-                    {/* 展开/收起按钮 */}
+                    {/* 展开/收起按钮：图标根据当前状态动态切换 */}
                     <Button
                       variant="ghost"
                       size="icon"
@@ -215,7 +241,7 @@ export function AssetsTable({ assets }: Props) {
                   </TableCell>
                 </TableRow>
 
-                {/* 展开行：交易记录 */}
+                {/* 展开行：显示该资产的交易历史，跨满所有列 */}
                 {expandedId === asset.id && (
                   <TableRow key={`${asset.id}-expanded`}>
                     <TableCell colSpan={6} className="bg-muted/30 p-4">
@@ -289,10 +315,14 @@ export function AssetsTable({ assets }: Props) {
         </TableBody>
       </Table>
 
-      {/* Dialog 放在 Table 外面，避免 DOM 嵌套问题 */}
+      {/*
+        Dialog 渲染在 Table 外部，而非 TableRow 内部。
+        原因：Dialog 通常使用 Portal 渲染到 body，如果放在 <tr> 内会产生非法的 HTML 嵌套，
+        某些浏览器会将其自动移出，导致样式或交互异常。
+      */}
       {assets.map((asset) => (
         <Fragment key={asset.id}>
-          {/* 编辑资产 Dialog */}
+          {/* 编辑资产 Dialog：只有 editingId 匹配时才打开，避免同时渲染多个 Dialog */}
           <AssetForm
             key={`edit-${asset.id}`}
             asset={asset}
@@ -300,10 +330,10 @@ export function AssetsTable({ assets }: Props) {
             onOpenChange={(isOpen) => {
               if (!isOpen) setEditingId(null);
             }}
-            onSuccess={handleEditSuccess} // 编辑成功后刷新
+            onSuccess={handleEditSuccess}
           />
 
-          {/* 买入交易 Dialog */}
+          {/* 新增交易 Dialog */}
           <TransactionForm
             key={`tx-${asset.id}`}
             assetId={asset.id}

@@ -1,5 +1,9 @@
 "use client";
 
+// 股票/加密货币符号实时搜索组件
+// 设计模式：受控搜索框 + 防抖（Debounce）+ 服务端中转
+// 不直接调用 Finnhub，而是通过 /api/search 中转，避免暴露 API Key
+
 import { useState, useEffect, useRef } from "react";
 import { Search, Loader2 } from "lucide-react";
 import {
@@ -11,7 +15,7 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
-// Finnhub 搜索结果的类型
+// 搜索结果的数据结构（对应 /api/search 的返回格式）
 type SearchResult = {
   symbol: string;
   fullname: string;
@@ -19,9 +23,9 @@ type SearchResult = {
 };
 
 type Props = {
-  // 选中某个结果后，把数据回传给父组件
+  // 选中结果后将数据回传给父组件（data-form.tsx）
   onSelect: (result: SearchResult) => void;
-  // 用于显示当前已选的 symbol（编辑模式下）
+  // 编辑模式下预填当前已选的 symbol
   defaultValue?: string;
 };
 
@@ -31,24 +35,26 @@ export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
   const [loading, setLoading] = useState(false);
   const [open, setOpen] = useState(false);
 
-  // 用 ref 存 debounce 的 timer，避免每次渲染都重新创建
+  // 用 ref 存 timer ID，避免在 state 里存导致额外的重渲染
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
-    // 少于 1 个字符时不搜索
+    // 输入少于 1 个字符时不发请求，清空结果并关闭下拉
     if (query.trim().length < 1) {
       setResults([]);
       setOpen(false);
       return;
     }
 
-    // Debounce：用户停止输入 400ms 后才发请求，避免每输入一个字就请求一次
+    // Debounce 防抖：用户停止输入 400ms 后才真正发请求，
+    // 避免每输入一个字符就打一次 API（浪费 Finnhub 调用配额）
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(async () => {
       setLoading(true);
       try {
         const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
         const data = await res.json();
+        // 容错处理：API 异常时返回的可能不是数组，加 Array.isArray 防止 crash
         setResults(Array.isArray(data) ? data : []);
         setOpen(true);
       } catch {
@@ -58,23 +64,27 @@ export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
       }
     }, 400);
 
-    // cleanup：组件卸载或 query 变化时清除 timer
+    // Effect cleanup：组件卸载或 query 再次变化时，取消尚未触发的请求
     return () => {
       if (timerRef.current) clearTimeout(timerRef.current);
     };
   }, [query]);
 
   function handleSelect(result: SearchResult) {
-    setQuery(result.symbol); // 选中后输入框显示 symbol
+    setQuery(result.symbol); // 选中后输入框显示 symbol 而非 fullname
     setOpen(false);
-    onSelect(result); // 回传给父组件
+    onSelect(result); // 通知父组件同步填充其他表单字段
   }
 
   return (
     <div className="relative">
+      {/*
+        shouldFilter=false：禁用 Command 的内置本地过滤，
+        因为我们的过滤由服务端（Finnhub）完成，本地再过滤会导致结果被误删
+      */}
       <Command className="border rounded-md" shouldFilter={false}>
-        {/* shouldFilter=false：关闭 Command 的本地过滤，因为我们用服务端搜索 */}
         <div className="flex items-center px-3">
+          {/* 搜索中显示 loading 动画，否则显示搜索图标，提供即时反馈 */}
           {loading ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin text-muted-foreground" />
           ) : (
@@ -88,7 +98,7 @@ export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
           />
         </div>
 
-        {/* 只在有搜索词时显示下拉列表 */}
+        {/* 只在有搜索词且用户已触发过搜索时才显示下拉列表 */}
         {open && (
           <CommandList>
             {results.length === 0 && !loading ? (

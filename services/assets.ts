@@ -118,7 +118,7 @@ export async function createAsset(rawData: unknown) {
     throw new Error(error.message);
   }
   // 让 Next.js 重新拉取 /assets 页面的 Server Component 数据
-  revalidatePath("/assets");
+  revalidatePath("/dashboard/assets");
 }
 
 // 删除资产
@@ -138,7 +138,7 @@ export async function deleteAsset(id: string) {
     .eq("user_id", user.id);
 
   if (error) throw new Error(error.message);
-  revalidatePath("/assets");
+  revalidatePath("/dashboard/assets");
 }
 
 // 更新资产
@@ -159,5 +159,5 @@ export async function updateAsset(id: string, rawData: unknown) {
     .eq("user_id", user.id); // 同样加 user_id 过滤，防止越权修改
 
   if (error) throw new Error(error.message);
-  revalidatePath("/assets");
+  revalidatePath("/dashboard/assets");
 }

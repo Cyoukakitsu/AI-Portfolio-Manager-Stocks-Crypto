@@ -55,7 +55,7 @@ export async function createTransaction(rawData: unknown) {
   ]);
 
   if (error) throw new Error(error.message);
-  revalidatePath("/assets");
+  revalidatePath("/dashboard/assets");
 }
 
 // 更新交易记录
@@ -79,7 +79,7 @@ export async function updateTransaction(id: string, rawData: unknown) {
     .eq("user_id", user.id);
 
   if (error) throw new Error(error.message);
-  revalidatePath("/assets");
+  revalidatePath("/dashboard/assets");
 }
 
 // 删除交易记录
@@ -98,5 +98,5 @@ export async function deleteTransaction(id: string) {
     .eq("user_id", user.id);
 
   if (error) throw new Error(error.message);
-  revalidatePath("/assets");
+  revalidatePath("/dashboard/assets");
 }

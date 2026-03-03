@@ -1,7 +1,7 @@
-import AdvancedChart from "@/components/custom/stocks/AdvancedChart";
-import MarketDataStock from "@/components/custom/stocks/MarketDataStock";
-import StockHeatmap from "@/components/custom/stocks/StockHeatmap";
-import TopStories from "@/components/custom/stocks/TopStories";
+import AdvancedChart from "@/components/custom/stocks/advanced-chart";
+import MarketDataStock from "@/components/custom/stocks/market-data-stock";
+import StockHeatmap from "@/components/custom/stocks/stock-heatmap";
+import TopStories from "@/components/custom/stocks/top-stories";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart2, Flame, Newspaper, TrendingUp } from "lucide-react";
 

@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAssets } from "@/services/assets";
 import { LayoutDashboard, TrendingUp, Bitcoin } from "lucide-react";
-import { ProfitAreaChart } from "@/components/custom/assets/Profit-area-chart";
+import { ProfitAreaChart } from "@/components/custom/assets/profit-area-chart";
 import { AllocationRadarChart } from "@/components/custom/assets/allocation-radar-chart";
 
 export default async function Assets() {

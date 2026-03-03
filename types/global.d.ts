@@ -13,7 +13,7 @@ export type Asset = {
   user_id: string;
   symbol: string;       // 交易代码，如 "AAPL"、"BTC-USD"
   fullname: string;     // 完整名称，如 "Apple Inc."
-  asset_type: string;   // 枚举值："stock" | "crypto" | "etf" | "cash"
+  asset_type: "stock" | "crypto" | "etf" | "cash";
   created_at: string;
   avg_price: number | null; // 加权平均买入价；若从未买入则为 null
   total_cost: number;       // 当前持仓总成本（买入总额 - 卖出总额）

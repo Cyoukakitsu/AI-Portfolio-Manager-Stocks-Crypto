@@ -1,16 +1,11 @@
 import { AppSidebar } from "@/components/custom/dashboard/app-sidebar";
+import { DashboardBreadcrumb } from "@/components/custom/dashboard/dashboard-breadcrumb";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
 
 export default function DashboardLayout({
   children,
@@ -27,15 +22,7 @@ export default function DashboardLayout({
             orientation="vertical"
             className="mr-2 data-[orientation=vertical]:h-4"
           />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem>
-                <BreadcrumbPage className="text-sm font-medium">
-                  Dashboard
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          <DashboardBreadcrumb />
         </header>
         <main className="flex flex-1 flex-col">{children}</main>
       </SidebarInset>

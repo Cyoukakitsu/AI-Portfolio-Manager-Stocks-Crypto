@@ -8,10 +8,10 @@
 
 import { useEffect, useRef } from "react";
 
-const usetradingview = (
+const useTradingView = (
   scriptUrl: string,
   config: Record<string, unknown>, // TradingView Widget 的配置项（通过 script.innerHTML 传入）
-  height: 600,
+  height = 600,
 ) => {
   // useRef 存储 DOM 容器引用，不会触发重渲染，是操作 DOM 的标准方式
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -41,4 +41,4 @@ const usetradingview = (
   return containerRef;
 };
 
-export default usetradingview;
+export default useTradingView;

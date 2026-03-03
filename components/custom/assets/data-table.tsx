@@ -30,6 +30,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   MoreHorizontal,
   ChevronDown,
   ChevronUp,
@@ -64,6 +74,13 @@ export function AssetsTable({ assets }: Props) {
   >({});
   // loadingId：正在拉取交易记录的资产 ID（用于显示 Loading 状态）
   const [loadingId, setLoadingId] = useState<string | null>(null);
+  // deletingAssetId：待确认删除的资产 ID，不为 null 时弹出确认对话框
+  const [deletingAssetId, setDeletingAssetId] = useState<string | null>(null);
+  // deletingTx：待确认删除的交易记录，不为 null 时弹出确认对话框
+  const [deletingTx, setDeletingTx] = useState<{
+    id: string;
+    assetId: string;
+  } | null>(null);
 
   // 展开/收起某一行：点同一行为收起，点另一行为切换展开
   // 懒加载：只在首次展开时才请求交易数据，已缓存的不重复请求
@@ -84,6 +101,7 @@ export function AssetsTable({ assets }: Props) {
       // 用函数式更新合并进现有缓存，而不是覆盖整个 map
       setTransactionsMap((prev) => ({ ...prev, [assetId]: data }));
     } catch {
+      toast.error("Failed to load transactions");
     } finally {
       setLoadingId(null);
     }
@@ -102,27 +120,31 @@ export function AssetsTable({ assets }: Props) {
     router.refresh();
   }
 
-  async function handleDelete(id: string) {
-    if (!confirm("Are you sure you want to delete this asset?")) return;
+  // 确认删除资产：由 AlertDialog 的 Action 按钮触发
+  async function confirmDeleteAsset() {
+    if (!deletingAssetId) return;
     try {
-      await deleteAsset(id);
+      await deleteAsset(deletingAssetId);
       router.refresh();
-    } catch {}
+    } catch {
+      toast.error("Failed to delete asset");
+    } finally {
+      setDeletingAssetId(null);
+    }
   }
 
-  // 删除交易后：立即重新拉取该资产的交易列表，保证展开区域数据准确
-  async function handleDeleteTransaction(
-    transactionId: string,
-    assetId: string,
-  ) {
-    if (!confirm("Are you sure you want to delete this transaction?")) return;
+  // 确认删除交易：由 AlertDialog 的 Action 按钮触发
+  async function confirmDeleteTransaction() {
+    if (!deletingTx) return;
     try {
-      await deleteTransaction(transactionId);
-      const data = await getTransactions(assetId);
-      setTransactionsMap((prev) => ({ ...prev, [assetId]: data }));
+      await deleteTransaction(deletingTx.id);
+      const data = await getTransactions(deletingTx.assetId);
+      setTransactionsMap((prev) => ({ ...prev, [deletingTx.assetId]: data }));
       toast.success("Transaction deleted");
     } catch {
       toast.error("Failed to delete transaction");
+    } finally {
+      setDeletingTx(null);
     }
   }
 
@@ -158,7 +180,7 @@ export function AssetsTable({ assets }: Props) {
           {assets.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={5}
+                colSpan={6}
                 className="text-center text-muted-foreground"
               >
                 No data
@@ -218,7 +240,7 @@ export function AssetsTable({ assets }: Props) {
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           className="text-destructive"
-                          onClick={() => handleDelete(asset.id)}
+                          onClick={() => setDeletingAssetId(asset.id)}
                         >
                           <Trash2 className="w-4 h-4 mr-2" />
                           Delete Asset
@@ -287,7 +309,10 @@ export function AssetsTable({ assets }: Props) {
                                     size="icon"
                                     className="text-destructive hover:text-destructive"
                                     onClick={() =>
-                                      handleDeleteTransaction(tx.id, asset.id)
+                                      setDeletingTx({
+                                        id: tx.id,
+                                        assetId: asset.id,
+                                      })
                                     }
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -345,6 +370,60 @@ export function AssetsTable({ assets }: Props) {
           />
         </Fragment>
       ))}
+
+      {/* 删除资产确认对话框 */}
+      <AlertDialog
+        open={deletingAssetId !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeletingAssetId(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Asset</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete the asset and all its transaction
+              history. This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={confirmDeleteAsset}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* 删除交易确认对话框 */}
+      <AlertDialog
+        open={deletingTx !== null}
+        onOpenChange={(open) => {
+          if (!open) setDeletingTx(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Transaction</AlertDialogTitle>
+            <AlertDialogDescription>
+              This will permanently delete this transaction record. This action
+              cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={confirmDeleteTransaction}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }

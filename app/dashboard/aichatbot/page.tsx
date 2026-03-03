@@ -3,6 +3,8 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 
 export default function Chat() {
   const [input, setInput] = useState("");
@@ -58,20 +60,20 @@ export default function Chat() {
         }}
         className="flex gap-3"
       >
-        <input
-          className="flex-1 border border-zinc-300 dark:border-zinc-700 rounded-3xl px-6 py-4 text-lg focus:outline-none focus:border-black"
+        <Input
+          className="flex-1 rounded-3xl px-6 py-4 text-lg"
           value={input}
           placeholder="Ask me anything..."
           onChange={(e) => setInput(e.target.value)}
           disabled={isLoading}
         />
-        <button
+        <Button
           type="submit"
           disabled={isLoading || !input.trim()}
-          className="bg-black text-white px-8 rounded-3xl hover:bg-zinc-800 disabled:opacity-50 text-lg"
+          className="rounded-3xl px-8 text-lg"
         >
           Send
-        </button>
+        </Button>
       </form>
     </div>
   );

@@ -4,7 +4,7 @@
 //
 // 核心交互：
 //   - 每行可展开，展开后显示该资产的历史交易记录（懒加载）
-//   - 通过 DropdownMenu 提供编辑、记录交易、删除三个操作
+//   - 每行右侧提供直接删除按钮和展开/收起按钮
 //
 // 状态管理策略：
 //   - transactionsMap 作为本地缓存，避免每次展开都重新请求
@@ -21,14 +21,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -39,14 +33,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import {
-  MoreHorizontal,
-  ChevronDown,
-  ChevronUp,
-  Plus,
-  Trash2,
-} from "lucide-react";
-import { AssetForm } from "@/components/custom/assets/data-form";
+import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { TransactionForm } from "@/components/custom/assets/transaction-form";
 import { deleteAsset } from "@/services/assets";
 import { deleteTransaction, getTransactions } from "@/services/transactions";
@@ -66,8 +53,6 @@ export function AssetsTable({ assets }: Props) {
   const [transactionOpenId, setTransactionOpenId] = useState<string | null>(
     null,
   );
-  // editingId：当前打开"编辑资产"Dialog 的资产 ID
-  const [editingId, setEditingId] = useState<string | null>(null);
   // transactionsMap：以 assetId 为 key 的交易记录缓存，避免重复请求
   const [transactionsMap, setTransactionsMap] = useState<
     Record<string, Transaction[]>
@@ -148,11 +133,6 @@ export function AssetsTable({ assets }: Props) {
     }
   }
 
-  function handleEditSuccess() {
-    // 编辑资产（symbol/name/type）只影响 Server Component 部分，触发整页刷新即可
-    router.refresh();
-  }
-
   // 根据资产类型返回 Badge 的视觉样式，使不同类型在视觉上可区分
   function getBadgeVariant(type: string) {
     const map: Record<string, "default" | "secondary" | "outline"> = {
@@ -210,43 +190,15 @@ export function AssetsTable({ assets }: Props) {
                       : "—"}
                   </TableCell>
                   <TableCell className="text-right space-x-1">
-                    {/* ⋮ 操作菜单 */}
-                    <DropdownMenu>
-                      {/*
-                        用 buttonVariants() 而非 <Button> 包裹 DropdownMenuTrigger：
-                        DropdownMenuTrigger 本身渲染 <button>，若再嵌套 <Button>（也是 <button>），
-                        会产生 <button> 内嵌 <button> 的非法 HTML，浏览器行为不可预测。
-                        buttonVariants() 只借 CSS 类名，不产生额外 DOM 元素。
-                      */}
-                      <DropdownMenuTrigger
-                        className={buttonVariants({
-                          variant: "ghost",
-                          size: "icon",
-                        })}
-                      >
-                        <MoreHorizontal className="w-4 h-4" />
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() => setEditingId(asset.id)}
-                        >
-                          Edit Asset
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => setTransactionOpenId(asset.id)}
-                        >
-                          <Plus className="w-4 h-4 mr-2" />
-                          Record Transaction
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          className="text-destructive"
-                          onClick={() => setDeletingAssetId(asset.id)}
-                        >
-                          <Trash2 className="w-4 h-4 mr-2" />
-                          Delete Asset
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
+                    {/* 删除资产按钮 */}
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="text-destructive hover:text-destructive"
+                      onClick={() => setDeletingAssetId(asset.id)}
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </Button>
 
                     {/* 展开/收起按钮：图标根据当前状态动态切换 */}
                     <Button
@@ -346,29 +298,15 @@ export function AssetsTable({ assets }: Props) {
         某些浏览器会将其自动移出，导致样式或交互异常。
       */}
       {assets.map((asset) => (
-        <Fragment key={asset.id}>
-          {/* 编辑资产 Dialog：只有 editingId 匹配时才打开，避免同时渲染多个 Dialog */}
-          <AssetForm
-            key={`edit-${asset.id}`}
-            asset={asset}
-            open={editingId === asset.id}
-            onOpenChange={(isOpen) => {
-              if (!isOpen) setEditingId(null);
-            }}
-            onSuccess={handleEditSuccess}
-          />
-
-          {/* 新增交易 Dialog */}
-          <TransactionForm
-            key={`tx-${asset.id}`}
-            assetId={asset.id}
-            open={transactionOpenId === asset.id}
-            onOpenChange={(isOpen) => {
-              if (!isOpen) setTransactionOpenId(null);
-            }}
-            onSuccess={() => handleTransactionSuccess(asset.id)}
-          />
-        </Fragment>
+        <TransactionForm
+          key={`tx-${asset.id}`}
+          assetId={asset.id}
+          open={transactionOpenId === asset.id}
+          onOpenChange={(isOpen) => {
+            if (!isOpen) setTransactionOpenId(null);
+          }}
+          onSuccess={() => handleTransactionSuccess(asset.id)}
+        />
       ))}
 
       {/* 删除资产确认对话框 */}
@@ -387,7 +325,9 @@ export function AssetsTable({ assets }: Props) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel variant="outline" size="default">
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={confirmDeleteAsset}
@@ -414,7 +354,9 @@ export function AssetsTable({ assets }: Props) {
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogCancel variant="outline" size="default">
+              Cancel
+            </AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={confirmDeleteTransaction}

@@ -1,9 +1,6 @@
 "use server";
 
 // Server Actions：处理注册 / 登录逻辑
-//
-// "use server" 标记让这些函数只在服务端执行，
-// 敏感操作（如写数据库、读环境变量）不会暴露给浏览器。
 
 import { signInSchema } from "@/lib/schemas/sign-in";
 import { signUpSchema } from "@/lib/schemas/sign-up";
@@ -67,6 +64,5 @@ export async function signIn(formatData: unknown) {
     };
   }
 
-  // redirect() 必须在 try/catch 外调用，否则 Next.js 内部抛出的跳转信号会被捕获
   redirect("/dashboard/assets");
 }

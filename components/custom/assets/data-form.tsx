@@ -33,10 +33,12 @@ import {
   FieldGroup,
 } from "@/components/ui/field";
 
+import { SymbolSearch } from "./symbol-search";
+
 import { createAsset, updateAsset } from "@/services/assets";
 import { assetSchema, type AssetFormData } from "@/lib/schemas/asset";
 import type { Asset } from "@/types/global";
-import { SymbolSearch } from "./symbol-search";
+import { CryptoSearch } from "./crypto-search";
 
 // trigger 可选：支持"由外部 open 状态控制"和"由内置触发按钮控制"两种模式
 // 这样 AssetForm 既能作为独立的"＋添加"按钮，也能被 data-table 以受控方式打开
@@ -91,14 +93,26 @@ export function AssetForm({
     }
   }, [open, asset, form]);
 
+  useEffect(() => {
+    if (currentAssetType === "cash") {
+      // 现金：直接自动填入，不需要用户再操作
+      form.setValue("symbol", "CASH", { shouldValidate: true });
+      form.setValue("fullname", "Cash", { shouldValidate: true });
+    } else {
+      // 切换到其他类型时清空，让用户重新选择
+      form.setValue("symbol", "", { shouldValidate: false });
+      form.setValue("fullname", "", { shouldValidate: false });
+    }
+  }, [currentAssetType, form]);
+
   async function onSubmit(data: AssetFormData) {
     try {
       if (asset) {
         await updateAsset(asset.id, data);
-        toast.success("资产更新成功");
+        toast.success("asset updated successfully");
       } else {
         await createAsset(data);
-        toast.success("资产添加成功");
+        toast.success("asset added successfully");
       }
 
       // 编辑模式下保留表单数据（便于用户查看修改结果），新增模式才重置
@@ -136,39 +150,7 @@ export function AssetForm({
 
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
-            <Field data-invalid={!!form.formState.errors.symbol}>
-              <FieldLabel>Symbol</FieldLabel>
-              {/* 选中搜索结果时，自动填充 symbol / fullname / asset_type 三个字段 */}
-              <SymbolSearch
-                defaultValue={asset?.symbol ?? ""}
-                onSelect={(result) => {
-                  form.setValue("symbol", result.symbol, {
-                    shouldValidate: true,
-                  });
-                  form.setValue("fullname", result.fullname, {
-                    shouldValidate: true,
-                  });
-                  const mappedType = mapFinnhubType(result.type);
-                  if (mappedType) {
-                    form.setValue("asset_type", mappedType, {
-                      shouldValidate: true,
-                    });
-                  }
-                }}
-              />
-              {form.formState.errors.symbol && (
-                <FieldError errors={[form.formState.errors.symbol]} />
-              )}
-            </Field>
-
-            {/* fullname 为只读展示区域，由 SymbolSearch 选中后自动填入，不可手动编辑 */}
-            <Field>
-              <FieldLabel>Full Name</FieldLabel>
-              <p className="text-sm px-3 py-2 border rounded-md bg-muted/30 text-muted-foreground min-h-9">
-                {fullname || "Auto-filled after selection"}
-              </p>
-            </Field>
-
+            {/* 1. asset_type */}
             <Field data-invalid={!!form.formState.errors.asset_type}>
               <FieldLabel>Asset Type</FieldLabel>
               {/* Select 不支持 register()，需要手动 setValue 以接入 react-hook-form */}
@@ -185,12 +167,12 @@ export function AssetForm({
                 }
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select type" />
+                  <SelectValue placeholder="Select an asset type please" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="crypto">Crypto</SelectItem>
                   <SelectItem value="stock">Stock</SelectItem>
                   <SelectItem value="etf">ETF</SelectItem>
+                  <SelectItem value="crypto">Crypto</SelectItem>
                   <SelectItem value="cash">Cash</SelectItem>
                 </SelectContent>
               </Select>
@@ -198,6 +180,69 @@ export function AssetForm({
                 <FieldError errors={[form.formState.errors.asset_type]} />
               )}
             </Field>
+
+            {/* 2. if not selected type, show symbol field */}
+            {!currentAssetType && (
+              <p className="text-sm text-muted-foreground text-center py-2">
+                Please select an asset type
+              </p>
+            )}
+
+            {/* 3. symbol : Display different input methods based on asset_type */}
+            {currentAssetType && currentAssetType !== "cash" && (
+              <Field data-invalid={!!form.formState.errors.symbol}>
+                <FieldLabel>Symbol</FieldLabel>
+
+                {/* Stock / ETF：调用 Finnhub 搜索 */}
+                {(currentAssetType === "stock" ||
+                  currentAssetType === "etf") && (
+                  <SymbolSearch
+                    defaultValue={asset?.symbol ?? ""}
+                    onSelect={(result) => {
+                      form.setValue("symbol", result.symbol, {
+                        shouldValidate: true,
+                      });
+                      form.setValue("fullname", result.fullname, {
+                        shouldValidate: true,
+                      });
+                      const mappedType = mapFinnhubType(result.type);
+                      if (mappedType) {
+                        form.setValue("asset_type", mappedType, {
+                          shouldValidate: true,
+                        });
+                      }
+                    }}
+                  />
+                )}
+                {currentAssetType === "crypto" && (
+                  <CryptoSearch
+                    defaultValue={asset?.symbol ?? ""}
+                    onSelect={(result) => {
+                      form.setValue("symbol", result.symbol, {
+                        shouldValidate: true,
+                      });
+                      form.setValue("fullname", result.fullname, {
+                        shouldValidate: true,
+                      });
+                    }}
+                  />
+                )}
+
+                {form.formState.errors.symbol && (
+                  <FieldError errors={[form.formState.errors.symbol]} />
+                )}
+              </Field>
+            )}
+
+            {/* 4. Full Name：只读显示，由搜索结果自动填入，Cash 类型不显示 */}
+            {currentAssetType && currentAssetType !== "cash" && (
+              <Field>
+                <FieldLabel>Full Name</FieldLabel>
+                <p className="text-sm px-3 py-2 border rounded-md bg-muted/30 text-muted-foreground min-h-9">
+                  {fullname || "Auto-filled after selection"}
+                </p>
+              </Field>
+            )}
 
             <div className="flex justify-end gap-2 pt-2">
               <Button
@@ -207,7 +252,6 @@ export function AssetForm({
               >
                 Cancel
               </Button>
-              {/* isSubmitting 期间禁用按钮，防止用户重复提交 */}
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting
                   ? "Processing..."

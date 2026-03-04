@@ -31,8 +31,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
 const SignInForm = () => {
-  // zodResolver 将 Zod schema 接入 react-hook-form，
-  // 使 handleSubmit 自动在提交前运行校验，errors 对象自动填充错误信息
   const {
     register,
     handleSubmit,

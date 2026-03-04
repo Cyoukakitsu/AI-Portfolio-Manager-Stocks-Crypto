@@ -31,11 +31,11 @@ import { Input } from "@/components/ui/input";
 
 const SignUpForm = () => {
   const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
+    register, // 绑定表单输入框的方法
+    handleSubmit, // 处理表单提交的方法（自动触发校验）
+    formState: { errors, isSubmitting }, // 表单状态：校验错误、是否正在提交
   } = useForm<SignUpFormValues>({
-    resolver: zodResolver(signUpSchema),
+    resolver: zodResolver(signUpSchema), // 关键：让 React Hook Form 用 Zod 做校验
     defaultValues: {
       name: "",
       email: "",
@@ -44,18 +44,22 @@ const SignUpForm = () => {
     },
   });
 
+  // 初始化路由（用于注册成功后跳转）
   const router = useRouter();
 
   // 注册成功后跳转到登录页，而非直接登录，
   // 原因：Supabase 默认需要邮件验证，跳转到登录页更符合此流程
   const onSubmit = async (data: SignUpFormValues) => {
+    // 调用服务端 signUp 函数，传入前端校验后的表单数据
     const result = await signUp(data);
+
     if (result.error) {
       // Server Action 返回的 error 可能是字符串或对象，统一处理
       alert(
         typeof result.error === "string" ? result.error : "Validation failed",
       );
     } else {
+      // 注册成功：跳转到登录页
       router.push("/sign-in");
     }
   };

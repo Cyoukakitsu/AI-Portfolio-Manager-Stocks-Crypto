@@ -4,6 +4,7 @@ import Image from "next/image";
 const Home = () => {
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-muted gap-8">
+      {/* 标题区域 */}
       <Image
         src="/header-icon.svg"
         alt="Logo"
@@ -19,6 +20,8 @@ const Home = () => {
           Track your stocks and crypto with AI-powered insights.
         </p>
       </div>
+
+      {/* 按钮区域 */}
       <div className="flex gap-4">
         <Link
           href="/sign-in"

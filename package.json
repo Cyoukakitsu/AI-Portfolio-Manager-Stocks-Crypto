@@ -9,9 +9,11 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/openai": "^3.0.41",
     "@ai-sdk/react": "^3.0.107",
     "@base-ui/react": "^1.1.0",
     "@hookform/resolvers": "^5.2.2",
+    "@openrouter/ai-sdk-provider": "^2.2.3",
     "@phosphor-icons/react": "^2.1.10",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
@@ -25,6 +27,7 @@
     "lucide-react": "^0.563.0",
     "next": "16.1.6",
     "next-themes": "^0.4.6",
+    "openai": "^6.25.0",
     "react": "19.2.3",
     "react-day-picker": "^9.13.1",
     "react-dom": "19.2.3",

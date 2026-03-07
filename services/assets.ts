@@ -46,33 +46,54 @@ export async function getAssets() {
       type: string;
     }[];
 
-    const buyTx = transactions.filter(
+    //从所有交易记录中分离出买入和卖出两组
+    //买入组
+    const buyTransactions = transactions.filter(
       (tx: { type: string }) => tx.type === "buy",
     );
-    const sellTx = transactions.filter(
+    //卖出组
+    const sellTransactions = transactions.filter(
       (tx: { type: string }) => tx.type === "sell",
     );
 
-    // 加权平均价 = 所有买入订单的总成本 / 总买入数量
-    const totalCost = buyTx.reduce(
+    // 买入总花费 = 每笔买入的（单价 × 数量）累加
+    const totalBuyCost = buyTransactions.reduce(
       (sum: number, tx: { price: number; quantity: number }) =>
         sum + tx.price * tx.quantity,
       0,
     );
-    const totalQty = buyTx.reduce(
+    //买入总数量 = 所有买入笔数的股数累加
+    const totalBuyQty = buyTransactions.reduce(
       (sum: number, tx: { quantity: number }) => sum + tx.quantity,
       0,
     );
-    // 边界条件：未买入过时 avg_price 返回 null，而非 NaN（0/0 的结果）
-    const avg_price = totalQty > 0 ? totalCost / totalQty : null;
-
-    const totalSellCost = sellTx.reduce(
-      (sum, tx) => sum + tx.price * tx.quantity,
+    //卖出总金额 = 每笔卖出的（单价 × 数量）累加
+    const totalSellCost = sellTransactions.reduce(
+      (sum: number, tx: { price: number; quantity: number }) =>
+        sum + tx.price * tx.quantity,
+      0,
+    );
+    // 卖出总数量 = 所有卖出笔数的股数累加
+    const totalSellQty = sellTransactions.reduce(
+      (sum: number, tx: { quantity: number }) => sum + tx.quantity,
       0,
     );
 
-    // 持仓成本 = 买入总花费 - 卖出所得；代表当前仍锁定在该资产中的资金
-    const total_cost = totalCost - totalSellCost;
+    // 净持仓数量 = 买入总量 - 卖出总量（当前手上还剩几股）
+    const netQty = totalBuyQty - totalSellQty;
+
+    // 净成本 = 买入总花费 - 卖出总回收（当前仍押注在该资产上的资金）
+    const netCost = totalBuyCost - totalSellCost;
+
+    // 持仓均价 = 净成本 / 净持仓数量
+    // netQty <= 0 代表已全部卖出，返回 null 而非 NaN
+    const avg_price = netQty > 0 ? netCost / netQty : null;
+
+    // total_cost 与 netCost 相同，单独赋值是为了与 Asset 类型字段名保持一致
+    const total_cost = netCost;
+
+    // total_quantity：当前净持仓数量，供前端直接显示
+    const total_quantity = netQty;
 
     return {
       id: asset.id,
@@ -83,6 +104,7 @@ export async function getAssets() {
       created_at: asset.created_at,
       avg_price,
       total_cost,
+      total_quantity,
     };
   });
 

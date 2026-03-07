@@ -52,7 +52,9 @@ export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
     timerRef.current = setTimeout(async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+        const res = await fetch(
+          `/api/finnhub/search?q=${encodeURIComponent(query)}`,
+        );
         const data = await res.json();
         // 容错处理：API 异常时返回的可能不是数组，加 Array.isArray 防止 crash
         setResults(Array.isArray(data) ? data : []);

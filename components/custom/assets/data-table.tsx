@@ -11,7 +11,7 @@
 //   - 删除/新增交易后主动清除缓存并重新拉取，保证数据准确
 //   - router.refresh() 通知 Next.js 重新渲染 Server Component（如资产总览统计）
 
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   Table,
@@ -66,6 +66,37 @@ export function AssetsTable({ assets }: Props) {
     id: string;
     assetId: string;
   } | null>(null);
+
+  const [currentPrices, setCurrentPrices] = useState<
+    Record<string, number | null>
+  >({});
+
+  // 控制哪个资产的 SellDialog 打开
+
+  // 组件挂载时批量拉取所有资产的当前价格
+  // Promise.all 让所有请求并行发出，速度更快
+  useEffect(() => {
+    async function fetchAllPrices() {
+      const entries = await Promise.all(
+        assets.map(async (asset) => {
+          try {
+            const res = await fetch(
+              `/api/finnhub/quote?symbol=${asset.symbol}`,
+            );
+            const data = await res.json();
+            return [asset.symbol, data.price] as [string, number | null];
+          } catch {
+            // 单个请求失败不影响其他资产，降级显示 null
+            return [asset.symbol, null] as [string, null];
+          }
+        }),
+      );
+      // Object.fromEntries 把 [["AAPL", 182.5], ...] 转成 { AAPL: 182.5, ... }
+      setCurrentPrices(Object.fromEntries(entries));
+    }
+
+    if (assets.length > 0) fetchAllPrices();
+  }, [assets]);
 
   // 展开/收起某一行：点同一行为收起，点另一行为切换展开
   // 懒加载：只在首次展开时才请求交易数据，已缓存的不重复请求
@@ -152,7 +183,9 @@ export function AssetsTable({ assets }: Props) {
             <TableHead>Full Name</TableHead>
             <TableHead>Type</TableHead>
             <TableHead>Created At</TableHead>
+            <TableHead>Holding Quantity</TableHead>
             <TableHead>Avg Price</TableHead>
+            <TableHead>Holding Price</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
         </TableHeader>
@@ -160,7 +193,7 @@ export function AssetsTable({ assets }: Props) {
           {assets.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={6}
+                colSpan={8}
                 className="text-center text-muted-foreground"
               >
                 No data
@@ -184,10 +217,20 @@ export function AssetsTable({ assets }: Props) {
                     {new Date(asset.created_at).toLocaleDateString("en-US")}
                   </TableCell>
                   <TableCell>
+                    {asset.total_quantity > 0 ? asset.total_quantity : "—"}
+                  </TableCell>
+                  <TableCell>
                     {/* avg_price 为 null 说明还没有买入记录，显示破折号 */}
                     {asset.avg_price != null
                       ? `$${asset.avg_price.toFixed(2)}`
                       : "—"}
+                  </TableCell>
+                  <TableCell>
+                    {asset.symbol in currentPrices
+                      ? currentPrices[asset.symbol] != null
+                        ? `$${currentPrices[asset.symbol]!.toFixed(2)}`
+                        : "—"
+                      : "Loading..."}
                   </TableCell>
                   <TableCell className="text-right space-x-1">
                     {/* 删除资产按钮 */}
@@ -218,7 +261,7 @@ export function AssetsTable({ assets }: Props) {
                 {/* 展开行：显示该资产的交易历史，跨满所有列 */}
                 {expandedId === asset.id && (
                   <TableRow key={`${asset.id}-expanded`}>
-                    <TableCell colSpan={6} className="bg-muted/30 p-4">
+                    <TableCell colSpan={8} className="bg-muted/30 p-4">
                       {loadingId === asset.id ? (
                         <p className="text-sm text-muted-foreground">
                           Loading...

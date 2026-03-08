@@ -1,51 +1,39 @@
 "use client";
 
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import { useEffect, useState } from "react";
-import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Moon, Sun, Palette } from "lucide-react";
-
-const themes = [
-  { value: "default", label: "暖橙色", icon: Palette },
-  { value: "white", label: "纯白色", icon: Sun },
-  { value: "dark", label: "暗色", icon: Moon },
-] as const;
 
 export function ModeToggle() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
-  const current = themes.find((t) => t.value === theme) ?? themes[0];
-  const Icon = mounted ? current.icon : Palette;
+  const { setTheme } = useTheme();
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="icon" aria-label="切换主题">
-          <Icon className="h-4 w-4" />
-        </Button>
+      {/* Base UI 版：直接在 Trigger 上写样式，不用 asChild */}
+      <DropdownMenuTrigger
+        className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors relative"
+        aria-label="切换主题"
+      >
+        {/* 两个图标同时渲染，用 CSS 控制显隐，完全不需要 mounted */}
+        <Sun className="h-4 w-4 scale-100 dark:scale-0 transition-all" />
+        <Moon className="absolute h-4 w-4 scale-0 dark:scale-100 transition-all" />
       </DropdownMenuTrigger>
+
       <DropdownMenuContent align="end">
-        {themes.map(({ value, label, icon: ThemeIcon }) => (
-          <DropdownMenuItem
-            key={value}
-            onClick={() => setTheme(value)}
-            className={theme === value ? "bg-accent" : ""}
-          >
-            <ThemeIcon className="mr-2 h-4 w-4" />
-            {label}
-          </DropdownMenuItem>
-        ))}
+        <DropdownMenuItem onClick={() => setTheme("default")}>
+          default
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("white")}>
+          while
+        </DropdownMenuItem>
+        <DropdownMenuItem onClick={() => setTheme("dark")}>
+          dark
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

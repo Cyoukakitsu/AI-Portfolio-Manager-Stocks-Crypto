@@ -29,7 +29,7 @@ export function ModeToggle() {
           default
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("white")}>
-          while
+          white
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
           dark

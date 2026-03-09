@@ -71,8 +71,6 @@ export function AssetsTable({ assets }: Props) {
     Record<string, number | null>
   >({});
 
-  // 控制哪个资产的 SellDialog 打开
-
   // 组件挂载时批量拉取所有资产的当前价格
   // Promise.all 让所有请求并行发出，速度更快
   useEffect(() => {

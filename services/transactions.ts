@@ -9,7 +9,10 @@
 import type { Transaction } from "@/types/global";
 import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
-import { transactionSchema, updateTransactionSchema } from "@/lib/schemas/transaction";
+import {
+  transactionSchema,
+  updateTransactionSchema,
+} from "@/lib/schemas/transaction";
 
 // 查询某个资产下当前用户的所有交易记录
 export async function getTransactions(assetId: string) {
@@ -99,4 +102,25 @@ export async function deleteTransaction(id: string) {
 
   if (error) throw new Error(error.message);
   revalidatePath("/dashboard/assets");
+}
+
+// 查询当前用户所有资产的全部交易记录
+// 用于 Dashboard 图表：需要重建每天的持仓状态和成本基础
+export async function getAllTransactions() {
+  const supabase = await createClient();
+
+  // 从服务端 session 获取当前用户，而非信任客户端传参
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) throw new Error("User not found");
+
+  const { data, error } = await supabase
+    .from("transactions")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("traded_at", { ascending: true }); // 升序：从最早的交易开始，方便后续按日期重建持仓
+
+  if (error) throw new Error(error.message);
+  return data as Transaction[];
 }

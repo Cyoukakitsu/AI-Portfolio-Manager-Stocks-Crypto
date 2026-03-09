@@ -6,6 +6,7 @@ import { getAssets } from "@/services/assets";
 import { LayoutDashboard, TrendingUp, Bitcoin } from "lucide-react";
 import { ProfitAreaChart } from "@/components/custom/assets/profit-area-chart";
 import { AllocationRadarChart } from "@/components/custom/assets/allocation-radar-chart";
+import { getAllTransactions } from "@/services/transactions";
 
 export default async function Assets() {
   const assets = await getAssets();
@@ -14,6 +15,8 @@ export default async function Assets() {
   const total = list.length;
   const stockCount = list.filter((a) => a.asset_type === "stock").length;
   const cryptoCount = list.filter((a) => a.asset_type === "crypto").length;
+
+  const allTransactions = await getAllTransactions();
 
   return (
     <div className="flex flex-1 flex-col gap-6 p-6">
@@ -67,7 +70,7 @@ export default async function Assets() {
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="md:col-span-2">
-          <ProfitAreaChart />
+          <ProfitAreaChart assets={list} allTransactions={allTransactions} />
         </div>
         <div className="md:col-span-1">
           <AllocationRadarChart assets={list} />

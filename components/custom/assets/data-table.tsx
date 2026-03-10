@@ -6,13 +6,9 @@
 //   - 每行可展开，展开后显示该资产的历史交易记录（懒加载）
 //   - 每行右侧提供直接删除按钮和展开/收起按钮
 //
-// 状态管理策略：
-//   - transactionsMap 作为本地缓存，避免每次展开都重新请求
-//   - 删除/新增交易后主动清除缓存并重新拉取，保证数据准确
-//   - router.refresh() 通知 Next.js 重新渲染 Server Component（如资产总览统计）
+// 状态管理策略见 hooks/useAssetsTable.ts
 
-import { Fragment, useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { Fragment } from "react";
 import {
   Table,
   TableBody,
@@ -35,142 +31,39 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { TransactionForm } from "@/components/custom/assets/transaction-form";
-import { deleteAsset } from "@/services/assets";
-import { deleteTransaction, getTransactions } from "@/services/transactions";
-import type { Asset, Transaction } from "@/types/global";
-import { toast } from "sonner";
+import type { Asset } from "@/types/global";
+import { useAssetsTable } from "@/hooks/useAssetsTable";
 
 type Props = {
   assets: Asset[];
 };
 
+function getBadgeVariant(type: string): "default" | "secondary" | "outline" {
+  const map: Record<string, "default" | "secondary" | "outline"> = {
+    crypto: "default",
+    stock: "secondary",
+    etf: "outline",
+  };
+  return map[type] ?? "outline";
+}
+
 export function AssetsTable({ assets }: Props) {
-  const router = useRouter();
-
-  // expandedId：当前展开的资产 ID（同时只能展开一行）
-  const [expandedId, setExpandedId] = useState<string | null>(null);
-  // transactionOpenId：当前打开"记录交易"Dialog 的资产 ID
-  const [transactionOpenId, setTransactionOpenId] = useState<string | null>(
-    null,
-  );
-  // transactionsMap：以 assetId 为 key 的交易记录缓存，避免重复请求
-  const [transactionsMap, setTransactionsMap] = useState<
-    Record<string, Transaction[]>
-  >({});
-  // loadingId：正在拉取交易记录的资产 ID（用于显示 Loading 状态）
-  const [loadingId, setLoadingId] = useState<string | null>(null);
-  // deletingAssetId：待确认删除的资产 ID，不为 null 时弹出确认对话框
-  const [deletingAssetId, setDeletingAssetId] = useState<string | null>(null);
-  // deletingTx：待确认删除的交易记录，不为 null 时弹出确认对话框
-  const [deletingTx, setDeletingTx] = useState<{
-    id: string;
-    assetId: string;
-  } | null>(null);
-
-  const [currentPrices, setCurrentPrices] = useState<
-    Record<string, number | null>
-  >({});
-
-  // 组件挂载时批量拉取所有资产的当前价格
-  // Promise.all 让所有请求并行发出，速度更快
-  useEffect(() => {
-    async function fetchAllPrices() {
-      const entries = await Promise.all(
-        assets.map(async (asset) => {
-          try {
-            const res = await fetch(
-              `/api/finnhub/quote?symbol=${asset.symbol}`,
-            );
-            const data = await res.json();
-            return [asset.symbol, data.price] as [string, number | null];
-          } catch {
-            // 单个请求失败不影响其他资产，降级显示 null
-            return [asset.symbol, null] as [string, null];
-          }
-        }),
-      );
-      // Object.fromEntries 把 [["AAPL", 182.5], ...] 转成 { AAPL: 182.5, ... }
-      setCurrentPrices(Object.fromEntries(entries));
-    }
-
-    if (assets.length > 0) fetchAllPrices();
-  }, [assets]);
-
-  // 展开/收起某一行：点同一行为收起，点另一行为切换展开
-  // 懒加载：只在首次展开时才请求交易数据，已缓存的不重复请求
-  async function handleExpand(assetId: string) {
-    if (expandedId === assetId) {
-      setExpandedId(null);
-      return;
-    }
-
-    setExpandedId(assetId);
-
-    // 命中缓存则跳过请求
-    if (transactionsMap[assetId]) return;
-
-    setLoadingId(assetId);
-    try {
-      const data = await getTransactions(assetId);
-      // 用函数式更新合并进现有缓存，而不是覆盖整个 map
-      setTransactionsMap((prev) => ({ ...prev, [assetId]: data }));
-    } catch {
-      toast.error("Failed to load transactions");
-    } finally {
-      setLoadingId(null);
-    }
-  }
-
-  // 交易新增成功后：刷新该资产的交易缓存 + 通知 Server Component 更新
-  async function handleTransactionSuccess(assetId: string) {
-    try {
-      const data = await getTransactions(assetId);
-      setTransactionsMap((prev) => ({ ...prev, [assetId]: data }));
-    } catch {
-      toast.error("Failed to add transaction, please try again");
-    }
-    // router.refresh() 让 Next.js 重新请求 Server Component 数据，
-    // 更新资产列表中显示的 avg_price 和 total_cost
-    router.refresh();
-  }
-
-  // 确认删除资产：由 AlertDialog 的 Action 按钮触发
-  async function confirmDeleteAsset() {
-    if (!deletingAssetId) return;
-    try {
-      await deleteAsset(deletingAssetId);
-      router.refresh();
-    } catch {
-      toast.error("Failed to delete asset");
-    } finally {
-      setDeletingAssetId(null);
-    }
-  }
-
-  // 确认删除交易：由 AlertDialog 的 Action 按钮触发
-  async function confirmDeleteTransaction() {
-    if (!deletingTx) return;
-    try {
-      await deleteTransaction(deletingTx.id);
-      const data = await getTransactions(deletingTx.assetId);
-      setTransactionsMap((prev) => ({ ...prev, [deletingTx.assetId]: data }));
-      toast.success("Transaction deleted");
-    } catch {
-      toast.error("Failed to delete transaction");
-    } finally {
-      setDeletingTx(null);
-    }
-  }
-
-  // 根据资产类型返回 Badge 的视觉样式，使不同类型在视觉上可区分
-  function getBadgeVariant(type: string) {
-    const map: Record<string, "default" | "secondary" | "outline"> = {
-      crypto: "default",
-      stock: "secondary",
-      etf: "outline",
-    };
-    return map[type] ?? "outline"; // 未知类型降级为 outline
-  }
+  const {
+    expandedId,
+    handleExpand,
+    transactionOpenId,
+    setTransactionOpenId,
+    handleTransactionSuccess,
+    transactionsMap,
+    loadingId,
+    deletingAssetId,
+    setDeletingAssetId,
+    confirmDeleteAsset,
+    deletingTx,
+    setDeletingTx,
+    confirmDeleteTransaction,
+    currentPrices,
+  } = useAssetsTable({ assets });
 
   return (
     <>
@@ -218,7 +111,6 @@ export function AssetsTable({ assets }: Props) {
                     {asset.total_quantity > 0 ? asset.total_quantity : "—"}
                   </TableCell>
                   <TableCell>
-                    {/* avg_price 为 null 说明还没有买入记录，显示破折号 */}
                     {asset.avg_price != null
                       ? `$${asset.avg_price.toFixed(2)}`
                       : "—"}
@@ -231,7 +123,6 @@ export function AssetsTable({ assets }: Props) {
                       : "Loading..."}
                   </TableCell>
                   <TableCell className="text-right space-x-1">
-                    {/* 删除资产按钮 */}
                     <Button
                       variant="ghost"
                       size="icon"
@@ -241,7 +132,6 @@ export function AssetsTable({ assets }: Props) {
                       <Trash2 className="w-4 h-4" />
                     </Button>
 
-                    {/* 展开/收起按钮：图标根据当前状态动态切换 */}
                     <Button
                       variant="ghost"
                       size="icon"
@@ -288,9 +178,7 @@ export function AssetsTable({ assets }: Props) {
                                 <TableCell>
                                   <Badge
                                     variant={
-                                      tx.type === "buy"
-                                        ? "default"
-                                        : "secondary"
+                                      tx.type === "buy" ? "default" : "secondary"
                                     }
                                   >
                                     {tx.type === "buy" ? "Buy" : "Sell"}
@@ -302,10 +190,7 @@ export function AssetsTable({ assets }: Props) {
                                     size="icon"
                                     className="text-destructive hover:text-destructive"
                                     onClick={() =>
-                                      setDeletingTx({
-                                        id: tx.id,
-                                        assetId: asset.id,
-                                      })
+                                      setDeletingTx({ id: tx.id, assetId: asset.id })
                                     }
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -335,8 +220,7 @@ export function AssetsTable({ assets }: Props) {
 
       {/*
         Dialog 渲染在 Table 外部，而非 TableRow 内部。
-        原因：Dialog 通常使用 Portal 渲染到 body，如果放在 <tr> 内会产生非法的 HTML 嵌套，
-        某些浏览器会将其自动移出，导致样式或交互异常。
+        原因：Dialog 通常使用 Portal 渲染到 body，如果放在 <tr> 内会产生非法的 HTML 嵌套。
       */}
       {assets.map((asset) => (
         <TransactionForm
@@ -369,10 +253,7 @@ export function AssetsTable({ assets }: Props) {
             <AlertDialogCancel variant="outline" size="default">
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={confirmDeleteAsset}
-            >
+            <AlertDialogAction variant="destructive" onClick={confirmDeleteAsset}>
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

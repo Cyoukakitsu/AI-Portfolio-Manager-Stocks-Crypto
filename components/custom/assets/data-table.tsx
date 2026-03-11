@@ -32,12 +32,13 @@ import {
 import { ChevronDown, ChevronUp, Plus, Trash2 } from "lucide-react";
 import { TransactionForm } from "@/components/custom/assets/transaction-form";
 import type { Asset } from "@/types/global";
-import { useAssetsTable } from "@/hooks/useAssetsTable";
+import { useAssetsTable } from "@/hooks/assetsHooks/useAssetsTable";
 
 type Props = {
   assets: Asset[];
 };
 
+// 根据资产类型返回对应的 Badge 样式
 function getBadgeVariant(type: string): "default" | "secondary" | "outline" {
   const map: Record<string, "default" | "secondary" | "outline"> = {
     crypto: "default",
@@ -62,7 +63,7 @@ export function AssetsTable({ assets }: Props) {
     deletingTx,
     setDeletingTx,
     confirmDeleteTransaction,
-    currentPrices,
+    currentPrices, // 各资产实时价格，key 为 symbol
   } = useAssetsTable({ assets });
 
   return (
@@ -77,11 +78,12 @@ export function AssetsTable({ assets }: Props) {
             <TableHead>Holding Quantity</TableHead>
             <TableHead>Avg Price</TableHead>
             <TableHead>Holding Price</TableHead>
-            <TableHead className="text-right">Actions</TableHead>
+            <TableHead>return %</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {assets.length === 0 ? (
+            // 空状态：无资产时显示占位提示
             <TableRow>
               <TableCell
                 colSpan={8}
@@ -107,14 +109,17 @@ export function AssetsTable({ assets }: Props) {
                   <TableCell>
                     {new Date(asset.created_at).toLocaleDateString("en-US")}
                   </TableCell>
+                  {/* 持仓数量：无持仓时显示 — */}
                   <TableCell>
                     {asset.total_quantity > 0 ? asset.total_quantity : "—"}
                   </TableCell>
+                  {/* 平均持仓价格 */}
                   <TableCell>
                     {asset.avg_price != null
                       ? `$${asset.avg_price.toFixed(2)}`
                       : "—"}
                   </TableCell>
+                  {/* 实时市场价格：未加载完成时显示 Loading... */}
                   <TableCell>
                     {asset.symbol in currentPrices
                       ? currentPrices[asset.symbol] != null
@@ -122,6 +127,33 @@ export function AssetsTable({ assets }: Props) {
                         : "—"
                       : "Loading..."}
                   </TableCell>
+                  {/* 收益率：(市场价格 - 均价) / 均价 * 100，正值绿色，负值红色 */}
+                  <TableCell>
+                    {(() => {
+                      const price = currentPrices[asset.symbol];
+                      if (
+                        price === null ||
+                        asset.avg_price === null ||
+                        asset.avg_price === 0
+                      )
+                        return "—";
+                      const assetReturn =
+                        ((price - asset.avg_price) / asset.avg_price) * 100;
+                      return (
+                        <span
+                          className={
+                            assetReturn >= 0
+                              ? "text-green-500 dark:text-green-400"
+                              : "text-red-500 dark:text-red-400"
+                          }
+                        >
+                          {assetReturn >= 0 ? "+" : ""}
+                          {assetReturn.toFixed(2)}%
+                        </span>
+                      );
+                    })()}
+                  </TableCell>
+                  {/* 操作列：删除资产 + 展开/收起交易记录 */}
                   <TableCell className="text-right space-x-1">
                     <Button
                       variant="ghost"
@@ -151,14 +183,17 @@ export function AssetsTable({ assets }: Props) {
                   <TableRow key={`${asset.id}-expanded`}>
                     <TableCell colSpan={8} className="bg-muted/30 p-4">
                       {loadingId === asset.id ? (
+                        // 交易记录加载中
                         <p className="text-sm text-muted-foreground">
                           Loading...
                         </p>
                       ) : transactionsMap[asset.id]?.length === 0 ? (
+                        // 暂无交易记录
                         <p className="text-sm text-muted-foreground">
                           No transactions yet
                         </p>
                       ) : (
+                        // 交易记录列表
                         <Table>
                           <TableHeader>
                             <TableRow>
@@ -178,7 +213,9 @@ export function AssetsTable({ assets }: Props) {
                                 <TableCell>
                                   <Badge
                                     variant={
-                                      tx.type === "buy" ? "default" : "secondary"
+                                      tx.type === "buy"
+                                        ? "default"
+                                        : "secondary"
                                     }
                                   >
                                     {tx.type === "buy" ? "Buy" : "Sell"}
@@ -190,7 +227,10 @@ export function AssetsTable({ assets }: Props) {
                                     size="icon"
                                     className="text-destructive hover:text-destructive"
                                     onClick={() =>
-                                      setDeletingTx({ id: tx.id, assetId: asset.id })
+                                      setDeletingTx({
+                                        id: tx.id,
+                                        assetId: asset.id,
+                                      })
                                     }
                                   >
                                     <Trash2 className="w-4 h-4" />
@@ -202,6 +242,7 @@ export function AssetsTable({ assets }: Props) {
                         </Table>
                       )}
 
+                      {/* 新增交易按钮，点击后打开 TransactionForm Dialog */}
                       <button
                         className="mt-3 text-sm text-primary flex items-center gap-1 hover:underline"
                         onClick={() => setTransactionOpenId(asset.id)}
@@ -253,7 +294,10 @@ export function AssetsTable({ assets }: Props) {
             <AlertDialogCancel variant="outline" size="default">
               Cancel
             </AlertDialogCancel>
-            <AlertDialogAction variant="destructive" onClick={confirmDeleteAsset}>
+            <AlertDialogAction
+              variant="destructive"
+              onClick={confirmDeleteAsset}
+            >
               Delete
             </AlertDialogAction>
           </AlertDialogFooter>

@@ -21,25 +21,35 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
   // 当前展开的资产 ID（同时只能展开一行）
   const [expandedId, setExpandedId] = useState<string | null>(null);
   // 当前打开"记录交易"Dialog 的资产 ID
-  const [transactionOpenId, setTransactionOpenId] = useState<string | null>(null);
+  const [transactionOpenId, setTransactionOpenId] = useState<string | null>(
+    null,
+  );
   // 以 assetId 为 key 的交易记录缓存，避免重复请求
-  const [transactionsMap, setTransactionsMap] = useState<Record<string, Transaction[]>>({});
+  const [transactionsMap, setTransactionsMap] = useState<
+    Record<string, Transaction[]>
+  >({});
   // 正在拉取交易记录的资产 ID
   const [loadingId, setLoadingId] = useState<string | null>(null);
   // 待确认删除的资产 ID
   const [deletingAssetId, setDeletingAssetId] = useState<string | null>(null);
   // 待确认删除的交易记录
-  const [deletingTx, setDeletingTx] = useState<{ id: string; assetId: string } | null>(null);
+  const [deletingTx, setDeletingTx] = useState<{
+    id: string;
+    assetId: string;
+  } | null>(null);
   // 各资产的当前价格缓存
-  const [currentPrices, setCurrentPrices] = useState<Record<string, number | null>>({});
-
+  const [currentPrices, setCurrentPrices] = useState<
+    Record<string, number | null>
+  >({});
   // 组件挂载时批量并行拉取所有资产的当前价格
   useEffect(() => {
     async function fetchAllPrices() {
       const entries = await Promise.all(
         assets.map(async (asset) => {
           try {
-            const res = await fetch(`/api/finnhub/quote?symbol=${asset.symbol}`);
+            const res = await fetch(
+              `/api/finnhub/quote?symbol=${asset.symbol}`,
+            );
             const data = await res.json();
             return [asset.symbol, data.price] as [string, number | null];
           } catch {

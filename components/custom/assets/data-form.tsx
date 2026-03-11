@@ -30,7 +30,7 @@ import {
 
 import { SymbolSearch } from "./symbol-search";
 import type { Asset } from "@/types/global";
-import { useAssetForm } from "@/hooks/useAssetForm";
+import { useAssetForm } from "@/hooks/assetsHooks/useAssetForm";
 import { CryptoSearch } from "./crypto-search";
 
 // trigger 可选：支持"由外部 open 状态控制"和"由内置触发按钮控制"两种模式

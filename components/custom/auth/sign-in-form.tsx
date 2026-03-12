@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 const SignInForm = () => {
   const {
@@ -48,7 +49,7 @@ const SignInForm = () => {
   const onSubmit = async (data: SignInFormValues) => {
     const result = await signIn(data);
     if (result?.error) {
-      alert(result.error);
+      toast.error(result.error);
     }
   };
 

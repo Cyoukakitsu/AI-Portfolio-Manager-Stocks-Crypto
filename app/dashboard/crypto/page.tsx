@@ -1,5 +1,5 @@
-const Crypto = () => {
-  return <div>Crypto</div>;
-};
+import { CryptoMarketDashboard } from "@/components/custom/crypto/crypto-market-dashboard";
 
-export default Crypto;
+export default function CryptoPage() {
+  return <CryptoMarketDashboard />;
+}

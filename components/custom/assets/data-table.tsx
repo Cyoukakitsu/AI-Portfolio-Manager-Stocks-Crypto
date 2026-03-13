@@ -76,8 +76,8 @@ export function AssetsTable({ assets }: Props) {
             <TableHead>Type</TableHead>
             <TableHead>Created At</TableHead>
             <TableHead>Holding Quantity</TableHead>
-            <TableHead>Avg Price</TableHead>
             <TableHead>Holding Price</TableHead>
+            <TableHead>Market Price</TableHead>
             <TableHead>return %</TableHead>
           </TableRow>
         </TableHeader>

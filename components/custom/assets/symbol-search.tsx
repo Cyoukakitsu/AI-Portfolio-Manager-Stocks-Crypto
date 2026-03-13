@@ -2,7 +2,6 @@
 
 // 股票/加密货币符号实时搜索组件
 // 设计模式：受控搜索框 + 防抖（Debounce）+ 服务端中转
-// 不直接调用 Finnhub，而是通过 /api/search 中转，避免暴露 API Key
 
 import { useState, useEffect, useRef } from "react";
 import { Search, Loader2 } from "lucide-react";
@@ -53,7 +52,7 @@ export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
       setLoading(true);
       try {
         const res = await fetch(
-          `/api/finnhub/search?q=${encodeURIComponent(query)}`,
+          `/api/yahoofinance/search?q=${encodeURIComponent(query)}`,
         );
         const data = await res.json();
         // 容错处理：API 异常时返回的可能不是数组，加 Array.isArray 防止 crash

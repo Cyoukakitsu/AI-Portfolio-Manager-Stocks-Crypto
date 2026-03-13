@@ -196,7 +196,9 @@ function WidgetCard({
       </div>
 
       {/* 内容区：p-0 贴边，w-full h-full 撑满，消除底部空白 */}
-      <div className={`p-0 w-full flex-1 overflow-hidden ${contentClassName}`}>{children}</div>
+      <div className={`p-0 w-full flex-1 overflow-hidden ${contentClassName}`}>
+        {children}
+      </div>
     </div>
   );
 }
@@ -296,7 +298,7 @@ export function CryptoMarketDashboard() {
           title="Coin Compare Chart"
           badge="BTC"
           accent="violet"
-          className="xl:h-[580px]"
+          className="xl:h-145"
         >
           <CoinCompareChartWidget />
         </WidgetCard>
@@ -306,7 +308,7 @@ export function CryptoMarketDashboard() {
           title="Market Heatmap"
           badge="Top 100"
           accent="orange"
-          className="xl:h-[580px]"
+          className="xl:h-145"
         >
           <HeatmapWidget />
         </WidgetCard>
@@ -340,7 +342,10 @@ export function CryptoMarketDashboard() {
       {/* ── Footer ── */}
       <div className="flex items-center justify-center gap-2 pb-2">
         <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-        <p className="text-center text-xs text-muted-foreground" suppressHydrationWarning>
+        <p
+          className="text-center text-xs text-muted-foreground"
+          suppressHydrationWarning
+        >
           Powered by CoinGecko &middot; Updated{" "}
           {new Date().toLocaleString("en-US")}
         </p>

@@ -24,13 +24,11 @@ type UseAssetFormParams = {
 
 // ---------- 工具函数 ----------
 
-// 将 Finnhub 返回的 type 字符串映射到项目内部的 asset_type 枚举
-// Finnhub 的命名和项目不一致，这个函数作为"翻译层"
-function mapFinnhubType(type: string): AssetFormData["asset_type"] | undefined {
+function mapYahooType(type: string): AssetFormData["asset_type"] | undefined {
   const map: Record<string, AssetFormData["asset_type"]> = {
-    "Common Stock": "stock",
-    ETP: "etf",
-    Crypto: "crypto",
+    EQUITY: "stock", // 股票
+    ETF: "etf", // ETF
+    CRYPTOCURRENCY: "crypto", // 加密货币
   };
   return map[type]; // 未识别的类型返回 undefined，交给用户手动选择
 }
@@ -126,7 +124,7 @@ export function useAssetForm({
 
     // Finnhub 搜索结果带 type 字段时，自动映射到 asset_type
     if (result.type) {
-      const mappedType = mapFinnhubType(result.type);
+      const mappedType = mapYahooType(result.type);
       if (mappedType) {
         form.setValue("asset_type", mappedType, { shouldValidate: true });
       }

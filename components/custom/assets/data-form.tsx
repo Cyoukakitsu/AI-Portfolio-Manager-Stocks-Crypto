@@ -31,7 +31,6 @@ import {
 import { SymbolSearch } from "./symbol-search";
 import type { Asset } from "@/types/global";
 import { useAssetForm } from "@/hooks/assetsHooks/useAssetForm";
-import { CryptoSearch } from "./crypto-search";
 
 // trigger 可选：支持"由外部 open 状态控制"和"由内置触发按钮控制"两种模式
 // 这样 AssetForm 既能作为独立的"＋添加"按钮，也能被 data-table 以受控方式打开
@@ -108,20 +107,10 @@ export function AssetForm({
               <Field data-invalid={!!form.formState.errors.symbol}>
                 <FieldLabel>Symbol</FieldLabel>
 
-                {/* Stock / ETF：调用 Finnhub 搜索 */}
-                {(currentAssetType === "stock" ||
-                  currentAssetType === "etf") && (
-                  <SymbolSearch
-                    defaultValue={asset?.symbol ?? ""}
-                    onSelect={handleSymbolSelect}
-                  />
-                )}
-                {currentAssetType === "crypto" && (
-                  <CryptoSearch
-                    defaultValue={asset?.symbol ?? ""}
-                    onSelect={handleSymbolSelect}
-                  />
-                )}
+                <SymbolSearch
+                  defaultValue={asset?.symbol ?? ""}
+                  onSelect={handleSymbolSelect}
+                />
 
                 {form.formState.errors.symbol && (
                   <FieldError errors={[form.formState.errors.symbol]} />

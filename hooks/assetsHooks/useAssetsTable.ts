@@ -48,7 +48,7 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
         assets.map(async (asset) => {
           try {
             const res = await fetch(
-              `/api/finnhub/quote?symbol=${asset.symbol}`,
+              `/api/yahoofinance/quote?symbol=${asset.symbol}`,
             );
             const data = await res.json();
             return [asset.symbol, data.price] as [string, number | null];

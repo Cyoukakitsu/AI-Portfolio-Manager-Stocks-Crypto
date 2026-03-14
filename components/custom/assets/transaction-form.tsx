@@ -56,11 +56,11 @@ export function TransactionForm({
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
-      asset_id: assetId,   // 直接绑定，用户不可见不可修改
-      type: "buy",         // 默认买入
+      asset_id: assetId, // 直接绑定，用户不可见不可修改
+      type: "buy", // 默认买入
       quantity: 1,
       price: 0,
-      traded_at: format(new Date(), "yyyy-MM-dd"), // 默认今天
+      traded_at: "", //用户主动选择
     },
   });
 

@@ -74,7 +74,6 @@ export function AssetsTable({ assets }: Props) {
             <TableHead>Symbol</TableHead>
             <TableHead>Full Name</TableHead>
             <TableHead>Type</TableHead>
-            <TableHead>Created At</TableHead>
             <TableHead>Holding Quantity</TableHead>
             <TableHead>Holding Price</TableHead>
             <TableHead>Market Price</TableHead>
@@ -86,7 +85,7 @@ export function AssetsTable({ assets }: Props) {
             // 空状态：无资产时显示占位提示
             <TableRow>
               <TableCell
-                colSpan={8}
+                colSpan={7}
                 className="text-center text-muted-foreground"
               >
                 No data
@@ -106,9 +105,7 @@ export function AssetsTable({ assets }: Props) {
                       {asset.asset_type}
                     </Badge>
                   </TableCell>
-                  <TableCell>
-                    {new Date(asset.created_at).toLocaleDateString("en-US")}
-                  </TableCell>
+
                   {/* 持仓数量：无持仓时显示 — */}
                   <TableCell>
                     {asset.total_quantity > 0 ? asset.total_quantity : "—"}
@@ -181,7 +178,7 @@ export function AssetsTable({ assets }: Props) {
                 {/* 展开行：显示该资产的交易历史，跨满所有列 */}
                 {expandedId === asset.id && (
                   <TableRow key={`${asset.id}-expanded`}>
-                    <TableCell colSpan={8} className="bg-muted/30 p-4">
+                    <TableCell colSpan={7} className="bg-muted/30 p-4">
                       {loadingId === asset.id ? (
                         // 交易记录加载中
                         <p className="text-sm text-muted-foreground">

@@ -1,12 +1,14 @@
+import { Button } from "@/components/ui/button";
+
+import { getAssets } from "@/services/assets";
+import { getAllTransactions } from "@/services/transactions";
+
 import { AssetsTable } from "@/components/custom/assets/data-table";
 import { AssetForm } from "@/components/custom/assets/data-form";
-import { Button } from "@/components/ui/button";
-import { getAssets } from "@/services/assets";
-import { ProfitAreaChart } from "@/components/custom/assets/profit-area-chart";
 import { AllocationRadarChart } from "@/components/custom/assets/allocation-radar-chart";
 import { TotalReturnCard } from "@/components/custom/assets/total-return-card";
 import { TotalAssetCard } from "@/components/custom/assets/total-asset-card";
-import { getAllTransactions } from "@/services/transactions";
+import { PortfolioCandlestickChart } from "@/components/custom/assets/portfolio-candlestick-chart";
 
 export default async function Assets() {
   const assets = await getAssets();
@@ -25,7 +27,10 @@ export default async function Assets() {
 
       <div className="grid gap-4 md:grid-cols-3">
         <div className="md:col-span-2">
-          <ProfitAreaChart assets={list} allTransactions={allTransactions} />
+          <PortfolioCandlestickChart
+            assets={list}
+            allTransactions={allTransactions}
+          />
         </div>
         <div className="md:col-span-1">
           <AllocationRadarChart assets={list} />

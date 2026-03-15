@@ -10,7 +10,7 @@ export default function Chat() {
   const [input, setInput] = useState("");
   const { messages, sendMessage, status } = useChat({
     transport: new DefaultChatTransport({
-      api: "/api/chat",
+      api: "/api/ai/chat",
     }),
   });
 

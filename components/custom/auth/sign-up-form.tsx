@@ -8,150 +8,252 @@
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { motion, AnimatePresence } from "motion/react";
 
 import { SignUpFormValues, signUpSchema } from "@/lib/schemas/sign-up";
 import { useRouter } from "next/navigation";
 import { signUp } from "@/server/auth";
+import { toast } from "sonner";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
+const fieldVariants = {
+  hidden: { opacity: 0, y: 16 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
+};
+
 const SignUpForm = () => {
   const {
-    register, // 绑定表单输入框的方法
-    handleSubmit, // 处理表单提交的方法（自动触发校验）
-    formState: { errors, isSubmitting }, // 表单状态：校验错误、是否正在提交
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
   } = useForm<SignUpFormValues>({
-    resolver: zodResolver(signUpSchema), // 关键：让 React Hook Form 用 Zod 做校验
-    defaultValues: {
-      name: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    },
+    resolver: zodResolver(signUpSchema),
+    defaultValues: { name: "", email: "", password: "", confirmPassword: "" },
   });
 
-  // 初始化路由（用于注册成功后跳转）
   const router = useRouter();
 
-  // 注册成功后跳转到登录页，而非直接登录，
-  // 原因：Supabase 默认需要邮件验证，跳转到登录页更符合此流程
   const onSubmit = async (data: SignUpFormValues) => {
-    // 调用服务端 signUp 函数，传入前端校验后的表单数据
     const result = await signUp(data);
-
     if (result.error) {
-      // Server Action 返回的 error 可能是字符串或对象，统一处理
-      alert(
+      toast.error(
         typeof result.error === "string" ? result.error : "Validation failed",
       );
     } else {
-      // 注册成功：跳转到登录页
       router.push("/sign-in");
     }
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Create an account</CardTitle>
-        <CardDescription>
-          Enter your information below to create your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <FieldGroup>
-            {/* name */}
-            <Field>
-              <FieldLabel htmlFor="name">Full Name</FieldLabel>
-              <Input {...register("name")} type="text" placeholder="Fujimoto" />
-              {errors.name && (
-                <p className="text-sm text-red-500">{errors.name.message}</p>
-              )}
-            </Field>
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className="w-full"
+    >
+      {/* Card */}
+      <div className="rounded-xl border border-border bg-card shadow-lg overflow-hidden">
+        {/* Primary color top accent */}
+        <div
+          className="h-px w-full"
+          style={{
+            background:
+              "linear-gradient(to right, transparent, var(--color-primary), transparent)",
+          }}
+        />
 
-            {/* email */}
-            <Field>
-              <FieldLabel htmlFor="email">Email</FieldLabel>
-              <Input
-                {...register("email")}
-                type="email"
-                placeholder="fujimoto@example.com"
-              />
-              {/* 有错误时显示错误，否则显示提示文字（两者互斥，避免 UI 跳动） */}
-              {errors.email ? (
-                <p className="text-sm text-red-500">{errors.email.message}</p>
-              ) : (
-                <FieldDescription>
-                  We&apos;ll use this to contact you.{" "}
-                </FieldDescription>
-              )}
-            </Field>
+        <div className="px-7 py-8">
+          {/* Header */}
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-card-foreground tracking-tight">
+              Create your account
+            </h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Start tracking your portfolio in minutes
+            </p>
+          </div>
 
-            {/* password */}
-            <Field>
-              <FieldLabel htmlFor="password">Password</FieldLabel>
-              <Input {...register("password")} type="password" />
-              {errors.password ? (
-                <p className="text-sm text-red-500">
-                  {errors.password.message}
-                </p>
-              ) : (
-                <FieldDescription>
-                  Must be at least 6 characters long.
-                </FieldDescription>
-              )}
-            </Field>
+          <form onSubmit={handleSubmit(onSubmit)}>
+            <motion.div
+              variants={{
+                hidden: { opacity: 0 },
+                show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+              }}
+              initial="hidden"
+              animate="show"
+              className="space-y-4"
+            >
+              {/* Full Name */}
+              <motion.div variants={fieldVariants} className="space-y-1.5">
+                <label htmlFor="name" className="block text-sm font-medium text-foreground">
+                  Full Name
+                </label>
+                <Input
+                  {...register("name")}
+                  id="name"
+                  type="text"
+                  placeholder="Fujimoto"
+                />
+                <AnimatePresence>
+                  {errors.name && (
+                    <motion.p
+                      key="name-error"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-xs text-destructive overflow-hidden"
+                    >
+                      {errors.name.message}
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </motion.div>
 
-            {/* confirmPassword：错误由 Zod .refine() 产生，挂载在 confirmPassword 字段上 */}
-            <Field>
-              <FieldLabel htmlFor="confirm-password">
-                Confirm Password
-              </FieldLabel>
-              <Input {...register("confirmPassword")} type="password" />
-              {errors.confirmPassword ? (
-                <p className="text-sm text-red-500">
-                  {errors.confirmPassword.message}
-                </p>
-              ) : (
-                <FieldDescription>
-                  Please confirm your password.
-                </FieldDescription>
-              )}
-            </Field>
+              {/* Email */}
+              <motion.div variants={fieldVariants} className="space-y-1.5">
+                <label htmlFor="email" className="block text-sm font-medium text-foreground">
+                  Email
+                </label>
+                <Input
+                  {...register("email")}
+                  id="email"
+                  type="email"
+                  placeholder="fujimoto@example.com"
+                />
+                <AnimatePresence mode="wait">
+                  {errors.email ? (
+                    <motion.p
+                      key="email-error"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-xs text-destructive overflow-hidden"
+                    >
+                      {errors.email.message}
+                    </motion.p>
+                  ) : (
+                    <motion.p
+                      key="email-hint"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-xs text-muted-foreground"
+                    >
+                      We&apos;ll use this to contact you.
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </motion.div>
 
-            {/* buttons */}
-            <FieldGroup>
-              <Field>
-                <Button type="submit" disabled={isSubmitting}>
-                  {isSubmitting ? "Signing up..." : "Create account"}
+              {/* Password */}
+              <motion.div variants={fieldVariants} className="space-y-1.5">
+                <label htmlFor="password" className="block text-sm font-medium text-foreground">
+                  Password
+                </label>
+                <Input
+                  {...register("password")}
+                  id="password"
+                  type="password"
+                />
+                <AnimatePresence mode="wait">
+                  {errors.password ? (
+                    <motion.p
+                      key="password-error"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-xs text-destructive overflow-hidden"
+                    >
+                      {errors.password.message}
+                    </motion.p>
+                  ) : (
+                    <motion.p
+                      key="password-hint"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-xs text-muted-foreground"
+                    >
+                      Must be at least 6 characters.
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+
+              {/* Confirm Password */}
+              <motion.div variants={fieldVariants} className="space-y-1.5">
+                <label htmlFor="confirm-password" className="block text-sm font-medium text-foreground">
+                  Confirm Password
+                </label>
+                <Input
+                  {...register("confirmPassword")}
+                  id="confirm-password"
+                  type="password"
+                />
+                <AnimatePresence mode="wait">
+                  {errors.confirmPassword ? (
+                    <motion.p
+                      key="confirm-error"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-xs text-destructive overflow-hidden"
+                    >
+                      {errors.confirmPassword.message}
+                    </motion.p>
+                  ) : (
+                    <motion.p
+                      key="confirm-hint"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="text-xs text-muted-foreground"
+                    >
+                      Please confirm your password.
+                    </motion.p>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+
+              {/* Buttons */}
+              <motion.div variants={fieldVariants} className="space-y-3 pt-1">
+                <Button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full cursor-pointer"
+                >
+                  {isSubmitting ? "Creating account…" : "Create Account"}
                 </Button>
-                <Button variant="outline" type="button">
-                  Sign up with Google
+                <Button
+                  variant="outline"
+                  type="button"
+                  className="w-full cursor-pointer"
+                >
+                  Continue with Google
                 </Button>
-                <FieldDescription className="px-6 text-center">
-                  Already have an account? <a href="/sign-in">Sign in</a>
-                </FieldDescription>
-              </Field>
-            </FieldGroup>
-          </FieldGroup>
-        </form>
-      </CardContent>
-    </Card>
+              </motion.div>
+
+              {/* Footer link */}
+              <motion.p variants={fieldVariants} className="text-center text-sm text-muted-foreground">
+                Already have an account?{" "}
+                <a href="/sign-in" className="text-primary hover:text-primary/80 transition-colors">
+                  Sign in
+                </a>
+              </motion.p>
+            </motion.div>
+          </form>
+        </div>
+      </div>
+    </motion.div>
   );
 };
 

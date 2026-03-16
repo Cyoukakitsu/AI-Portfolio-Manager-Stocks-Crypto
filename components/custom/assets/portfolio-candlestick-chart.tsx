@@ -10,13 +10,8 @@ import {
   ColorType,
 } from "lightweight-charts";
 
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
+import { TrendingUp } from "lucide-react";
+import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
 import type { Asset, Transaction } from "@/types/global";
 
@@ -319,56 +314,65 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
     };
   }, [chartData, view, assets]);
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle>Portfolio Value</CardTitle>
-            <CardDescription>
-              {view === "usd" ? "Total asset value (USD)" : "Return rate (%)"}
-            </CardDescription>
+    <motion.div
+      className="group rounded-xl border border-border/60 bg-card shadow-sm transition-shadow duration-200 hover:shadow-md flex flex-col"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45, ease: "easeOut" as const }}
+    >
+      {/* WidgetCard header */}
+      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-border/60 flex-wrap gap-y-2">
+        <span className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 bg-violet-500/10 text-violet-500 dark:bg-violet-400/10 dark:text-violet-400">
+          <TrendingUp className="h-4 w-4" />
+        </span>
+        <div className="flex-1 min-w-0">
+          <p className="text-sm font-semibold tracking-tight leading-none">Portfolio Value</p>
+          <p className="text-xs text-muted-foreground mt-0.5">
+            {view === "usd" ? "Total asset value (USD)" : "Return rate (%)"}
+          </p>
+        </div>
+
+        {/* controls */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* USD / % 切换 */}
+          <div className="flex rounded-md border border-border/60 overflow-hidden">
+            <Button
+              variant={view === "usd" ? "default" : "ghost"}
+              size="sm"
+              className="rounded-none text-xs px-3"
+              onClick={() => setView("usd")}
+            >
+              USD
+            </Button>
+            <Button
+              variant={view === "pct" ? "default" : "ghost"}
+              size="sm"
+              className="rounded-none text-xs px-3"
+              onClick={() => setView("pct")}
+            >
+              %
+            </Button>
           </div>
 
-          <div className="flex items-center gap-3">
-            {/* USD / % 切换 */}
-            <div className="flex rounded-md border overflow-hidden">
+          {/* 时间范围切换 */}
+          <div className="flex gap-1">
+            {RANGES.map((r) => (
               <Button
-                variant={view === "usd" ? "default" : "ghost"}
+                key={r}
+                variant={range === r ? "default" : "ghost"}
                 size="sm"
-                className="rounded-none text-xs px-3"
-                onClick={() => setView("usd")}
+                className="text-xs px-2"
+                onClick={() => setRange(r)}
               >
-                USD
+                {r}
               </Button>
-              <Button
-                variant={view === "pct" ? "default" : "ghost"}
-                size="sm"
-                className="rounded-none text-xs px-3"
-                onClick={() => setView("pct")}
-              >
-                %
-              </Button>
-            </div>
-
-            {/* 时间范围切换 */}
-            <div className="flex gap-1">
-              {RANGES.map((r) => (
-                <Button
-                  key={r}
-                  variant={range === r ? "default" : "ghost"}
-                  size="sm"
-                  className="text-xs px-2"
-                  onClick={() => setRange(r)}
-                >
-                  {r}
-                </Button>
-              ))}
-            </div>
+            ))}
           </div>
         </div>
-      </CardHeader>
+      </div>
 
-      <CardContent>
+      {/* chart content */}
+      <div className="p-4 flex-1">
         {loading ? (
           <div className="flex items-center justify-center h-75 text-muted-foreground text-sm">
             Loading...
@@ -380,7 +384,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
         ) : (
           <div ref={chartContainerRef} className="w-full" />
         )}
-      </CardContent>
-    </Card>
+      </div>
+    </motion.div>
   );
 }

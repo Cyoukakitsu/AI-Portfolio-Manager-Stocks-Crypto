@@ -15,14 +15,13 @@ export type Asset = {
   fullname: string; // 完整名称，如 "Apple Inc."
   asset_type: "stock" | "crypto" | "etf" | "cash";
   created_at: string;
-  avg_price: number | null; // 加权平均买入价；若从未买入则为 null
-  total_cost: number; // 当前持仓总成本（买入总额 - 卖出总额）
-  total_quantity: number; // 当前持仓总数量（买入总量 - 卖出总量）
+  avg_price: number | null; // 派生值：加权平均买入价；若从未买入则为 null
+  total_cost: number; // 派生值：当前持仓总成本（买入总额 - 卖出总额）
+  total_quantity: number; // 派生值：当前持仓总数量（买入总量 - 卖出总量）
 };
 
 // 对应 Supabase `transactions` 表
 // type 使用联合类型而非 string，可在编译期防止写错值（如 "Buy" 或 "BUY"）
-// user_id 冗余存储（本可从 asset 推断），但为了能在 RLS 层直接过滤而保留
 export type Transaction = {
   id: string;
   asset_id: string; // 外键，关联 assets.id

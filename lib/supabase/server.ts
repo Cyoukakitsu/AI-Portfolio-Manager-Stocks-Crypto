@@ -1,5 +1,6 @@
 // 服务端 Supabase 客户端（Server Client）
 //
+//参考：https://supabase.com/docs/guides/auth/server-side/creating-a-client?queryGroups=framework&framework=nextjs
 // 用于 Server Components、Server Actions 和 API Routes。
 // 每次请求都需要重新创建实例（因为每次请求的 cookie 上下文不同），
 // 所以这里导出的是工厂函数而非单例。

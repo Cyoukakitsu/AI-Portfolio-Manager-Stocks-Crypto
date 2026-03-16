@@ -9,7 +9,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
-import { createAsset, updateAsset } from "@/services/assets";
+import { createAsset, updateAsset } from "@/server/assets";
 import { assetSchema, type AssetFormData } from "@/lib/schemas/asset";
 import type { Asset } from "@/types/global";
 

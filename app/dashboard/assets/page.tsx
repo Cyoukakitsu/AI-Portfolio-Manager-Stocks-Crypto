@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 
-import { getAssets } from "@/services/assets";
-import { getAllTransactions } from "@/services/transactions";
+import { getAssets } from "@/server/assets";
+import { getAllTransactions } from "@/server/transactions";
 
 import { AssetsTable } from "@/components/custom/assets/data-table";
 import { AssetForm } from "@/components/custom/assets/data-form";

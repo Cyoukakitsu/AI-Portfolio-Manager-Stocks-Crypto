@@ -34,7 +34,7 @@ import {
 } from "@/components/ui/field";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
-import { createTransaction } from "@/services/transactions";
+import { createTransaction } from "@/server/transactions";
 import {
   transactionSchema,
   type TransactionFormData,

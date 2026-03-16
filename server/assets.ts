@@ -14,6 +14,7 @@ import { assetSchema } from "@/lib/schemas/asset";
 export async function getAssets() {
   const supabase = await createClient();
 
+  // 参考：https://supabase.com/docs/reference/javascript/auth-getuser
   // 从服务端 session 取得当前用户，而非从请求参数取，防止伪造
   const {
     data: { user },
@@ -136,7 +137,7 @@ export async function createAsset(rawData: unknown) {
   if (error) {
     // 23505 是 PostgreSQL 的唯一约束违反错误码，转换为用户友好提示
     if (error.code === "23505")
-      throw new Error("该 Symbol 已存在，请使用其他名称");
+      throw new Error("Asset with the same symbol already exists");
     throw new Error(error.message);
   }
   // 让 Next.js 重新拉取 /assets 页面的 Server Component 数据

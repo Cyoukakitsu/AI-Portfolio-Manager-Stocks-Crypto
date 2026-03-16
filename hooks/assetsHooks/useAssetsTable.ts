@@ -7,8 +7,8 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
-import { deleteAsset } from "@/services/assets";
-import { deleteTransaction, getTransactions } from "@/services/transactions";
+import { deleteAsset } from "@/server/assets";
+import { deleteTransaction, getTransactions } from "@/server/transactions";
 import type { Asset, Transaction } from "@/types/global";
 
 type UseAssetsTableParams = {

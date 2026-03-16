@@ -11,7 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import { signInSchema, SignInFormValues } from "@/lib/schemas/sign-in";
-import { signIn } from "@/services/auth";
+import { signIn } from "@/server/auth";
 
 import { cn } from "@/lib/utils";
 import {

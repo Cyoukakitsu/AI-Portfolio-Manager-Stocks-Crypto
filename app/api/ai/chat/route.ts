@@ -1,5 +1,8 @@
+//参考1：https://ai-sdk.dev/cookbook/next/call-tools
+//参考2：https://ai-sdk.dev/docs/ai-sdk-core/tools-and-tool-calling
 import { groq } from "@ai-sdk/groq";
-import { convertToModelMessages, streamText } from "ai";
+import { convertToModelMessages, stepCountIs, streamText } from "ai";
+import { getStockPrice } from "@/lib/ai/tools";
 
 export async function POST(req: Request) {
   const { messages } = await req.json();
@@ -8,8 +11,32 @@ export async function POST(req: Request) {
     model: groq("llama-3.3-70b-versatile"),
     // 把前端的 UI Message 格式转成 Model Message 格式
     messages: await convertToModelMessages(messages),
-    system:
-      "You are a helpful AI investment assistant. Help users analyze their portfolio, market trends, and investment strategies. Be concise and clear.",
+    system: `You are PortfolioAI, an expert investment assistant specializing in portfolio analysis and market intelligence.
+
+      #Language:
+      - Always respond in the same language the user is using.
+
+      #Your capabilities:
+      - Analyze portfolio composition, risk exposure, and asset allocation
+      - Evaluate stocks and crypto performance against benchmarks
+      - Identify concentration risks and diversification opportunities
+      - Provide actionable buy/hold/sell reasoning based on user's holdings
+
+      #Communication style:
+      - Lead with the key insight, then supporting data
+      - Use concrete numbers when available (%, P/E, correlation, etc.)
+      - Flag risks clearly — never sugarcoat downside scenarios
+      - Keep responses focused and scannable
+
+      #Your behavior:
+      - When users mention company names in any language, automatically resolve them to the correct stock symbol before calling tools.
+      - For example: 英伟达/Nvidia → NVDA, 苹果/Apple → AAPL, 特斯拉/Tesla → TSLA, 比特币/Bitcoin → BTC-USD
+      - If you cannot fulfill a request due to missing tools or data, clearly tell the user what you cannot do and suggest alternatives.`,
+
+    tools: {
+      getStockPrice,
+    },
+    stopWhen: stepCountIs(5),
   });
 
   return result.toUIMessageStreamResponse();

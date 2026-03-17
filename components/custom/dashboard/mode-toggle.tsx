@@ -3,6 +3,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "motion/react";
+import { useState, useEffect } from "react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,9 +13,12 @@ import {
 
 export function ModeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  // resolvedTheme 在 SSR / 水合前为 undefined，客户端才有值
-  const mounted = resolvedTheme !== undefined;
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const isDark = resolvedTheme === "dark";
 
   return (

@@ -12,6 +12,7 @@ export const transactionSchema = z.object({
 });
 
 // updateTransactionSchema 故意去掉 asset_id，
+//.omit()` 是 Zod 提供的方法，意思是"基于现有 Schema，去掉指定的字段，生成一个新 Schema"。
 // 防止用户通过更新请求将交易记录"迁移"到其他资产下
 export const updateTransactionSchema = transactionSchema.omit({
   asset_id: true,

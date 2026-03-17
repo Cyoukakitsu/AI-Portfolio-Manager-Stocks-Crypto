@@ -6,19 +6,20 @@ import { motion } from "motion/react";
 
 const Home = () => {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-muted gap-8">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-muted gap-8 px-4">
       {/* Logo */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
+        className="w-full max-w-4xl"
       >
         <Image
-          src="/header-icon.svg"
+          src="/hero-illustration.svg"
           alt="Logo"
-          width={180}
-          height={40}
-          className="h-10 w-auto"
+          width={680}
+          height={380}
+          className="w-full h-auto"
         />
       </motion.div>
 

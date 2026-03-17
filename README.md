@@ -44,10 +44,10 @@
 ```
 フロントエンド         Next.js 16 (App Router) / React 19 / TypeScript
 スタイリング           Tailwind CSS v4 / shadcn/ui
-データフェッチ         Yahoo Finance API / FMP API（ローソク足）
+データフェッチ         Yahoo Finance API
 チャート               Recharts / TradingView Widgets
 認証 & DB              Supabase (Auth + PostgreSQL + RLS)
-AI                    OpenRouter (AI SDK) / Vercel AI SDK
+AI                    Groq (AI SDK) / Vercel AI SDK
 フォームバリデーション  React Hook Form + Zod
 ```
 

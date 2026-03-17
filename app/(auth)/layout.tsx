@@ -109,7 +109,7 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
         <div className="mb-8 lg:hidden">
           <Link href="/">
             <Image
-              src="/header-icon.svg"
+              src="/header-icon.png"
               alt="AI Portfolio Manager"
               width={140}
               height={32}

@@ -46,11 +46,11 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
         <div className="relative z-10">
           <Link href="/">
             <Image
-              src="/header-icon.svg"
+              src="/header-icon.png"
               alt="AI Portfolio Manager"
               width={160}
               height={36}
-              className="h-9 w-auto"
+              className="h-auto w-auto"
             />
           </Link>
         </div>
@@ -76,7 +76,9 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
                   <Icon className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <p className="text-sm font-medium text-sidebar-foreground">{title}</p>
+                  <p className="text-sm font-medium text-sidebar-foreground">
+                    {title}
+                  </p>
                   <p className="text-xs text-muted-foreground mt-0.5">{desc}</p>
                 </div>
               </div>

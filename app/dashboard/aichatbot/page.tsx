@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "motion/react";
+import ReactMarkdown from "react-markdown";
 
 export default function Chat() {
   const [input, setInput] = useState("");
@@ -71,7 +72,14 @@ export default function Chat() {
                 }`}
               >
                 {m.parts.map((part, i) =>
-                  part.type === "text" ? <div key={i}>{part.text}</div> : null,
+                  part.type === "text" ? (
+                    <div
+                      className="prose prose-sm dark:prose-invert max-w-none"
+                      key={i}
+                    >
+                      <ReactMarkdown>{part.text}</ReactMarkdown>
+                    </div>
+                  ) : null,
                 )}
               </div>
             </motion.div>

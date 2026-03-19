@@ -122,7 +122,6 @@ export function useAssetForm({
     form.setValue("symbol", result.symbol, { shouldValidate: true });
     form.setValue("fullname", result.fullname, { shouldValidate: true });
 
-    // Finnhub 搜索结果带 type 字段时，自动映射到 asset_type
     if (result.type) {
       const mappedType = mapYahooType(result.type);
       if (mappedType) {

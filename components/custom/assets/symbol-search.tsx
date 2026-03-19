@@ -45,8 +45,6 @@ export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
       return;
     }
 
-    // Debounce 防抖：用户停止输入 400ms 后才真正发请求，
-    // 避免每输入一个字符就打一次 API（浪费 Finnhub 调用配额）
     if (timerRef.current) clearTimeout(timerRef.current);
     timerRef.current = setTimeout(async () => {
       setLoading(true);
@@ -79,10 +77,6 @@ export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
 
   return (
     <div className="relative">
-      {/*
-        shouldFilter=false：禁用 Command 的内置本地过滤，
-        因为我们的过滤由服务端（Finnhub）完成，本地再过滤会导致结果被误删
-      */}
       <Command className="border rounded-md" shouldFilter={false}>
         <div className="flex items-center px-3">
           {/* 搜索中显示 loading 动画，否则显示搜索图标，提供即时反馈 */}

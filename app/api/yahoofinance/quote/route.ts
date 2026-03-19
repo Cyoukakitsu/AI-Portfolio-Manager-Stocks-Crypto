@@ -1,9 +1,3 @@
-// API Route：代理 Finnhub 股票实时报价
-//
-// Finnhub /quote 接口返回的字段：
-//   c = 当前价格（current price）
-//   o = 开盘价、h = 最高价、l = 最低价（本次用不到）
-
 import { NextRequest, NextResponse } from "next/server";
 import YahooFinance from "yahoo-finance2";
 

@@ -11,6 +11,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "motion/react";
 
 import { SignUpFormValues, signUpSchema } from "@/lib/schemas/sign-up";
+import GoogleButton from "./google-button";
 import { useRouter } from "next/navigation";
 import { signUp } from "@/server/auth";
 import { toast } from "sonner";
@@ -20,7 +21,11 @@ import { Input } from "@/components/ui/input";
 
 const fieldVariants = {
   hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" as const },
+  },
 };
 
 const SignUpForm = () => {
@@ -87,7 +92,10 @@ const SignUpForm = () => {
             >
               {/* Full Name */}
               <motion.div variants={fieldVariants} className="space-y-1.5">
-                <label htmlFor="name" className="block text-sm font-medium text-foreground">
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-medium text-foreground"
+                >
                   Full Name
                 </label>
                 <Input
@@ -114,7 +122,10 @@ const SignUpForm = () => {
 
               {/* Email */}
               <motion.div variants={fieldVariants} className="space-y-1.5">
-                <label htmlFor="email" className="block text-sm font-medium text-foreground">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-foreground"
+                >
                   Email
                 </label>
                 <Input
@@ -152,7 +163,10 @@ const SignUpForm = () => {
 
               {/* Password */}
               <motion.div variants={fieldVariants} className="space-y-1.5">
-                <label htmlFor="password" className="block text-sm font-medium text-foreground">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-foreground"
+                >
                   Password
                 </label>
                 <Input
@@ -189,7 +203,10 @@ const SignUpForm = () => {
 
               {/* Confirm Password */}
               <motion.div variants={fieldVariants} className="space-y-1.5">
-                <label htmlFor="confirm-password" className="block text-sm font-medium text-foreground">
+                <label
+                  htmlFor="confirm-password"
+                  className="block text-sm font-medium text-foreground"
+                >
                   Confirm Password
                 </label>
                 <Input
@@ -233,19 +250,19 @@ const SignUpForm = () => {
                 >
                   {isSubmitting ? "Creating account…" : "Create Account"}
                 </Button>
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="w-full cursor-pointer"
-                >
-                  Continue with Google
-                </Button>
+                <GoogleButton />
               </motion.div>
 
               {/* Footer link */}
-              <motion.p variants={fieldVariants} className="text-center text-sm text-muted-foreground">
+              <motion.p
+                variants={fieldVariants}
+                className="text-center text-sm text-muted-foreground"
+              >
                 Already have an account?{" "}
-                <a href="/sign-in" className="text-primary hover:text-primary/80 transition-colors">
+                <a
+                  href="/sign-in"
+                  className="text-primary hover:text-primary/80 transition-colors"
+                >
                   Sign in
                 </a>
               </motion.p>

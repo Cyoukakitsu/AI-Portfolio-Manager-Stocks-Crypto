@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "motion/react";
 
 import { signInSchema, SignInFormValues } from "@/lib/schemas/sign-in";
+import GoogleButton from "./google-button";
 import { signIn } from "@/server/auth";
 
 import { Input } from "@/components/ui/input";
@@ -20,7 +21,11 @@ import { toast } from "sonner";
 
 const fieldVariants = {
   hidden: { opacity: 0, y: 16 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" as const } },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, ease: "easeOut" as const },
+  },
 };
 
 const SignInForm = () => {
@@ -33,8 +38,6 @@ const SignInForm = () => {
     defaultValues: { email: "", password: "" },
   });
 
-  // 登录成功后 Server Action 内部执行 redirect()，无需在这里跳转
-  // 登录失败时 Server Action 返回 { error }，在这里展示给用户
   const onSubmit = async (data: SignInFormValues) => {
     const result = await signIn(data);
     if (result?.error) {
@@ -83,7 +86,10 @@ const SignInForm = () => {
             >
               {/* Email */}
               <motion.div variants={fieldVariants} className="space-y-1.5">
-                <label htmlFor="email" className="block text-sm font-medium text-foreground">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-foreground"
+                >
                   Email
                 </label>
                 <Input
@@ -111,7 +117,10 @@ const SignInForm = () => {
               {/* Password */}
               <motion.div variants={fieldVariants} className="space-y-1.5">
                 <div className="flex items-center justify-between">
-                  <label htmlFor="password" className="block text-sm font-medium text-foreground">
+                  <label
+                    htmlFor="password"
+                    className="block text-sm font-medium text-foreground"
+                  >
                     Password
                   </label>
                   <a
@@ -151,19 +160,19 @@ const SignInForm = () => {
                 >
                   {isSubmitting ? "Signing in…" : "Sign In"}
                 </Button>
-                <Button
-                  variant="outline"
-                  type="button"
-                  className="w-full cursor-pointer"
-                >
-                  Continue with Google
-                </Button>
+                <GoogleButton />
               </motion.div>
 
               {/* Footer link */}
-              <motion.p variants={fieldVariants} className="text-center text-sm text-muted-foreground">
+              <motion.p
+                variants={fieldVariants}
+                className="text-center text-sm text-muted-foreground"
+              >
                 Don&apos;t have an account?{" "}
-                <a href="/sign-up" className="text-primary hover:text-primary/80 transition-colors">
+                <a
+                  href="/sign-up"
+                  className="text-primary hover:text-primary/80 transition-colors"
+                >
                   Sign up
                 </a>
               </motion.p>

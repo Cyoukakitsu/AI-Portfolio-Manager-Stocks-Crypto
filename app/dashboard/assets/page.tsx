@@ -4,13 +4,13 @@ import { getAllTransactions } from "@/server/transactions";
 
 import { AssetsTable } from "@/components/custom/assets/data-table";
 import { AssetForm } from "@/components/custom/assets/data-form";
-import { AllocationRadarChart } from "@/components/custom/assets/allocation-radar-chart";
 import { TotalReturnCard } from "@/components/custom/assets/total-return-card";
 import { TotalAssetCard } from "@/components/custom/assets/total-asset-card";
 import { PortfolioCandlestickChart } from "@/components/custom/assets/portfolio-candlestick-chart";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Database, PieChart } from "lucide-react";
+import { LayoutDashboard, Database, Newspaper } from "lucide-react";
+import { DailyAnalysis } from "@/components/custom/assets/daily-analysis";
 
 /* ─────────────────────────────────────────
    Icon accent colours  (mirrors stocks page)
@@ -108,7 +108,7 @@ export default async function Assets() {
       </div>
 
       {/* ── KPI cards ── */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="grid gap-4 sm:grid-cols-2">
         <TotalAssetCard assets={list} />
         <TotalReturnCard assets={list} />
       </div>
@@ -122,10 +122,8 @@ export default async function Assets() {
           />
         </div>
         <div className="md:col-span-1">
-          <WidgetCard icon={PieChart} title="Asset Allocation" accent="orange">
-            <div className="p-4">
-              <AllocationRadarChart assets={list} />
-            </div>
+          <WidgetCard icon={Newspaper} title="Daily Analysis" accent="violet">
+            <DailyAnalysis assets={list} />
           </WidgetCard>
         </div>
       </div>

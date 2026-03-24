@@ -244,7 +244,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
     // 创建 chart 实例
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
-      height: 300,
+      height: 350,
       layout: {
         background: { type: ColorType.Solid, color: "transparent" },
         textColor: "#888",
@@ -374,11 +374,11 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
       {/* chart content */}
       <div className="p-4 flex-1">
         {loading ? (
-          <div className="flex items-center justify-center h-75 text-muted-foreground text-sm">
+          <div className="flex items-center justify-center h-87.5 text-muted-foreground text-sm">
             Loading...
           </div>
         ) : chartData.length === 0 ? (
-          <div className="flex items-center justify-center h-75 text-muted-foreground text-sm">
+          <div className="flex items-center justify-center h-87.5 text-muted-foreground text-sm">
             No data
           </div>
         ) : (

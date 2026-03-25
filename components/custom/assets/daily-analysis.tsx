@@ -36,7 +36,7 @@ function ArticleItem({ article }: { article: NewsArticle }) {
         <ExternalLink className="h-3 w-3 shrink-0 mt-0.5 text-muted-foreground opacity-0 group-hover/item:opacity-100 transition-opacity" />
       </div>
       <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
-        <span className="truncate max-w-[120px]">{article.source}</span>
+        <span className="truncate max-w-30">{article.source}</span>
         {article.publishedDate && (
           <>
             <span>·</span>
@@ -93,7 +93,7 @@ export function DailyAnalysis({ assets }: Props) {
     setLoading(true);
     try {
       const res = await fetch(
-        `/api/assets/news?symbols=${encodeURIComponent(symbols.join(","))}`
+        `/api/assets/news?symbols=${encodeURIComponent(symbols.join(","))}`,
       );
       const data = await res.json();
       setResults(data.results ?? []);

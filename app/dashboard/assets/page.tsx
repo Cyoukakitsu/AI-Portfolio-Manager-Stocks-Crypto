@@ -4,13 +4,13 @@ import { getAllTransactions } from "@/server/transactions";
 
 import { AssetsTable } from "@/components/custom/assets/data-table";
 import { AssetForm } from "@/components/custom/assets/data-form";
-import { TotalReturnCard } from "@/components/custom/assets/total-return-card";
 import { TotalAssetCard } from "@/components/custom/assets/total-asset-card";
 import { PortfolioCandlestickChart } from "@/components/custom/assets/portfolio-candlestick-chart";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, Database, Newspaper } from "lucide-react";
+import { LayoutDashboard, Database, Newspaper, Bot } from "lucide-react";
 import { DailyAnalysis } from "@/components/custom/assets/daily-analysis";
+import { PortfolioAISummary } from "@/components/custom/assets/portfolio-ai-summary";
 
 /* ─────────────────────────────────────────
    Icon accent colours  (mirrors stocks page)
@@ -108,9 +108,13 @@ export default async function Assets() {
       </div>
 
       {/* ── KPI cards ── */}
-      <div className="grid gap-4 sm:grid-cols-2">
-        <TotalAssetCard assets={list} />
-        <TotalReturnCard assets={list} />
+      <div className="grid gap-4 grid-cols-3">
+        <div className="col-span-2">
+          <TotalAssetCard assets={list} />
+        </div>
+        <WidgetCard icon={Bot} title="AI Portfolio Summary" accent="amber">
+          <PortfolioAISummary assets={list} />
+        </WidgetCard>
       </div>
 
       {/* ── Charts row ── */}

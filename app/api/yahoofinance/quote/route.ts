@@ -14,8 +14,9 @@ export async function GET(req: NextRequest) {
     const quote = await yf.quote(symbol);
 
     const price = quote.regularMarketPrice ?? null;
+    const prevClose = quote.regularMarketPreviousClose ?? null;
 
-    return NextResponse.json({ price });
+    return NextResponse.json({ price, prevClose });
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch quote" },

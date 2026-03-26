@@ -9,8 +9,13 @@ import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 type Props = { assets: Asset[] };
 
 export function TotalAssetCard({ assets }: Props) {
-  const { totalValue, totalReturn, totalReturnPct, todayReturn, todayReturnPct } =
-    useAssetReturn({ assets });
+  const {
+    totalValue,
+    totalReturn,
+    totalReturnPct,
+    todayReturn,
+    todayReturnPct,
+  } = useAssetReturn({ assets });
 
   const todayColor =
     todayReturn >= 0
@@ -61,8 +66,16 @@ export function TotalAssetCard({ assets }: Props) {
     rawReturn.set(totalReturn);
     rawPct.set(totalReturnPct ?? 0);
   }, [
-    totalValue, todayReturn, todayReturnPct, totalReturn, totalReturnPct,
-    rawValue, rawToday, rawTodayPct, rawReturn, rawPct,
+    totalValue,
+    todayReturn,
+    todayReturnPct,
+    totalReturn,
+    totalReturnPct,
+    rawValue,
+    rawToday,
+    rawTodayPct,
+    rawReturn,
+    rawPct,
   ]);
 
   return (
@@ -72,11 +85,13 @@ export function TotalAssetCard({ assets }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" as const }}
     >
-      <div className="flex items-center gap-3 px-5 py-2.5 border-b border-border/60">
-        <span className="flex items-center justify-center h-6 w-6 rounded-lg shrink-0 bg-amber-500/10 text-amber-500 dark:bg-amber-400/10 dark:text-amber-400">
-          <Wallet className="h-3.5 w-3.5" />
+      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-border/60">
+        <span className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 bg-amber-500/10 text-amber-500 dark:bg-amber-400/10 dark:text-amber-400">
+          <Wallet className="h-4 w-4" />
         </span>
-        <span className="text-sm font-semibold tracking-tight">Portfolio Summary</span>
+        <span className="text-sm font-semibold tracking-tight">
+          Portfolio Summary
+        </span>
       </div>
 
       <div className="px-5 py-3 flex flex-1 items-center">
@@ -100,7 +115,9 @@ export function TotalAssetCard({ assets }: Props) {
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-0.5">
               Today Return
             </p>
-            <motion.div className={`text-xl font-bold tabular-nums ${todayColor}`}>
+            <motion.div
+              className={`text-xl font-bold tabular-nums ${todayColor}`}
+            >
               {displayToday}
             </motion.div>
             <motion.p className={`text-xs tabular-nums ${todayColor}`}>
@@ -117,7 +134,9 @@ export function TotalAssetCard({ assets }: Props) {
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-0.5">
               Total Return
             </p>
-            <motion.div className={`text-xl font-bold tabular-nums ${returnColor}`}>
+            <motion.div
+              className={`text-xl font-bold tabular-nums ${returnColor}`}
+            >
               {displayReturn}
             </motion.div>
             <motion.p className={`text-xs tabular-nums ${returnColor}`}>

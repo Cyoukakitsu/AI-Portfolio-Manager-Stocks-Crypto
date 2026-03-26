@@ -31,7 +31,7 @@ type OHLCPoint = {
   close: number;
 };
 
-function getFromDate(range: Range): string {
+function getFromDate(range: Range, firstTransactionDate?: string): string {
   const now = new Date();
 
   if (range === "YTD") {
@@ -39,7 +39,7 @@ function getFromDate(range: Range): string {
   }
 
   if (range === "MAX") {
-    return "1900-01-01";
+    return firstTransactionDate ?? "2020-01-01";
   }
 
   const daysMap: Record<Range, number> = {
@@ -255,9 +255,14 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
       },
       timeScale: {
         borderColor: "rgba(0,0,0,0.1)",
+        // ✅ 新增：不把时间轴右侧留白压缩
+        rightOffset: 5,
+        // ✅ 新增：让蜡烛不会太细，最小宽度保证可读性
+        minBarSpacing: 2,
       },
       rightPriceScale: {
         borderColor: "rgba(0,0,0,0.1)",
+        // ✅ 关键：不从 0 开始，让 Y 轴自动贴合数据范围
       },
     });
 
@@ -274,6 +279,16 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
         wickDownColor: "#ef4444",
       });
       series.setData(chartData);
+
+      // ✅ 在 series 上设置 scaleMargins，让 Y 轴贴合数据范围
+      series.priceScale().applyOptions({
+        autoScale: true,
+        scaleMargins: {
+          top: 0.1,
+          bottom: 0.1,
+        },
+      });
+
       seriesRef.current = series;
     } else {
       // 收益率面积图
@@ -293,6 +308,16 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
         bottomColor: "rgba(99,102,241,0)",
       });
       series.setData(areaData);
+
+      // ✅ 同样在 series 上设置 scaleMargins
+      series.priceScale().applyOptions({
+        autoScale: true,
+        scaleMargins: {
+          top: 0.1,
+          bottom: 0.1,
+        },
+      });
+
       seriesRef.current = series;
     }
 
@@ -325,12 +350,9 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
         <span className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 bg-violet-500/10 text-violet-500 dark:bg-violet-400/10 dark:text-violet-400">
           <TrendingUp className="h-4 w-4" />
         </span>
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-semibold tracking-tight leading-none">Portfolio Value</p>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {view === "usd" ? "Total asset value (USD)" : "Return rate (%)"}
-          </p>
-        </div>
+        <span className="text-sm font-semibold tracking-tight flex-1 truncate">
+          Portfolio Value
+        </span>
 
         {/* controls */}
         <div className="flex items-center gap-2 shrink-0">

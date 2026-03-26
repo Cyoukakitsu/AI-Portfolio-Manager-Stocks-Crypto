@@ -129,15 +129,17 @@ export function PortfolioAISummary({ assets }: Props) {
             テクニカル・ファンダメンタルズ・業界動向を総合分析
           </p>
         </div>
-        <DialogTrigger>
-          <Button
-            size="sm"
-            className="gap-1.5 bg-amber-500 hover:bg-amber-600 text-white"
-            disabled={assets.length === 0}
-          >
-            <Sparkles className="h-3.5 w-3.5" />
-            分析を開始
-          </Button>
+        <DialogTrigger
+          render={
+            <Button
+              size="sm"
+              className="gap-1.5 bg-amber-500 hover:bg-amber-600 text-white"
+              disabled={assets.length === 0}
+            />
+          }
+        >
+          <Sparkles className="h-3.5 w-3.5" />
+          分析を開始
         </DialogTrigger>
       </div>
 

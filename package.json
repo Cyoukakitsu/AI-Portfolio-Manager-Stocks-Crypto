@@ -9,7 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@ai-sdk/google": "^3.0.43",
+    "@ai-sdk/deepseek": "^2.0.26",
     "@ai-sdk/groq": "^3.0.29",
     "@ai-sdk/react": "^3.0.107",
     "@base-ui/react": "^1.1.0",

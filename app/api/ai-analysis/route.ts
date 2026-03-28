@@ -1,71 +1,20 @@
 import { deepseek } from "@ai-sdk/deepseek";
 import { generateText, stepCountIs } from "ai";
+
 import { getStockPrice } from "@/lib/ai/getStockPrice";
 import { getFinancials } from "@/lib/ai/getFinancials";
 import { getNews } from "@/lib/ai/getNews";
+import { cleanJSON, parseAgent } from "@/lib/ai/parse-agent";
+import {
+  ANALYSIS_PROMPT,
+  COORDINATOR_PROMPT,
+  PERSONA_PROMPTS,
+} from "@/lib/ai/prompts";
 
-// 初始化 DeepSeek
-
-// 每个投资大师的 system prompt（完全不变）
-const PERSONA_PROMPTS: Record<string, string> = {
-  buffett: `You are Warren Buffett, a value investor. 
-You focus on: moat, ROE, free cash flow, long-term holding.
-Analyze the stock from a value investing perspective.
-Respond in JSON format exactly like this:
-{
-  "points": ["point1", "point2", "point3"],
-  "score": 75,
-  "verdict": "buy"
-}
-verdict must be one of: "buy", "hold", "sell"`,
-
-  lynch: `You are Peter Lynch, a growth stock investor.
-You focus on: PEG ratio, consumer insights, industry trends, earnings growth.
-Analyze the stock from a growth investing perspective.
-Respond in JSON format exactly like this:
-{
-  "points": ["point1", "point2", "point3"],
-  "score": 75,
-  "verdict": "buy"
-}
-verdict must be one of: "buy", "hold", "sell"`,
-
-  wood: `You are Cathie Wood, a disruptive innovation investor.
-You focus on: TAM, exponential growth, 5-year horizon, technological disruption.
-Analyze the stock from a disruptive innovation perspective.
-Respond in JSON format exactly like this:
-{
-  "points": ["point1", "point2", "point3"],
-  "score": 75,
-  "verdict": "buy"
-}
-verdict must be one of: "buy", "hold", "sell"`,
-
-  burry: `You are Michael Burry, a contrarian investor.
-You focus on: bubble identification, downside risk, reverse thinking.
-Analyze the stock from a contrarian perspective.
-Respond in JSON format exactly like this:
-{
-  "points": ["point1", "point2", "point3"],
-  "score": 75,
-  "verdict": "buy"
-}
-verdict must be one of: "buy", "hold", "sell"`,
-
-  dalio: `You are Ray Dalio, a macro investor.
-You focus on: debt cycles, monetary policy, global asset allocation.
-Analyze the stock from a macro perspective.
-Respond in JSON format exactly like this:
-{
-  "points": ["point1", "point2", "point3"],
-  "score": 75,
-  "verdict": "buy"
-}
-verdict must be one of: "buy", "hold", "sell"`,
-};
-
-export async function POST(req: Request) {
-  const { symbol, personas } = await req.json();
+//接收前端请求的入口
+export async function POST(requset: Request) {
+  //用户选择的symbol（股票）和两个投资大师
+  const { symbol, personas } = await requset.json();
 
   if (!symbol || !personas || personas.length !== 2) {
     return Response.json(
@@ -74,58 +23,34 @@ export async function POST(req: Request) {
     );
   }
 
-  // 并行跑两个 Agent（换成 deepseek-chat）
+  // 并行跑两个 Agent
   const [result1, result2] = await Promise.all([
     generateText({
       model: deepseek("deepseek-chat"),
       tools: { getStockPrice, getFinancials, getNews },
-      stopWhen: stepCountIs(3),
+      // stepCountIs: 创建停止条件，当步数达到指定计数时停止
+      stopWhen: stepCountIs(5),
       system: PERSONA_PROMPTS[personas[0]],
-      prompt: `Analyze ${symbol} stock. 
-Use the tools to get current price, financials and recent news first, then give your analysis.`,
+      prompt: ANALYSIS_PROMPT(symbol),
     }),
     generateText({
       model: deepseek("deepseek-chat"),
       tools: { getStockPrice, getFinancials, getNews },
-      stopWhen: stepCountIs(3),
+      stopWhen: stepCountIs(5),
       system: PERSONA_PROMPTS[personas[1]],
-      prompt: `Analyze ${symbol} stock.
-Use the tools to get current price, financials and recent news first, then give your analysis.`,
+      prompt: ANALYSIS_PROMPT(symbol),
     }),
   ]);
-
-  const parseAgent = (text: string, persona: string) => {
-    try {
-      const json = JSON.parse(text);
-      return { persona, ...json };
-    } catch {
-      return { persona, points: [text], score: 50, verdict: "hold" };
-    }
-  };
 
   const agentResults = [
     parseAgent(result1.text, personas[0]),
     parseAgent(result2.text, personas[1]),
   ];
 
-  // Coordinator
+  // 总结：最终决策
   const coordinatorResult = await generateText({
     model: deepseek("deepseek-chat"),
-    system: `You are an investment committee coordinator.
-You receive analysis from two investors with different styles.
-Synthesize their views and give a final recommendation.
-Respond in JSON format exactly like this:
-{
-  "verdict": "buy",
-  "score": 72,
-  "summary": "2-3 sentence summary",
-  "keyLevels": {
-    "entry": 210.00,
-    "stopLoss": 195.00,
-    "target": 235.00
-  }
-}
-verdict must be one of: "buy", "hold", "sell"`,
+    system: COORDINATOR_PROMPT,
     prompt: `
 Agent 1 (${personas[0]}): ${JSON.stringify(agentResults[0])}
 Agent 2 (${personas[1]}): ${JSON.stringify(agentResults[1])}
@@ -135,7 +60,7 @@ Synthesize these two perspectives and give your final recommendation for ${symbo
 
   let coordinator;
   try {
-    coordinator = JSON.parse(coordinatorResult.text);
+    coordinator = JSON.parse(cleanJSON(coordinatorResult.text));
   } catch {
     coordinator = {
       verdict: "hold",

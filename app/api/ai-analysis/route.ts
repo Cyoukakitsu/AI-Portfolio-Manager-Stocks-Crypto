@@ -16,17 +16,37 @@ export async function POST(requset: Request) {
   //用户选择的symbol（股票）和两个投资大师
   const { symbol, personas } = await requset.json();
 
-  if (!symbol || !personas || personas.length !== 2) {
+  if (!symbol || !personas || personas.length < 1 || personas.length > 2) {
     return Response.json(
       { error: "symbol and 2 personas are required" },
       { status: 400 },
     );
   }
 
+  // 选了1个 persona：只跑单个 Agent，不跑 Coordinator
+  if (personas.length === 1) {
+    const result = await generateText({
+      model: deepseek("deepseek-reasoner"),
+      tools: { getStockPrice, getFinancials, getNews },
+      stopWhen: stepCountIs(5),
+      system: PERSONA_PROMPTS[personas[0]],
+      prompt: ANALYSIS_PROMPT(symbol),
+    });
+
+    const agentResults = [parseAgent(result.text, personas[0])];
+
+    return Response.json({
+      symbol,
+      agentResults,
+      coordinator: null, // 只有1个 Agent，没有 Coordinator
+      analyzedAt: new Date().toISOString(),
+    });
+  }
+
   // 并行跑两个 Agent
   const [result1, result2] = await Promise.all([
     generateText({
-      model: deepseek("deepseek-chat"),
+      model: deepseek("deepseek-reasoner"),
       tools: { getStockPrice, getFinancials, getNews },
       // stepCountIs: 创建停止条件，当步数达到指定计数时停止
       stopWhen: stepCountIs(5),
@@ -34,7 +54,7 @@ export async function POST(requset: Request) {
       prompt: ANALYSIS_PROMPT(symbol),
     }),
     generateText({
-      model: deepseek("deepseek-chat"),
+      model: deepseek("deepseek-reasoner"),
       tools: { getStockPrice, getFinancials, getNews },
       stopWhen: stepCountIs(5),
       system: PERSONA_PROMPTS[personas[1]],

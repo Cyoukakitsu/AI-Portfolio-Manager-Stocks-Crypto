@@ -1,19 +1,14 @@
 "use client";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { CoordinatorResult } from "@/types/ai";
 
-type CoordinatorCardProps = {
-  verdict: "buy" | "hold" | "sell";
-  score: number;
-  summary: string;
-  keyLevels: {
-    entry: number;
-    stopLoss: number;
-    target: number;
-  };
-};
-
-export function CoordinatorCard({ summary, keyLevels }: CoordinatorCardProps) {
+export function CoordinatorCard({
+  verdict,
+  score,
+  summary,
+  keyLevels,
+}: CoordinatorResult) {
   const risk = keyLevels.entry - keyLevels.stopLoss;
   const reward = keyLevels.target - keyLevels.entry;
   const ratio = (reward / risk).toFixed(1);

@@ -1,11 +1,19 @@
 "use client";
+
+import { AgentPersona } from "@/types/ai";
+
 type AgentSelectorProps = {
-  selected: string[];
-  onChange: (personas: string[]) => void;
+  selected: AgentPersona[];
+  onChange: (personas: AgentPersona[]) => void;
   disabled: boolean;
 };
 
-const PERSONAS = [
+const PERSONAS: {
+  id: AgentPersona;
+  name: string;
+  title: string;
+  emoji: string;
+}[] = [
   {
     id: "buffett",
     name: "Warren Buffett",
@@ -43,7 +51,7 @@ export function AgentSelector({
   onChange,
   disabled,
 }: AgentSelectorProps) {
-  const handleClick = (id: string) => {
+  const handleClick = (id: AgentPersona) => {
     if (disabled) return;
 
     if (selected.includes(id)) {
@@ -81,7 +89,9 @@ export function AgentSelector({
               <span className="text-2xl">{persona.emoji}</span>
               <p className="text-xs font-medium">{persona.name}</p>
               <p className="text-xs text-muted-foreground">{persona.title}</p>
-              {isSelected && <span className="text-xs text-primary">Selected</span>}
+              {isSelected && (
+                <span className="text-xs text-primary">Selected</span>
+              )}
             </button>
           );
         })}

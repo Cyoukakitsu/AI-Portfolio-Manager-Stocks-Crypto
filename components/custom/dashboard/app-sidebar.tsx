@@ -2,7 +2,12 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { LayoutDashboard, TrendingUp, Bitcoin } from "lucide-react";
+import {
+  LayoutDashboard,
+  TrendingUp,
+  Bitcoin,
+  BrainCircuit,
+} from "lucide-react";
 import { motion } from "motion/react";
 
 import { SearchForm } from "@/components/custom/dashboard/search-form";
@@ -51,6 +56,17 @@ const data = {
         {
           title: "Market Overview",
           url: "/dashboard/crypto",
+        },
+      ],
+    },
+    {
+      title: "AI Analysis",
+      icon: BrainCircuit,
+      url: "#",
+      items: [
+        {
+          title: "Multi-Agent Analysis",
+          url: "/dashboard/ai",
         },
       ],
     },

@@ -1,12 +1,12 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
+import { CoordinatorResult } from "@/types/ai";
 
-type VerdictBannerProps = {
-  verdict: "buy" | "hold" | "sell";
-  score: number;
-  summary: string;
-};
+type VerdictBannerProps = Pick<
+  CoordinatorResult,
+  "verdict" | "score" | "summary"
+>;
 
 const VERDICT_MAP = {
   buy: "Buy",

@@ -9,13 +9,16 @@ const yf = new YahooFinance();
 
 export const getStockPrice = tool({
   description:
-    "Get the current real-time price of a stock or crypto asset by its symbol.",
+    "Get the current real-time price of a stock or crypto or etf asset by its symbol.",
   inputSchema: z.object({
     symbol: z
       .string()
-      .describe("The stock or crypto symbol, e.g. AAPL, BTC-USD"),
+      .describe("The stock or crypto or etf symbol, e.g. AAPL, BTC-USD, SPY"),
   }),
+
+  //AI 传入的参数只能包含inputSchema中定义的symbol字段
   strict: true,
+
   execute: async ({ symbol }) => {
     const quote = await yf.quote(symbol);
 

@@ -1,3 +1,5 @@
+import { AgentResult, AgentPersona } from "@/types/ai";
+
 //清洗 AI 回答 + 解析成 JSON
 export const cleanJSON = (text: string) => {
   const match = text.match(/\{[\s\S]*\}/);
@@ -6,7 +8,7 @@ export const cleanJSON = (text: string) => {
 };
 
 //只提取大括号里的 JSON 内容
-export const parseAgent = (text: string, persona: string) => {
+export const parseAgent = (text: string, persona: AgentPersona): AgentResult => {
   try {
     const json = JSON.parse(cleanJSON(text));
     //成功了就把AI的回答解析成 JSON

@@ -2,16 +2,12 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { AgentPersona, AgentResult } from "@/types/ai";
 
-type AgentCardProps = {
-  persona: string;
-  score: number;
-  verdict: "buy" | "hold" | "sell";
-  points: string[];
-};
+type AgentCardProps = AgentResult;
 
 const PERSONA_META: Record<
-  string,
+  AgentPersona,
   { name: string; emoji: string; role: string }
 > = {
   buffett: {

@@ -2,38 +2,13 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AgentPersona, AgentResult } from "@/types/ai";
+import { AgentResult, PERSONA_META, VERDICT_LABEL, VERDICT_STYLE } from "@/types/ai";
 
 type AgentCardProps = AgentResult;
 
-const PERSONA_META: Record<
-  AgentPersona,
-  { name: string; emoji: string; role: string }
-> = {
-  buffett: {
-    name: "Warren Buffett",
-    emoji: "🏛️",
-    role: "Father of Value Investing",
-  },
-  lynch: { name: "Peter Lynch", emoji: "📈", role: "Growth Stock Hunter" },
-  wood: {
-    name: "Cathie Wood",
-    emoji: "🚀",
-    role: "Queen of Disruptive Innovation",
-  },
-  burry: { name: "Michael Burry", emoji: "🐻", role: "Contrarian Master" },
-  dalio: { name: "Ray Dalio", emoji: "🌏", role: "Macro Cycle Hunter" },
-};
-
-const VERDICT_MAP = {
-  buy: "Buy",
-  hold: "Hold",
-  sell: "Sell",
-};
-
 export function AgentCard({ persona, score, verdict, points }: AgentCardProps) {
   const meta = PERSONA_META[persona];
-  const verdictLabel = VERDICT_MAP[verdict];
+  const verdictLabel = VERDICT_LABEL[verdict];
 
   return (
     <Card>
@@ -47,15 +22,26 @@ export function AgentCard({ persona, score, verdict, points }: AgentCardProps) {
               <p className="text-xs text-muted-foreground">{meta.role}</p>
             </div>
           </div>
-          {/* 右侧：verdict badge + 评分 */}
-          <div className="flex items-center gap-2">
-            <Badge>{verdictLabel}</Badge>
-            <span className="text-lg font-medium">{score}</span>
-          </div>
+          {/* 右侧：verdict badge */}
+          <Badge className={VERDICT_STYLE[verdict]}>{verdictLabel}</Badge>
         </div>
       </CardHeader>
 
       <CardContent>
+        {/* 分数进度条 */}
+        <div className="mb-4 space-y-1.5">
+          <div className="flex justify-between text-xs text-muted-foreground">
+            <span>Score</span>
+            <span className="font-medium text-foreground">{score} / 100</span>
+          </div>
+          <div className="h-1.5 rounded-full bg-muted overflow-hidden">
+            <div
+              className="h-full bg-primary rounded-full transition-all duration-700"
+              style={{ width: `${score}%` }}
+            />
+          </div>
+        </div>
+
         {/* 3个分析观点 */}
         <ul className="space-y-2">
           {points.map((point, index) => (

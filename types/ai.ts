@@ -9,6 +9,9 @@ export type AgentPersona =
   | "burry" // 迈克尔·伯里：逆向思维，泡沫识别
   | "dalio"; // 瑞·达利欧：宏观周期，全球配置
 
+/** 分析结论方向 */
+export type Verdict = "buy" | "hold" | "sell";
+
 /**
  * 单个 Agent 的分析结论
  * 由 generateText + maxSteps 跑完后返回
@@ -17,14 +20,14 @@ export type AgentResult = {
   persona: AgentPersona;
   points: string[]; // 3个核心观点
   score: number; // 0-100
-  verdict: "buy" | "hold" | "sell";
+  verdict: Verdict;
 };
 
 /**
  * Coordinator 的综合结论
  */
 export type CoordinatorResult = {
-  verdict: "buy" | "hold" | "sell";
+  verdict: Verdict;
   score: number;
   summary: string;
   keyLevels: {
@@ -45,19 +48,30 @@ export type AnalysisResult = {
   analyzedAt: string; // ISO 时间字符串
 };
 
-/**
- * 前端页面状态
- */
-export type AnalysisStatus =
-  | "idle" // 初始状态
-  | "fetching" // 正在拉取股票数据
-  | "analyzing" // Agent 分析中
-  | "done" // 完成
-  | "error"; // 出错
+// ── 共享 UI 常量 ────────────────────────────────────────────
 
-export type AnalysisState = {
-  status: AnalysisStatus;
-  currentPersona: AgentPersona | "coordinator" | null;
-  result: AnalysisResult | null;
-  error: string | null;
+/** 各分析师的展示信息 */
+export const PERSONA_META: Record<
+  AgentPersona,
+  { name: string; emoji: string; role: string }
+> = {
+  buffett: { name: "Warren Buffett", emoji: "🏛️", role: "Father of Value Investing" },
+  lynch:   { name: "Peter Lynch",    emoji: "📈", role: "Growth Stock Hunter" },
+  wood:    { name: "Cathie Wood",    emoji: "🚀", role: "Queen of Disruptive Innovation" },
+  burry:   { name: "Michael Burry",  emoji: "🐻", role: "Contrarian Master" },
+  dalio:   { name: "Ray Dalio",      emoji: "🌏", role: "Macro Cycle Hunter" },
+};
+
+/** verdict 的展示文字 */
+export const VERDICT_LABEL: Record<Verdict, string> = {
+  buy:  "Buy",
+  hold: "Hold",
+  sell: "Sell",
+};
+
+/** verdict 的 badge 样式 */
+export const VERDICT_STYLE: Record<Verdict, string> = {
+  buy:  "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800",
+  hold: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800",
+  sell: "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800",
 };

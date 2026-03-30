@@ -1,18 +1,21 @@
 "use client";
 
+import { AgentPersona, PERSONA_META } from "@/types/ai";
+
 type ProgressStepsProps = {
   currentStep: "fetching" | "agent1" | "agent2" | "coordinator" | "done" | null;
+  personas?: AgentPersona[];
 };
 
-const STEPS = [
-  { id: "fetching", label: "Fetching Data" },
-  { id: "agent1", label: "Analyst 1" },
-  { id: "agent2", label: "Analyst 2" },
-  { id: "coordinator", label: "Final Verdict" },
-];
-
-export function ProgressSteps({ currentStep }: ProgressStepsProps) {
+export function ProgressSteps({ currentStep, personas = [] }: ProgressStepsProps) {
   if (!currentStep) return null;
+
+  const STEPS = [
+    { id: "fetching", label: "Fetching Data" },
+    { id: "agent1", label: personas[0] ? PERSONA_META[personas[0]].name : "Analyst 1" },
+    { id: "agent2", label: personas[1] ? PERSONA_META[personas[1]].name : "Analyst 2" },
+    { id: "coordinator", label: "Final Verdict" },
+  ];
 
   // 当前步骤的索引，done 表示全部完成
   const currentIndex =
@@ -38,7 +41,7 @@ export function ProgressSteps({ currentStep }: ProgressStepsProps) {
                   isDone
                     ? "bg-primary text-primary-foreground"
                     : isActive
-                      ? "border-2 border-primary text-primary"
+                      ? "border-2 border-primary text-primary animate-pulse"
                       : "border border-border text-muted-foreground"
                 }
               `}
@@ -58,7 +61,7 @@ export function ProgressSteps({ currentStep }: ProgressStepsProps) {
             {/* 连接线 */}
             {index < STEPS.length - 1 && (
               <div
-                className={`h-px flex-1 mx-1 ${isDone ? "bg-primary" : "bg-border"}`}
+                className={`h-px flex-1 mx-1 transition-colors duration-500 ${isDone ? "bg-primary" : "bg-border"}`}
               />
             )}
           </div>

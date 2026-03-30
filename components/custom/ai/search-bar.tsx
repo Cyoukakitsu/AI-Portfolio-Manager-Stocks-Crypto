@@ -32,6 +32,7 @@ export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
       <Button
         onClick={handleSubmit}
         disabled={disabled || isLoading || !symbol.trim()}
+        className="rounded-3xl px-6"
       >
         {isLoading ? "Loading..." : "Analyze"}
       </Button>

@@ -1,7 +1,8 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { CoordinatorResult } from "@/types/ai";
+import { CoordinatorResult, VERDICT_LABEL, VERDICT_STYLE } from "@/types/ai";
 
 export function CoordinatorCard({
   verdict,
@@ -23,6 +24,18 @@ export function CoordinatorCard({
               <p className="text-sm font-medium">Coordinator</p>
               <p className="text-xs text-muted-foreground">Final Verdict</p>
             </div>
+          </div>
+          {/* verdict 标签 + score 进度条 */}
+          <div className="flex items-center gap-3">
+            <Badge className={`text-sm px-3 py-1 ${VERDICT_STYLE[verdict]}`}>{VERDICT_LABEL[verdict]}</Badge>
+            <span className="text-sm text-muted-foreground">Score</span>
+            <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
+              <div
+                className="h-full bg-primary rounded-full"
+                style={{ width: `${score}%` }}
+              />
+            </div>
+            <span className="text-sm font-medium">{score}</span>
           </div>
         </div>
       </CardHeader>

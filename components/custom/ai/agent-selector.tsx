@@ -1,6 +1,6 @@
 "use client";
 
-import { AgentPersona } from "@/types/ai";
+import { AgentPersona, PERSONA_META } from "@/types/ai";
 
 type AgentSelectorProps = {
   selected: AgentPersona[];
@@ -8,43 +8,8 @@ type AgentSelectorProps = {
   disabled: boolean;
 };
 
-const PERSONAS: {
-  id: AgentPersona;
-  name: string;
-  title: string;
-  emoji: string;
-}[] = [
-  {
-    id: "buffett",
-    name: "Warren Buffett",
-    title: "Father of Value Investing",
-    emoji: "🏛️",
-  },
-  {
-    id: "lynch",
-    name: "Peter Lynch",
-    title: "Growth Stock Hunter",
-    emoji: "📈",
-  },
-  {
-    id: "wood",
-    name: "Cathie Wood",
-    title: "Queen of Disruptive Innovation",
-    emoji: "🚀",
-  },
-  {
-    id: "burry",
-    name: "Michael Burry",
-    title: "Contrarian Master",
-    emoji: "🐻",
-  },
-  {
-    id: "dalio",
-    name: "Ray Dalio",
-    title: "Macro Cycle Hunter",
-    emoji: "🌏",
-  },
-];
+// AgentPersona 的所有值，顺序固定
+const PERSONA_IDS: AgentPersona[] = ["buffett", "lynch", "wood", "burry", "dalio"];
 
 export function AgentSelector({
   selected,
@@ -70,14 +35,15 @@ export function AgentSelector({
         </p>
       </div>
       <div className="grid grid-cols-5 gap-2">
-        {PERSONAS.map((persona) => {
-          const isSelected = selected.includes(persona.id);
+        {PERSONA_IDS.map((id) => {
+          const meta = PERSONA_META[id];
+          const isSelected = selected.includes(id);
           const isDisabled = disabled || (selected.length >= 2 && !isSelected);
 
           return (
             <button
-              key={persona.id}
-              onClick={() => handleClick(persona.id)}
+              key={id}
+              onClick={() => handleClick(id)}
               disabled={isDisabled}
               className={`
     flex flex-col items-center gap-1 rounded-lg border p-3
@@ -86,9 +52,9 @@ export function AgentSelector({
     ${isDisabled && !isSelected ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
   `}
             >
-              <span className="text-2xl">{persona.emoji}</span>
-              <p className="text-xs font-medium">{persona.name}</p>
-              <p className="text-xs text-muted-foreground">{persona.title}</p>
+              <span className="text-2xl">{meta.emoji}</span>
+              <p className="text-xs font-medium">{meta.name}</p>
+              <p className="text-xs text-muted-foreground">{meta.role}</p>
               {isSelected && (
                 <span className="text-xs text-primary">Selected</span>
               )}

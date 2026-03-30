@@ -1,23 +1,17 @@
 "use client";
 
 import { Badge } from "@/components/ui/badge";
-import { CoordinatorResult } from "@/types/ai";
+import { CoordinatorResult, VERDICT_LABEL, VERDICT_STYLE } from "@/types/ai";
 
 type VerdictBannerProps = Pick<
   CoordinatorResult,
   "verdict" | "score" | "summary"
 >;
 
-const VERDICT_MAP = {
-  buy: "Buy",
-  hold: "Hold",
-  sell: "Sell",
-};
-
 export function VerdictBanner({ verdict, score, summary }: VerdictBannerProps) {
   return (
     <div className="flex items-center gap-4 rounded-lg border p-4">
-      <Badge className="text-sm px-3 py-1">{VERDICT_MAP[verdict]}</Badge>
+      <Badge className={`text-sm px-3 py-1 ${VERDICT_STYLE[verdict]}`}>{VERDICT_LABEL[verdict]}</Badge>
       <span className="text-sm text-muted-foreground">Score</span>
       <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
         <div

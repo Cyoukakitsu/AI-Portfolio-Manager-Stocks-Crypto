@@ -1,6 +1,6 @@
 import { AppSidebar } from "@/components/custom/dashboard/app-sidebar";
 import { DashboardBreadcrumb } from "@/components/custom/dashboard/dashboard-breadcrumb";
-import { ModeToggle } from "@/components/custom/dashboard/mode-toggle";
+import { HeaderControls } from "@/components/custom/dashboard/header-controls";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -25,7 +25,7 @@ export default function DashboardLayout({
           />
           <DashboardBreadcrumb />
           <div className="ml-auto">
-            <ModeToggle />
+            <HeaderControls />
           </div>
         </header>
         <main className="flex flex-1 flex-col">{children}</main>

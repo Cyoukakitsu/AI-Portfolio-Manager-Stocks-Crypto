@@ -1,6 +1,7 @@
 "use client";
 
-import { AgentPersona, PERSONA_META } from "@/types/ai";
+import { AgentPersona } from "@/types/ai";
+import { PERSONA_META } from "@/lib/ai/constants";
 
 type AgentSelectorProps = {
   selected: AgentPersona[];

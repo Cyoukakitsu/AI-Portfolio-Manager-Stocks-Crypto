@@ -2,7 +2,8 @@
 
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { CoordinatorResult, VERDICT_LABEL, VERDICT_STYLE } from "@/types/ai";
+import { CoordinatorResult } from "@/types/ai";
+import { VERDICT_LABEL, VERDICT_STYLE } from "@/lib/ai/constants";
 
 export function CoordinatorCard({
   verdict,

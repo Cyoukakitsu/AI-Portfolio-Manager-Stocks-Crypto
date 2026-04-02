@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "assets": "Your Assets",
+    "personalPortfolio": "Personal Portfolio",
+    "stocks": "Stocks",
+    "marketOverview": "Market Overview",
+    "crypto": "Crypto",
+    "aiAnalysis": "AI Analysis",
+    "multiAgentAnalysis": "Multi-Agent Analysis"
+  },
+  "auth": {
+    "signIn": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your portfolio account",
+      "email": "Email",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "signingIn": "Signing in…",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up"
+    },
+    "signUp": {
+      "title": "Create your account",
+      "subtitle": "Start tracking your portfolio in minutes",
+      "fullName": "Full Name",
+      "email": "Email",
+      "emailHint": "We'll use this to contact you.",
+      "password": "Password",
+      "passwordHint": "Must be at least 6 characters.",
+      "confirmPassword": "Confirm Password",
+      "confirmHint": "Please confirm your password.",
+      "creating": "Creating account…",
+      "submit": "Create Account",
+      "hasAccount": "Already have an account?",
+      "signIn": "Sign in"
+    },
+    "layout": {
+      "tracking": {
+        "title": "Real-Time Portfolio Tracking",
+        "desc": "Stocks, ETFs & crypto unified in one dashboard"
+      },
+      "ai": {
+        "title": "AI-Powered Insights",
+        "desc": "Smart analysis tailored to your holdings"
+      },
+      "security": {
+        "title": "Secure & Private",
+        "desc": "Bank-grade encryption for all your data"
+      }
+    }
+  },
+  "home": {
+    "tagline": "Track your stocks and crypto with AI-powered insights.",
+    "signIn": "Sign In",
+    "signUp": "Sign Up"
+  },
+  "aiSummary": {
+    "analyzing": "AI analyzing...",
+    "reanalyze": "Re-analyze",
+    "title": "AI Portfolio Analysis",
+    "description": "Comprehensive analysis of technical, fundamental & industry trends",
+    "emptyState": "Add holdings to see AI analysis",
+    "startAnalysis": "Start Analysis",
+    "fetchError": "Failed to fetch analysis. Please retry."
+  },
+  "progressSteps": {
+    "fetchingData": "Fetching Data",
+    "analyst1": "Analyst 1",
+    "analyst2": "Analyst 2",
+    "finalVerdict": "Final Verdict"
+  },
+  "verdict": {
+    "score": "Score"
+  }
+}

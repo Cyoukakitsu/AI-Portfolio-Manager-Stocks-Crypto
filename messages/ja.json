@@ -1,0 +1,76 @@
+{
+  "nav": {
+    "assets": "アセット",
+    "personalPortfolio": "ポートフォリオ",
+    "stocks": "株式",
+    "marketOverview": "マーケット概況",
+    "crypto": "暗号資産",
+    "aiAnalysis": "AI分析",
+    "multiAgentAnalysis": "マルチエージェント分析"
+  },
+  "auth": {
+    "signIn": {
+      "title": "おかえりなさい",
+      "subtitle": "ポートフォリオアカウントにサインイン",
+      "email": "メールアドレス",
+      "password": "パスワード",
+      "forgotPassword": "パスワードをお忘れの方",
+      "signingIn": "サインイン中…",
+      "submit": "サインイン",
+      "noAccount": "アカウントをお持ちでない方は",
+      "signUp": "新規登録"
+    },
+    "signUp": {
+      "title": "アカウントを作成",
+      "subtitle": "数分でポートフォリオの管理を始めましょう",
+      "fullName": "氏名",
+      "email": "メールアドレス",
+      "emailHint": "連絡用に使用します。",
+      "password": "パスワード",
+      "passwordHint": "6文字以上で入力してください。",
+      "confirmPassword": "パスワード（確認）",
+      "confirmHint": "パスワードを再入力してください。",
+      "creating": "アカウント作成中…",
+      "submit": "アカウントを作成",
+      "hasAccount": "すでにアカウントをお持ちの方は",
+      "signIn": "サインイン"
+    },
+    "layout": {
+      "tracking": {
+        "title": "リアルタイム資産追跡",
+        "desc": "株式・ETF・暗号資産を一つのダッシュボードで管理"
+      },
+      "ai": {
+        "title": "AIによるインサイト",
+        "desc": "保有資産に最適化されたスマート分析"
+      },
+      "security": {
+        "title": "安全・プライベート",
+        "desc": "銀行レベルの暗号化でデータを保護"
+      }
+    }
+  },
+  "home": {
+    "tagline": "AIを活用して株式と暗号資産をトラッキング。",
+    "signIn": "サインイン",
+    "signUp": "新規登録"
+  },
+  "aiSummary": {
+    "analyzing": "AI分析中...",
+    "reanalyze": "再分析",
+    "title": "AIポートフォリオ分析",
+    "description": "テクニカル・ファンダメンタルズ・業界動向を総合分析",
+    "emptyState": "持ち株を追加するとAI分析が表示されます",
+    "startAnalysis": "分析を開始",
+    "fetchError": "分析の取得に失敗しました。再試行してください。"
+  },
+  "progressSteps": {
+    "fetchingData": "データ取得中",
+    "analyst1": "アナリスト 1",
+    "analyst2": "アナリスト 2",
+    "finalVerdict": "最終判定"
+  },
+  "verdict": {
+    "score": "スコア"
+  }
+}

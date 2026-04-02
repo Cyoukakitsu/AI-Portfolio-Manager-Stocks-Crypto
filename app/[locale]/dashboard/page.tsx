@@ -1,7 +1,12 @@
-import { redirect } from "@/i18n/navigation";
+import { redirect } from "next/navigation";
 
-const DashboardPage = () => {
-  redirect("/dashboard/assets");
+const DashboardPage = async ({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) => {
+  const { locale } = await params;
+  redirect(`/${locale}/dashboard/assets`);
 };
 
 export default DashboardPage;

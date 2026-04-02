@@ -1,17 +1,24 @@
-import { type NextRequest } from "next/server";
+import createMiddleware from "next-intl/middleware";
+import { routing } from "@/i18n/routing";
 import { updateSession } from "@/lib/supabase/middleware";
+import type { NextRequest } from "next/server";
+
+const handleI18nRouting = createMiddleware(routing);
+
 export async function proxy(request: NextRequest) {
-  return await updateSession(request);
+  const i18nResponse = handleI18nRouting(request);
+
+  // next-intl がリダイレクト（/ → /ja/）を発行した場合はそのまま返す
+  if (i18nResponse.status !== 200) {
+    return i18nResponse;
+  }
+
+  // Supabase session 更新 + 認証ガード
+  return updateSession(request);
 }
+
 export const config = {
   matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * Feel free to modify this pattern to include more paths.
-     */
     "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
 };

@@ -50,13 +50,15 @@ export async function updateSession(request: NextRequest) {
 
   // 未登录 且 访问的不是公开页面 → 重定向到登录页
   // 注意：/sign-in 和 /sign-up 必须放行，否则会造成重定向死循环
+  const pathname = request.nextUrl.pathname;
+  const locale = pathname.split("/")[1] || "ja";
   if (
     !user &&
-    !request.nextUrl.pathname.startsWith("/sign-in") &&
-    !request.nextUrl.pathname.startsWith("/sign-up")
+    !pathname.includes("/sign-in") &&
+    !pathname.includes("/sign-up")
   ) {
     const url = request.nextUrl.clone();
-    url.pathname = "/sign-in";
+    url.pathname = `/${locale}/sign-in`;
     return NextResponse.redirect(url);
   }
 

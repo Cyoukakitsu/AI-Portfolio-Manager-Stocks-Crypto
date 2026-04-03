@@ -3,6 +3,7 @@
 import { useCallback, useRef, useState } from "react";
 import type { Asset } from "@/types/global";
 import { Bot, RefreshCw, Sparkles } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -16,6 +17,7 @@ import ReactMarkdown from "react-markdown";
 type Props = { assets: Asset[] };
 
 function AnalysisContent({ assets }: Props) {
+  const t = useTranslations("aiSummary");
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
@@ -48,7 +50,7 @@ function AnalysisContent({ assets }: Props) {
       setLastUpdated(new Date());
     } catch (e: unknown) {
       if (e instanceof Error && e.name !== "AbortError") {
-        setText("分析の取得に失敗しました。再試行してください。");
+        setText(t("fetchError"));
       }
     } finally {
       setLoading(false);
@@ -68,7 +70,7 @@ function AnalysisContent({ assets }: Props) {
       <div className="flex items-center justify-between">
         <span className="text-[11px] text-muted-foreground">
           {loading
-            ? "AI分析中..."
+            ? t("analyzing")
             : lastUpdated
               ? `更新: ${lastUpdated.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}`
               : ""}
@@ -81,7 +83,7 @@ function AnalysisContent({ assets }: Props) {
           disabled={loading}
         >
           <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
-          再分析
+          {t("reanalyze")}
         </Button>
       </div>
 
@@ -108,7 +110,7 @@ function AnalysisContent({ assets }: Props) {
           </div>
         ) : assets.length === 0 ? (
           <p className="text-[12px] text-muted-foreground text-center mt-8">
-            持ち株を追加すると AI 分析が表示されます
+            {t("emptyState")}
           </p>
         ) : null}
       </div>
@@ -117,6 +119,7 @@ function AnalysisContent({ assets }: Props) {
 }
 
 export function PortfolioAISummary({ assets }: Props) {
+  const t = useTranslations("aiSummary");
   const [open, setOpen] = useState(false);
 
   return (
@@ -124,9 +127,9 @@ export function PortfolioAISummary({ assets }: Props) {
       {/* Card body — minimal, no content overflow */}
       <div className="px-5 py-4 flex flex-col items-center justify-center gap-3 text-center">
         <div>
-          <p className="text-[13px] font-medium">AI ポートフォリオ分析</p>
+          <p className="text-[13px] font-medium">{t("title")}</p>
           <p className="text-[11px] text-muted-foreground mt-0.5">
-            テクニカル・ファンダメンタルズ・業界動向を総合分析
+            {t("description")}
           </p>
         </div>
         <DialogTrigger
@@ -139,7 +142,7 @@ export function PortfolioAISummary({ assets }: Props) {
           }
         >
           <Sparkles className="h-3.5 w-3.5" />
-          分析を開始
+          {t("startAnalysis")}
         </DialogTrigger>
       </div>
 
@@ -147,7 +150,7 @@ export function PortfolioAISummary({ assets }: Props) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <Bot className="h-4 w-4 text-violet-500" />
-            AI ポートフォリオ分析
+            {t("title")}
           </DialogTitle>
         </DialogHeader>
         {open && <AnalysisContent assets={assets} />}

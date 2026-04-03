@@ -72,5 +72,48 @@
   },
   "verdict": {
     "score": "スコア"
+  },
+  "pages": {
+    "assets": {
+      "title": "ポートフォリオ",
+      "subtitle": "保有資産・リターン・配分をリアルタイムで管理",
+      "aiSummaryWidget": "AIポートフォリオ分析",
+      "dailyAnalysisWidget": "デイリー分析",
+      "allAssetsWidget": "保有資産一覧",
+      "addAsset": "資産を追加",
+      "footer": "Yahoo Finance 提供のリアルタイムデータ · 更新: "
+    },
+    "stocks": {
+      "title": "株式マーケット",
+      "subtitle": "リアルタイムチャート・ヒートマップ・市場データ・ニュース",
+      "globalData": "グローバルデータ",
+      "liveUpdates": "リアルタイム更新",
+      "liveTicker": "ライブティッカー",
+      "streaming": "ストリーミング",
+      "liveChart": "ライブチャート",
+      "heatmap": "ヒートマップ",
+      "topStories": "ニュース",
+      "marketData": "市場データ",
+      "footer": "TradingView 提供 · 更新: "
+    },
+    "crypto": {
+      "title": "暗号資産マーケット",
+      "subtitle": "リアルタイム価格・ヒートマップ・チャート・換算ツール",
+      "globalData": "グローバルデータ",
+      "liveUpdates": "リアルタイム更新",
+      "top100Coins": "上位100コイン",
+      "livePrices": "ライブ価格",
+      "streaming": "ストリーミング",
+      "coinCompareChart": "コイン比較チャート",
+      "marketHeatmap": "マーケットヒートマップ",
+      "converter": "換算ツール",
+      "topCoins": "上位コイン"
+    },
+    "ai": {
+      "title": "AI分析",
+      "subtitle": "アナリストを選択し、銘柄を入力して分析を開始",
+      "analyzing": "分析中、しばらくお待ちください...",
+      "results": "分析結果"
+    }
   }
 }

@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import AdvancedChart from "@/components/custom/stocks/advanced-chart";
 import MarketDataStock from "@/components/custom/stocks/market-data-stock";
 import StockHeatmap from "@/components/custom/stocks/stock-heatmap";
@@ -116,7 +117,9 @@ function StatChip({
 /* ─────────────────────────────────────────
    Page
 ───────────────────────────────────────── */
-export default function Stocks() {
+export default async function Stocks() {
+  const t = await getTranslations("pages.stocks");
+
   return (
     <div className="min-w-0 w-full overflow-x-hidden flex flex-col gap-6 p-6">
       {/* ── Page header ── */}
@@ -126,17 +129,17 @@ export default function Stocks() {
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
               <Activity className="h-4 w-4 text-violet-500" />
             </span>
-            <h1 className="text-2xl font-bold tracking-tight">Stock Market</h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
           </div>
           <p className="text-sm text-muted-foreground pl-10.5">
-            Real-time charts, heatmaps, market data &amp; top stories
+            {t("subtitle")}
           </p>
         </div>
 
         {/* stat chips */}
         <div className="flex flex-wrap gap-2">
-          <StatChip icon={Globe} label="Global Data" accent="blue" />
-          <StatChip icon={Zap} label="Live Updates" accent="amber" />
+          <StatChip icon={Globe} label={t("globalData")} accent="blue" />
+          <StatChip icon={Zap} label={t("liveUpdates")} accent="amber" />
           <StatChip icon={BarChart2} label="S&P 500" accent="emerald" />
         </div>
       </div>
@@ -144,8 +147,8 @@ export default function Stocks() {
       {/* ── Row 1 — Ticker Tape ── */}
       <WidgetCard
         icon={Radio}
-        title="Live Ticker"
-        badge="Streaming"
+        title={t("liveTicker")}
+        badge={t("streaming")}
         accent="amber"
       >
         <div className="py-2 px-4">
@@ -156,7 +159,7 @@ export default function Stocks() {
       {/* ── Row 2 — Advanced Chart ── */}
       <WidgetCard
         icon={TrendingUp}
-        title="Live Chart"
+        title={t("liveChart")}
         badge="AAPL"
         accent="violet"
         className="h-165"
@@ -170,7 +173,7 @@ export default function Stocks() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-w-0">
         <WidgetCard
           icon={Flame}
-          title="Heatmap"
+          title={t("heatmap")}
           badge="SPX500"
           accent="orange"
           className="xl:h-140"
@@ -182,7 +185,7 @@ export default function Stocks() {
 
         <WidgetCard
           icon={Newspaper}
-          title="Top Stories"
+          title={t("topStories")}
           badge="Reuters"
           accent="blue"
           className="xl:h-140"
@@ -196,7 +199,7 @@ export default function Stocks() {
       {/* ── Row 4 — Market Data ── */}
       <WidgetCard
         icon={BarChart2}
-        title="Market Data"
+        title={t("marketData")}
         badge="S&P 500"
         accent="emerald"
         className="h-130"
@@ -213,8 +216,7 @@ export default function Stocks() {
           className="text-center text-xs text-muted-foreground"
           suppressHydrationWarning
         >
-          Powered by TradingView &middot; Updated{" "}
-          {new Date().toLocaleString("en-US")}
+          {t("footer")}{new Date().toLocaleString()}
         </p>
       </div>
     </div>

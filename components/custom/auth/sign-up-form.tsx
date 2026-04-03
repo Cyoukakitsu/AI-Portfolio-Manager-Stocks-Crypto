@@ -9,10 +9,11 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { motion, AnimatePresence } from "motion/react";
+import { useTranslations } from "next-intl";
 
 import { SignUpFormValues, signUpSchema } from "@/lib/schemas/sign-up";
 import GoogleButton from "./google-button";
-import { useRouter } from "next/navigation";
+import { useRouter, Link } from "@/i18n/navigation";
 import { signUp } from "@/server/auth";
 import { toast } from "sonner";
 
@@ -29,6 +30,7 @@ const fieldVariants = {
 };
 
 const SignUpForm = () => {
+  const t = useTranslations("auth.signUp");
   const {
     register,
     handleSubmit,
@@ -73,10 +75,10 @@ const SignUpForm = () => {
           {/* Header */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-card-foreground tracking-tight">
-              Create your account
+              {t("title")}
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Start tracking your portfolio in minutes
+              {t("subtitle")}
             </p>
           </div>
 
@@ -96,7 +98,7 @@ const SignUpForm = () => {
                   htmlFor="name"
                   className="block text-sm font-medium text-foreground"
                 >
-                  Full Name
+                  {t("fullName")}
                 </label>
                 <Input
                   {...register("name")}
@@ -126,7 +128,7 @@ const SignUpForm = () => {
                   htmlFor="email"
                   className="block text-sm font-medium text-foreground"
                 >
-                  Email
+                  {t("email")}
                 </label>
                 <Input
                   {...register("email")}
@@ -155,7 +157,7 @@ const SignUpForm = () => {
                       transition={{ duration: 0.2 }}
                       className="text-xs text-muted-foreground"
                     >
-                      We&apos;ll use this to contact you.
+                      {t("emailHint")}
                     </motion.p>
                   )}
                 </AnimatePresence>
@@ -167,7 +169,7 @@ const SignUpForm = () => {
                   htmlFor="password"
                   className="block text-sm font-medium text-foreground"
                 >
-                  Password
+                  {t("password")}
                 </label>
                 <Input
                   {...register("password")}
@@ -195,7 +197,7 @@ const SignUpForm = () => {
                       transition={{ duration: 0.2 }}
                       className="text-xs text-muted-foreground"
                     >
-                      Must be at least 6 characters.
+                      {t("passwordHint")}
                     </motion.p>
                   )}
                 </AnimatePresence>
@@ -207,7 +209,7 @@ const SignUpForm = () => {
                   htmlFor="confirm-password"
                   className="block text-sm font-medium text-foreground"
                 >
-                  Confirm Password
+                  {t("confirmPassword")}
                 </label>
                 <Input
                   {...register("confirmPassword")}
@@ -235,7 +237,7 @@ const SignUpForm = () => {
                       transition={{ duration: 0.2 }}
                       className="text-xs text-muted-foreground"
                     >
-                      Please confirm your password.
+                      {t("confirmHint")}
                     </motion.p>
                   )}
                 </AnimatePresence>
@@ -248,7 +250,7 @@ const SignUpForm = () => {
                   disabled={isSubmitting}
                   className="w-full cursor-pointer"
                 >
-                  {isSubmitting ? "Creating account…" : "Create Account"}
+                  {isSubmitting ? t("creating") : t("submit")}
                 </Button>
                 <GoogleButton />
               </motion.div>
@@ -258,13 +260,13 @@ const SignUpForm = () => {
                 variants={fieldVariants}
                 className="text-center text-sm text-muted-foreground"
               >
-                Already have an account?{" "}
-                <a
+                {t("hasAccount")}{" "}
+                <Link
                   href="/sign-in"
                   className="text-primary hover:text-primary/80 transition-colors"
                 >
-                  Sign in
-                </a>
+                  {t("signIn")}
+                </Link>
               </motion.p>
             </motion.div>
           </form>

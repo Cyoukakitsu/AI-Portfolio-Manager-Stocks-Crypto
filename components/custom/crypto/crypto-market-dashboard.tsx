@@ -2,6 +2,7 @@
 
 import Script from "next/script";
 import { useTheme } from "next-themes";
+import { useTranslations } from "next-intl";
 import {
   BarChart2,
   ArrowLeftRight,
@@ -233,6 +234,7 @@ function StatChip({
    CryptoMarketDashboard
 ───────────────────────────────────────── */
 export function CryptoMarketDashboard() {
+  const t = useTranslations("pages.crypto");
   return (
     <div className="min-w-0 w-full overflow-x-hidden flex flex-col gap-6 p-6">
       {/* ── Scripts ── */}
@@ -265,27 +267,27 @@ export function CryptoMarketDashboard() {
               <Activity className="h-4.5 w-4.5 text-amber-500" />
             </span>
             <h1 className="text-2xl font-bold tracking-tight">
-              Crypto Markets
+              {t("title")}
             </h1>
           </div>
           <p className="text-sm text-muted-foreground pl-10.5">
-            Real-time prices, heatmaps, charts &amp; conversion tools
+            {t("subtitle")}
           </p>
         </div>
 
         {/* stat chips */}
         <div className="flex flex-wrap gap-2">
-          <StatChip icon={Globe} label="Global Data" accent="blue" />
-          <StatChip icon={Zap} label="Live Updates" accent="amber" />
-          <StatChip icon={TrendingUp} label="Top 100 Coins" accent="emerald" />
+          <StatChip icon={Globe} label={t("globalData")} accent="blue" />
+          <StatChip icon={Zap} label={t("liveUpdates")} accent="amber" />
+          <StatChip icon={TrendingUp} label={t("top100Coins")} accent="emerald" />
         </div>
       </div>
 
       {/* ── Row 1 — Marquee ticker ── */}
       <WidgetCard
         icon={TrendingUp}
-        title="Live Prices"
-        badge="Streaming"
+        title={t("livePrices")}
+        badge={t("streaming")}
         accent="amber"
       >
         <MarqueeWidget />
@@ -295,7 +297,7 @@ export function CryptoMarketDashboard() {
       <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 min-w-0">
         <WidgetCard
           icon={LineChart}
-          title="Coin Compare Chart"
+          title={t("coinCompareChart")}
           badge="BTC"
           accent="violet"
           className="xl:h-145"
@@ -305,7 +307,7 @@ export function CryptoMarketDashboard() {
 
         <WidgetCard
           icon={Flame}
-          title="Market Heatmap"
+          title={t("marketHeatmap")}
           badge="Top 100"
           accent="orange"
           className="xl:h-145"
@@ -318,7 +320,7 @@ export function CryptoMarketDashboard() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0 items-start">
         <WidgetCard
           icon={ArrowLeftRight}
-          title="Converter"
+          title={t("converter")}
           badge="BTC / USD"
           accent="emerald"
           className="lg:col-span-2"
@@ -329,7 +331,7 @@ export function CryptoMarketDashboard() {
 
         <WidgetCard
           icon={BarChart2}
-          title="Top Coins"
+          title={t("topCoins")}
           badge="12 Assets"
           accent="blue"
           className="lg:col-span-1"

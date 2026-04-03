@@ -1,9 +1,10 @@
 "use client";
 
-// AI 分析功能的 “容器 / 外壳组件” ——
+// AI 分析功能的 "容器 / 外壳组件" ——
 //  - 整合全流程的 UI 布局
 //  - 整合基础交互逻辑
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { AgentPersona, AnalysisResult } from "@/types/ai";
 import { SearchBar } from "./search-bar";
 import { AgentSelector } from "./agent-selector";
@@ -12,6 +13,7 @@ import { AgentCard } from "./agent-card";
 import { CoordinatorCard } from "./coordinator-card";
 
 export function AnalysisShell() {
+  const t = useTranslations("pages.ai");
   // 选中的分析师
   const [selected, setSelected] = useState<AgentPersona[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -64,9 +66,9 @@ export function AnalysisShell() {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-xl font-medium">AI Analysis</h1>
+        <h1 className="text-xl font-medium">{t("title")}</h1>
         <p className="text-sm text-muted-foreground mt-1">
-          Select analysts, enter a symbol, and start the analysis
+          {t("subtitle")}
         </p>
       </div>
 
@@ -89,14 +91,14 @@ export function AnalysisShell() {
 
       {isLoading && (
         <p className="text-sm text-muted-foreground">
-          Analyzing, please wait...
+          {t("analyzing")}
         </p>
       )}
 
       {result && (
         <div className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
           <p className="text-xs font-medium tracking-widest text-muted-foreground">
-            RESULTS — {symbol}
+            {t("results")} — {symbol}
           </p>
           {/* 分析结果 */}
           <div className="grid grid-cols-2 gap-4">

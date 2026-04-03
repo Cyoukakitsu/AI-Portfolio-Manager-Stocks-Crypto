@@ -1,30 +1,21 @@
 import Image from "next/image";
-import Link from "next/link";
 import { TrendingUp, ShieldCheck, BotMessageSquare } from "lucide-react";
 import AuthLayoutWrapper from "@/components/custom/auth/auth-layout-wrapper";
 import { HeaderControls } from "@/components/custom/dashboard/header-controls";
-
-const features = [
-  {
-    icon: TrendingUp,
-    title: "Real-Time Portfolio Tracking",
-    desc: "Stocks, ETFs & crypto unified in one dashboard",
-  },
-  {
-    icon: BotMessageSquare,
-    title: "AI-Powered Insights",
-    desc: "Smart analysis tailored to your holdings",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Secure & Private",
-    desc: "Bank-grade encryption for all your data",
-  },
-];
+import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 
 const chartBars = [38, 52, 34, 68, 58, 78, 62, 88, 72, 94, 82, 100];
 
 const layout = async ({ children }: { children: React.ReactNode }) => {
+  const t = await getTranslations("auth.layout");
+
+  const features = [
+    { icon: TrendingUp,       title: t("tracking.title"), desc: t("tracking.desc") },
+    { icon: BotMessageSquare, title: t("ai.title"),       desc: t("ai.desc") },
+    { icon: ShieldCheck,      title: t("security.title"), desc: t("security.desc") },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="flex h-14 shrink-0 items-center justify-end border-b px-4">

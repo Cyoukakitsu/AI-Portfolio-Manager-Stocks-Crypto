@@ -1,7 +1,6 @@
 "use client";
 
 import * as React from "react";
-import Link from "next/link";
 import {
   LayoutDashboard,
   TrendingUp,
@@ -9,6 +8,8 @@ import {
   BrainCircuit,
 } from "lucide-react";
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 import { SearchForm } from "@/components/custom/dashboard/search-form";
 import {
@@ -24,56 +25,32 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar";
 
-const data = {
-  navMain: [
-    {
-      title: "Your Assets",
-      icon: LayoutDashboard,
-      url: "#",
-      items: [
-        {
-          title: "Personal Portfolio",
-          url: "/dashboard/assets",
-        },
-      ],
-    },
-    {
-      title: "Stocks",
-      icon: TrendingUp,
-      url: "#",
-      items: [
-        {
-          title: "Market Overview",
-          url: "/dashboard/stocks",
-        },
-      ],
-    },
-    {
-      title: "Crypto",
-      icon: Bitcoin,
-      url: "#",
-      items: [
-        {
-          title: "Market Overview",
-          url: "/dashboard/crypto",
-        },
-      ],
-    },
-    {
-      title: "AI Analysis",
-      icon: BrainCircuit,
-      url: "#",
-      items: [
-        {
-          title: "Multi-Agent Analysis",
-          url: "/dashboard/ai",
-        },
-      ],
-    },
-  ],
-};
-
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const t = useTranslations("nav");
+
+  const navMain = [
+    {
+      title: t("assets"),
+      icon: LayoutDashboard,
+      items: [{ title: t("personalPortfolio"), url: "/dashboard/assets" }],
+    },
+    {
+      title: t("stocks"),
+      icon: TrendingUp,
+      items: [{ title: t("marketOverview"), url: "/dashboard/stocks" }],
+    },
+    {
+      title: t("crypto"),
+      icon: Bitcoin,
+      items: [{ title: t("marketOverview"), url: "/dashboard/crypto" }],
+    },
+    {
+      title: t("aiAnalysis"),
+      icon: BrainCircuit,
+      items: [{ title: t("multiAgentAnalysis"), url: "/dashboard/ai" }],
+    },
+  ];
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -95,7 +72,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        {data.navMain.map((section, i) => (
+        {navMain.map((section, i) => (
           <motion.div
             key={section.title}
             initial={{ opacity: 0, x: -12 }}

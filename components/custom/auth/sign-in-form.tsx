@@ -10,10 +10,12 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "motion/react";
+import { useTranslations } from "next-intl";
 
 import { signInSchema, SignInFormValues } from "@/lib/schemas/sign-in";
 import GoogleButton from "./google-button";
 import { signIn } from "@/server/auth";
+import { Link } from "@/i18n/navigation";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -29,6 +31,7 @@ const fieldVariants = {
 };
 
 const SignInForm = () => {
+  const t = useTranslations("auth.signIn");
   const {
     register,
     handleSubmit,
@@ -67,10 +70,10 @@ const SignInForm = () => {
           {/* Header */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-card-foreground tracking-tight">
-              Welcome back
+              {t("title")}
             </h2>
             <p className="text-sm text-muted-foreground mt-1">
-              Sign in to your portfolio account
+              {t("subtitle")}
             </p>
           </div>
 
@@ -90,7 +93,7 @@ const SignInForm = () => {
                   htmlFor="email"
                   className="block text-sm font-medium text-foreground"
                 >
-                  Email
+                  {t("email")}
                 </label>
                 <Input
                   {...register("email")}
@@ -121,13 +124,13 @@ const SignInForm = () => {
                     htmlFor="password"
                     className="block text-sm font-medium text-foreground"
                   >
-                    Password
+                    {t("password")}
                   </label>
                   <a
                     href="#"
                     className="text-xs text-primary hover:text-primary/80 transition-colors cursor-pointer"
                   >
-                    Forgot password?
+                    {t("forgotPassword")}
                   </a>
                 </div>
                 <Input
@@ -158,7 +161,7 @@ const SignInForm = () => {
                   disabled={isSubmitting}
                   className="w-full cursor-pointer"
                 >
-                  {isSubmitting ? "Signing in…" : "Sign In"}
+                  {isSubmitting ? t("signingIn") : t("submit")}
                 </Button>
                 <GoogleButton />
               </motion.div>
@@ -168,13 +171,13 @@ const SignInForm = () => {
                 variants={fieldVariants}
                 className="text-center text-sm text-muted-foreground"
               >
-                Don&apos;t have an account?{" "}
-                <a
+                {t("noAccount")}{" "}
+                <Link
                   href="/sign-up"
                   className="text-primary hover:text-primary/80 transition-colors"
                 >
-                  Sign up
-                </a>
+                  {t("signUp")}
+                </Link>
               </motion.p>
             </motion.div>
           </form>

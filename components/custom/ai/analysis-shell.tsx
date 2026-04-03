@@ -1,10 +1,10 @@
-“use client”;
+"use client";
 
-// AI 分析功能的 “容器 / 外壳组件” ——
+// AI 分析功能的 "容器 / 外壳组件" ——
 //  - 整合全流程的 UI 布局
 //  - 整合基础交互逻辑
-import { useState } from “react”;
-import { useTranslations } from “next-intl”;
+import { useState } from "react";
+import { useTranslations } from "next-intl";
 import type { AgentPersona, AnalysisResult } from "@/types/ai";
 import { SearchBar } from "./search-bar";
 import { AgentSelector } from "./agent-selector";

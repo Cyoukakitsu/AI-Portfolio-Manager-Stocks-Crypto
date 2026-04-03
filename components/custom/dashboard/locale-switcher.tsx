@@ -2,7 +2,7 @@
 
 import { useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
-import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "motion/react";
 
 export function LocaleSwitcher() {
   const locale = useLocale();
@@ -15,13 +15,23 @@ export function LocaleSwitcher() {
   };
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
+    <button
       onClick={switchLocale}
-      className="h-8 px-2 text-xs font-medium"
+      aria-label="切换语言"
+      className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors relative overflow-hidden cursor-pointer"
     >
-      {locale === "ja" ? "EN" : "JA"}
-    </Button>
+      <AnimatePresence mode="wait" initial={false}>
+        <motion.span
+          key={locale}
+          initial={{ rotate: -45, opacity: 0, scale: 0.5 }}
+          animate={{ rotate: 0, opacity: 1, scale: 1 }}
+          exit={{ rotate: 45, opacity: 0, scale: 0.5 }}
+          transition={{ duration: 0.2, ease: "easeOut" }}
+          className="text-xs font-semibold"
+        >
+          {locale === "ja" ? "EN" : "JA"}
+        </motion.span>
+      </AnimatePresence>
+    </button>
   );
 }

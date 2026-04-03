@@ -72,5 +72,48 @@
   },
   "verdict": {
     "score": "Score"
+  },
+  "pages": {
+    "assets": {
+      "title": "Personal Portfolio",
+      "subtitle": "Track your holdings, returns & allocations in real time",
+      "aiSummaryWidget": "AI Portfolio Summary",
+      "dailyAnalysisWidget": "Daily Analysis",
+      "allAssetsWidget": "All Assets",
+      "addAsset": "Add Asset",
+      "footer": "Live data via Yahoo Finance · Updated "
+    },
+    "stocks": {
+      "title": "Stock Market",
+      "subtitle": "Real-time charts, heatmaps, market data & top stories",
+      "globalData": "Global Data",
+      "liveUpdates": "Live Updates",
+      "liveTicker": "Live Ticker",
+      "streaming": "Streaming",
+      "liveChart": "Live Chart",
+      "heatmap": "Heatmap",
+      "topStories": "Top Stories",
+      "marketData": "Market Data",
+      "footer": "Powered by TradingView · Updated "
+    },
+    "crypto": {
+      "title": "Crypto Markets",
+      "subtitle": "Real-time prices, heatmaps, charts & conversion tools",
+      "globalData": "Global Data",
+      "liveUpdates": "Live Updates",
+      "top100Coins": "Top 100 Coins",
+      "livePrices": "Live Prices",
+      "streaming": "Streaming",
+      "coinCompareChart": "Coin Compare Chart",
+      "marketHeatmap": "Market Heatmap",
+      "converter": "Converter",
+      "topCoins": "Top Coins"
+    },
+    "ai": {
+      "title": "AI Analysis",
+      "subtitle": "Select analysts, enter a symbol, and start the analysis",
+      "analyzing": "Analyzing, please wait...",
+      "results": "RESULTS"
+    }
   }
 }

@@ -1,4 +1,5 @@
 import React from "react";
+import { getTranslations } from "next-intl/server";
 import { getAssets } from "@/server/assets";
 import { getAllTransactions } from "@/server/transactions";
 
@@ -84,6 +85,7 @@ function WidgetCard({
    Page
 ───────────────────────────────────────── */
 export default async function Assets() {
+  const t = await getTranslations("pages.assets");
   const assets = await getAssets();
   const list = assets ?? [];
   const allTransactions = await getAllTransactions();
@@ -98,11 +100,11 @@ export default async function Assets() {
               <LayoutDashboard className="h-4 w-4 text-amber-500" />
             </span>
             <h1 className="text-2xl font-bold tracking-tight">
-              Personal Portfolio
+              {t("title")}
             </h1>
           </div>
           <p className="text-sm text-muted-foreground pl-10.5">
-            Track your holdings, returns &amp; allocations in real time
+            {t("subtitle")}
           </p>
         </div>
       </div>
@@ -112,7 +114,7 @@ export default async function Assets() {
         <div className="col-span-2">
           <TotalAssetCard assets={list} />
         </div>
-        <WidgetCard icon={Bot} title="AI Portfolio Summary" accent="amber">
+        <WidgetCard icon={Bot} title={t("aiSummaryWidget")} accent="amber">
           <PortfolioAISummary assets={list} />
         </WidgetCard>
       </div>
@@ -126,7 +128,7 @@ export default async function Assets() {
           />
         </div>
         <div className="md:col-span-1">
-          <WidgetCard icon={Newspaper} title="Daily Analysis" accent="violet">
+          <WidgetCard icon={Newspaper} title={t("dailyAnalysisWidget")} accent="violet">
             <DailyAnalysis assets={list} />
           </WidgetCard>
         </div>
@@ -135,10 +137,10 @@ export default async function Assets() {
       {/* ── Assets table ── */}
       <WidgetCard
         icon={Database}
-        title="All Assets"
+        title={t("allAssetsWidget")}
         badge={list.length > 0 ? `${list.length}` : undefined}
         accent="blue"
-        action={<AssetForm trigger={<Button size="sm">Add Asset</Button>} />}
+        action={<AssetForm trigger={<Button size="sm">{t("addAsset")}</Button>} />}
       >
         <div className="p-4">
           <AssetsTable assets={list} />
@@ -152,8 +154,7 @@ export default async function Assets() {
           className="text-center text-xs text-muted-foreground"
           suppressHydrationWarning
         >
-          Live data via Yahoo Finance &middot; Updated{" "}
-          {new Date().toLocaleString("en-US")}
+          {t("footer")}{new Date().toLocaleString()}
         </p>
       </div>
     </div>

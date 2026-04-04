@@ -6,50 +6,24 @@ type UseAssetReturnParams = {
   assets: Asset[];
 };
 export function useAssetReturn({ assets }: UseAssetReturnParams) {
-  const [currentPrices, setCurrentPrices] = useState<
-    Record<string, number | null>
-  >({});
-  const [prevClosePrices, setPrevClosePrices] = useState<
-    Record<string, number | null>
-  >({});
+  const [currentPrices, setCurrentPrices] = useState<Record<string, number | null>>({});
+  const [prevClosePrices, setPrevClosePrices] = useState<Record<string, number | null>>({});
 
   useEffect(() => {
     async function fetchAllPrices() {
-      console.log(
-        `[useAssetReturn] Fetching prices for:`,
-        assets.map((a) => a.symbol),
-      );
       const entries = await Promise.all(
         assets.map(async (asset) => {
           try {
-            const res = await fetch(
-              `/api/yahoofinance/quote?symbol=${encodeURIComponent(asset.symbol)}`,
-            );
-            if (!res.ok) {
-              const errorData = await res.json();
-              console.error(`[Hook] API error for ${asset.symbol}:`, errorData);
-              return [asset.symbol, null, null] as [string, null, null];
-            }
+            const res = await fetch(`/api/yahoofinance/quote?symbol=${asset.symbol}`);
             const data = await res.json();
-            console.log(
-              `[Hook] Received price for ${asset.symbol}:`,
-              data.price,
-            );
-            return [
-              asset.symbol,
-              data.price ?? null,
-              data.prevClose ?? null,
-            ] as [string, number | null, number | null];
-          } catch (err) {
-            console.error(`[Hook] Fetch error for ${asset.symbol}:`, err);
+            return [asset.symbol, data.price, data.prevClose] as [string, number | null, number | null];
+          } catch {
             return [asset.symbol, null, null] as [string, null, null];
           }
         }),
       );
       setCurrentPrices(Object.fromEntries(entries.map(([s, p]) => [s, p])));
-      setPrevClosePrices(
-        Object.fromEntries(entries.map(([s, , pc]) => [s, pc])),
-      );
+      setPrevClosePrices(Object.fromEntries(entries.map(([s, , pc]) => [s, pc])));
     }
 
     if (assets.length > 0) fetchAllPrices();
@@ -87,8 +61,7 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
     return acc;
   }, 0);
 
-  const todayReturnPct =
-    yesterdayValue > 0 ? (todayReturn / yesterdayValue) * 100 : null;
+  const todayReturnPct = yesterdayValue > 0 ? (todayReturn / yesterdayValue) * 100 : null;
 
   return {
     totalValue,

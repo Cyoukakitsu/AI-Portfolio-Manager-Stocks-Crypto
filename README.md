@@ -1,98 +1,88 @@
 # AI Portfolio Manager — Stocks & Crypto
 
-株式・暗号資産を管理する **AI搭載のポートフォリオダッシュボード**です。
+AIを搭載した**次世代型ポートフォリオ管理プラットフォーム**です。リアルタイムの市場データ、マルチエージェントAI分析、および自動資産トラッキングを統合しています。
 
 ---
 
-## 概要
+## 🌟 主な機能
 
-リアルタイムの市場データ・チャート・AIチャットボットを一つのダッシュボードに統合した個人開発プロジェクトです。
-ポートフォリオの収益管理から暗号資産市場の監視まで、投資に必要な情報をまとめて可視化します。
+### 1. AI 投資意思決定システム (Agentic AI)
 
----
+- **マルチエージェント協調分析**：ウォーレン・バフェットやジョージ・ソロスなどのトップ投資家の思考モデルをシミュレートし、特定の銘柄に対して深い価値評価を行います。
+- **インテリジェント・コーディネーター (Coordinator)**：複数のAIアナリストの視点を統合し、最終的な投資判断（買い/保持/売り）および目標価格を提示します。
+- **リアルタイム Web RAG 強化**：**Tavily API** を通じてインターネット上の最新ニュースや決算情報を取得し、AI分析が古いデータではなく、常に最新の情報に基づいていることを保証します。
 
-## スクリーンショット
+### 2. ポートフォリオ管理と自動化
 
-> *(準備中)*
+- **資産概要**：総資産、総損益、および収益率の推移をリアルタイムで追跡します。
+- **持株 AI サマリー**：**Groq (Llama 3.3)** を呼び出し、現在のポートフォリオをワンクリックで分析。潜在的なリスクを特定し、資産配分のアドバイスを提供します。
+- **デイリー・ダイナミック分析**：保有している株式や暗号資産に関する最新ニュースを自動的に集約し、市場の動向を即座に把握できます。
+- **ビジュアルチャート**：インタラクティブなK線グラフ、資産配分レーダーチャート、および収益トレンドチャートを搭載。
 
----
+### 3. 高度な市場モニタリング (Stocks & Crypto)
 
-## 機能
+- **プロフェッショナル級チャート**：**TradingView** の高度なチャート、マーケットヒートマップ、およびティッカーテープを深く統合。
+- **暗号資産ダッシュボード**：世界中の通貨の時価総額ランキング、価格変動、および市場センチメントをリアルタイムで追跡。
 
-### 実装済み
+### 4. 国際化とセキュリティ
 
-| カテゴリ | 機能 |
-|---|---|
-| **認証** | メール/パスワードでのサインアップ・サインイン（Supabase Auth） |
-| **ポートフォリオ管理** | 資産の追加・編集・削除、売買トランザクション記録 |
-| **ダッシュボード** | 総資産額・総損益カード、収益推移エリアチャート、アセット配分レーダーチャート |
-| **株式市場** | TradingView連携のライブチャート・ヒートマップ・ティッカーテープ・Reuters最新ニュース |
-| **Crypto市場** | 仮想通貨価格マーキー・コインリスト・ヒートマップ・市場ダッシュボード |
-| **AIチャットボット** | OpenRouter経由のAI投資アシスタント（ストリーミング対応） |
-| **ダークモード** | ライト/ダーク切り替え対応 |
-
-### 実装予定
-
-- AIによる自動ポートフォリオ分析・インサイト生成
-- リスク分析・アセットアロケーション最適化提案
-- 株式・Cryptoのアラート機能
+- **多言語対応 (i18n)**：日本語、英語、中国語に対応し、グローバルな利用シーンに適応。
+- **認証システム**：**Supabase Auth** を使用し、安全なユーザー登録、ログイン、およびGoogleサードパーティ認証を実現。
+- **データプライバシー**：Supabase RLS（行レベルセキュリティ）を利用し、各ユーザーのデータが完全にプライベートで安全であることを保証。
 
 ---
 
-## 技術スタック
+## 🚀 技术栈
 
-```
-フロントエンド         Next.js 16 (App Router) / React 19 / TypeScript
-スタイリング           Tailwind CSS v4 / shadcn/ui
-データフェッチ         Yahoo Finance API
-チャート               Recharts / TradingView Widgets
-認証 & DB              Supabase (Auth + PostgreSQL + RLS)
-AI                    Groq (AI SDK) / Vercel AI SDK
-フォームバリデーション  React Hook Form + Zod
-```
+- **フロントエンド**: [Next.js 16+](https://nextjs.org/) (App Router), React 19, TypeScript
+- **スタイリング**: [Tailwind CSS v4](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/)
+- **バックエンド/DB**: [Supabase](https://supabase.com/) (PostgreSQL + Server Actions)
+- **AI エンジン**: [Vercel AI SDK](https://sdk.vercel.ai/), [DeepSeek](https://www.deepseek.com/) (Reasoner/Chat), [Groq](https://groq.com/)
+- **検索拡張生成 (RAG)**: [Tavily API](https://tavily.com/)
+- **データソース**: Yahoo Finance, FMP API, TradingView Widgets
+- **状態管理**: TanStack Query (React Query)
 
 ---
 
-## ディレクトリ構成
+## 📂 プロジェクト構成 (一部)
 
-```
+```bash
 app/
-├── (auth)/           # サインイン・サインアップ
-├── dashboard/
-│   ├── assets/       # ポートフォリオ管理（メイン画面）
-│   ├── stocks/       # 株式市場ダッシュボード
-│   ├── crypto/       # 暗号資産ダッシュボード
-│   └── aichatbot/    # AIチャットボット
 ├── api/
-│   ├── chat/         # AIチャット API (OpenRouter)
-│   ├── yahoofinance/ # 株価データ API
-│   └── fmp/          # ローソク足データ API
+│   ├── ai-analysis/    # DeepSeek マルチエージェント分析インターフェース
+│   ├── assets/         # 資産サマリーおよびニュース取得インターフェース
+│   └── yahoofinance/   # Yahoo Finance リアルタイム相場同期
+├── dashboard/
+│   ├── assets/         # ポートフォリオメイン看板
+│   ├── ai/             # AI マスター分析ページ
+│   ├── stocks/         # 株式市場リアルタイム監視
+│   └── crypto/         # 暗号資産市場看板
 components/
-├── custom/           # ページ固有コンポーネント
-└── ui/               # shadcn/ui ベースコンポーネント
-hooks/assetsHooks/    # ポートフォリオ計算カスタムHooks
-services/             # Supabase Server Actions (CRUD)
-lib/
-├── schemas/          # Zod バリデーションスキーマ
-└── supabase/         # クライアント・サーバー設定
+├── custom/
+│   ├── ai/             # AI 分析フロー、エキスパートカード、意思決定バナー
+│   ├── assets/         # 資産フォーム、K線図、収益統計
+│   └── stocks/         # TradingView 各種コンポーネント
+hooks/                  # 資産計算および取引ロジック Hooks
+lib/ai/                 # AI プロンプト定義および Function Calling ツール
 ```
 
 ---
 
-## セットアップ
+## 🛠️ ローカル開発
 
-### 必要な環境変数
+### 1. 環境変数の設定
 
-`.env.local` を作成して以下を設定してください：
+`.env.example` をコピーして `.env.local` にリネームし、以下の必要なパラメータを入力してください：
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=
-NEXT_PUBLIC_SUPABASE_ANON_KEY=
-OPENROUTER_API_KEY=
-FMP_API_KEY=
+NEXT_PUBLIC_SUPABASE_URL=あなたのSupabaseプロジェクトURL
+NEXT_PUBLIC_SUPABASE_ANON_KEY=あなたのSupabaseアノンKey
+DEEPSEEK_API_KEY=DeepSeekキー
+GROQ_API_KEY=Groqキー
+TAVILY_API_KEY=Tavily検索キー
 ```
 
-### インストール & 起動
+### 2. インストールと実行
 
 ```bash
 pnpm install
@@ -101,14 +91,16 @@ pnpm dev
 
 ---
 
-## セキュリティ
+## 📝 開発ロードマップ
 
-- **RLS（Row Level Security）**: Supabase の行レベルセキュリティを全テーブルに適用
-- **IDOR対策**: 全DB操作で `user_id` による二重フィルタリング
-- **ゼロトラスト**: 外部入力はすべてZodで検証後にのみDB書き込み
+- [x] 多言語 i18n システムの構築
+- [x] DeepSeek Reasoner 推論モデルの導入
+- [x] リアルタイム Web RAG 強化分析
+- [ ] 自動リスク評価レポートの出力
+- [ ] リアルタイム価格変動プッシュ通知
 
 ---
 
-## ライセンス
+## 📄 ライセンス
 
 MIT License

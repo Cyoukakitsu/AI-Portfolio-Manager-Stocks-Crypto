@@ -7,22 +7,16 @@
 //   - 所有读/写/删操作同时过滤 user_id，防止 IDOR 越权
 
 import type { Transaction } from "@/types/global";
-import { createClient } from "@/lib/supabase/server";
 import { revalidatePath } from "next/cache";
 import {
   transactionSchema,
   updateTransactionSchema,
 } from "@/lib/schemas/transaction";
+import { getAuthSession } from "./auth-helper";
 
 // 查询某个资产下当前用户的所有交易记录
 export async function getTransactions(assetId: string) {
-  const supabase = await createClient();
-
-  // 从服务端 session 取得当前用户，而非信任客户端传参
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("User not found");
+  const { supabase, user } = await getAuthSession();
 
   const { data, error } = await supabase
     .from("transactions")
@@ -38,12 +32,7 @@ export async function getTransactions(assetId: string) {
 
 // 新增交易记录
 export async function createTransaction(rawData: unknown) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("User not found");
+  const { supabase, user } = await getAuthSession();
 
   // 零信任：用 Zod 验证并剥离所有非法字段
   const result = transactionSchema.safeParse(rawData);
@@ -63,11 +52,7 @@ export async function createTransaction(rawData: unknown) {
 
 // 更新交易记录
 export async function updateTransaction(id: string, rawData: unknown) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("User not found");
+  const { supabase, user } = await getAuthSession();
 
   // 使用 updateTransactionSchema（去掉了 asset_id），
   // 防止用户通过更新请求将交易迁移到其他资产（改变外键归属）
@@ -87,11 +72,7 @@ export async function updateTransaction(id: string, rawData: unknown) {
 
 // 删除交易记录
 export async function deleteTransaction(id: string) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("User not found");
+  const { supabase, user } = await getAuthSession();
 
   const { error } = await supabase
     .from("transactions")
@@ -107,13 +88,7 @@ export async function deleteTransaction(id: string) {
 // 查询当前用户所有资产的全部交易记录
 // 用于 Dashboard 图表：需要重建每天的持仓状态和成本基础
 export async function getAllTransactions() {
-  const supabase = await createClient();
-
-  // 从服务端 session 获取当前用户，而非信任客户端传参
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) throw new Error("User not found");
+  const { supabase, user } = await getAuthSession();
 
   const { data, error } = await supabase
     .from("transactions")

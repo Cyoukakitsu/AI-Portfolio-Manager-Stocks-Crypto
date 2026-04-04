@@ -1,4 +1,5 @@
-//total asset return
+//这个hooks用于计算总资产、今日资产、总资产收益率、今日资产收益率
+//它接收一个资产数组作为参数，返回一个对象，包含总资产、今日资产、总资产收益率、今日资产收益率的属性
 import { Asset } from "@/types/global";
 import { useEffect, useState } from "react";
 
@@ -6,24 +7,41 @@ type UseAssetReturnParams = {
   assets: Asset[];
 };
 export function useAssetReturn({ assets }: UseAssetReturnParams) {
-  const [currentPrices, setCurrentPrices] = useState<Record<string, number | null>>({});
-  const [prevClosePrices, setPrevClosePrices] = useState<Record<string, number | null>>({});
+  // 当前资产价格
+  const [currentPrices, setCurrentPrices] = useState<
+    Record<string, number | null>
+  >({});
+
+  // 前一日资产价格
+  const [prevClosePrices, setPrevClosePrices] = useState<
+    Record<string, number | null>
+  >({});
 
   useEffect(() => {
+    // 从服务器获取资产价格
     async function fetchAllPrices() {
       const entries = await Promise.all(
         assets.map(async (asset) => {
           try {
-            const res = await fetch(`/api/yahoofinance/quote?symbol=${asset.symbol}`);
+            const res = await fetch(
+              `/api/yahoofinance/quote?symbol=${asset.symbol}`,
+            );
             const data = await res.json();
-            return [asset.symbol, data.price, data.prevClose] as [string, number | null, number | null];
+            return [asset.symbol, data.price, data.prevClose] as [
+              string,
+              number | null,
+              number | null,
+            ];
           } catch {
             return [asset.symbol, null, null] as [string, null, null];
           }
         }),
       );
+      // 将获取到的价格转换为对象，键为资产符号，值为价格
       setCurrentPrices(Object.fromEntries(entries.map(([s, p]) => [s, p])));
-      setPrevClosePrices(Object.fromEntries(entries.map(([s, , pc]) => [s, pc])));
+      setPrevClosePrices(
+        Object.fromEntries(entries.map(([s, , pc]) => [s, pc])),
+      );
     }
 
     if (assets.length > 0) fetchAllPrices();
@@ -55,13 +73,16 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
     return acc;
   }, 0);
 
+  // 前一日资产市值
   const yesterdayValue = assets.reduce((acc, asset) => {
     const prev = prevClosePrices[asset.symbol];
     if (prev != null && prev > 0) return acc + prev * asset.total_quantity;
     return acc;
   }, 0);
 
-  const todayReturnPct = yesterdayValue > 0 ? (todayReturn / yesterdayValue) * 100 : null;
+  // 今日资产收益率：(今日收益 / 昨日资产市值) * 100
+  const todayReturnPct =
+    yesterdayValue > 0 ? (todayReturn / yesterdayValue) * 100 : null;
 
   return {
     totalValue,

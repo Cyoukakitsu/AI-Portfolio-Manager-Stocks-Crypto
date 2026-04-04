@@ -1,7 +1,5 @@
 import { AnalysisShell } from "@/components/custom/ai/analysis-shell";
 
-const AIPage = () => {
+export default async function AIPage() {
   return <AnalysisShell />;
-};
-
-export default AIPage;
+}

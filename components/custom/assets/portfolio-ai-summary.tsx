@@ -1,9 +1,12 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+// 智能资产分析助手
+// 它接收一个资产数组作为 props，调用后端 API 进行资产分析，并在组件中显示摘要内容
+import { useRef, useState } from "react";
 import type { Asset } from "@/types/global";
-import { Bot, RefreshCw, Sparkles } from "lucide-react";
 import { useTranslations } from "next-intl";
+
+import { Bot, RefreshCw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,11 +23,13 @@ function AnalysisContent({ assets }: Props) {
   const t = useTranslations("aiSummary");
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-  const abortRef = useRef<AbortController | null>(null);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null); // 最后更新时间
+  const abortRef = useRef<AbortController | null>(null); // 用于取消之前的分析请求
 
-  const run = useCallback(async () => {
+  // 运行资产分析
+  async function run() {
     if (assets.length === 0) return;
+    // 取消之前的分析请求, 避免重复请求,并创建一个新的 AbortController 用于当前分析请求
     abortRef.current?.abort();
     const ctrl = new AbortController();
     abortRef.current = ctrl;
@@ -40,6 +45,7 @@ function AnalysisContent({ assets }: Props) {
       });
       if (!res.ok || !res.body) throw new Error("fetch failed");
 
+      // 流式处理响应体,并实时更新组件状态中的摘要内容
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
       while (true) {
@@ -55,9 +61,9 @@ function AnalysisContent({ assets }: Props) {
     } finally {
       setLoading(false);
     }
-  }, [assets]);
+  }
 
-  // Auto-run when this component first mounts (dialog opened)
+  // 初始化时自动运行一次资产分析,避免重复运行
   const hasRun = useRef(false);
   if (!hasRun.current) {
     hasRun.current = true;

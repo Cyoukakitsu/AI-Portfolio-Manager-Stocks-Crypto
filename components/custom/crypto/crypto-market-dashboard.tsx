@@ -34,7 +34,7 @@ function MarqueeWidget() {
   const { bg, fg } = useWidgetColors();
   return (
     <div className="w-full p-0 overflow-visible">
-      {/* @ts-ignore */}
+      {/* @ts-expect-error - CoinGecko custom elements are not in React JSX types */}
       <gecko-coin-price-marquee-widget
         locale="en"
         outlined="false"
@@ -54,7 +54,7 @@ function HeatmapWidget() {
   const { bg, fg } = useWidgetColors();
   return (
     <div className="w-full">
-      {/* @ts-ignore */}
+      {/* @ts-expect-error - CoinGecko custom elements are not in React JSX types */}
       <gecko-coin-heatmap-widget
         locale="en"
         outlined="false"
@@ -72,7 +72,7 @@ function CoinListWidget() {
   const { bg, fg } = useWidgetColors();
   return (
     <div className="w-full">
-      {/* @ts-ignore */}
+      {/* @ts-expect-error - CoinGecko custom elements are not in React JSX types */}
       <gecko-coin-list-widget
         locale="en"
         outlined="false"
@@ -92,7 +92,7 @@ function CoinCompareChartWidget() {
   const { bg, fg } = useWidgetColors();
   return (
     <div className="w-full">
-      {/* @ts-ignore */}
+      {/* @ts-expect-error - CoinGecko custom elements are not in React JSX types */}
       <gecko-coin-compare-chart-widget
         locale="en"
         outlined="false"
@@ -113,7 +113,7 @@ function ConverterWidget() {
   const { bg, fg } = useWidgetColors();
   return (
     <div className="w-full">
-      {/* @ts-ignore */}
+      {/* @ts-expect-error - CoinGecko custom elements are not in React JSX types */}
       <gecko-coin-converter-widget
         locale="en"
         outlined="false"
@@ -129,106 +129,10 @@ function ConverterWidget() {
   );
 }
 
-/* ─────────────────────────────────────────
-   Icon accent colours
-───────────────────────────────────────── */
-const iconStyles: Record<string, string> = {
-  amber:
-    "bg-amber-500/10 text-amber-500 dark:bg-amber-400/10 dark:text-amber-400",
-  orange:
-    "bg-orange-500/10 text-orange-500 dark:bg-orange-400/10 dark:text-orange-400",
-  blue: "bg-blue-500/10  text-blue-500  dark:bg-blue-400/10  dark:text-blue-400",
-  violet:
-    "bg-violet-500/10 text-violet-500 dark:bg-violet-400/10 dark:text-violet-400",
-  emerald:
-    "bg-emerald-500/10 text-emerald-500 dark:bg-emerald-400/10 dark:text-emerald-400",
-};
-
-/* ─────────────────────────────────────────
-   Card shell
-   - 外层卡片不设 overflow-hidden，让 widget 内部下拉菜单可以飞出边界
-   - 内容区 p-0 贴边，widget 贴边撑满
-   - 高度由 widget 自身撑满，消除底部空白
-───────────────────────────────────────── */
-function WidgetCard({
-  icon: Icon,
-  title,
-  badge,
-  accent = "amber",
-  children,
-  className = "",
-  contentClassName = "",
-}: {
-  icon: React.ElementType;
-  title: string;
-  badge?: string;
-  accent?: keyof typeof iconStyles;
-  children: React.ReactNode;
-  className?: string;
-  contentClassName?: string;
-}) {
-  return (
-    <div
-      className={[
-        "group min-w-0 w-full rounded-xl border border-border/60 overflow-hidden",
-        "bg-card shadow-sm transition-shadow duration-200 hover:shadow-md",
-        "flex flex-col",
-        className,
-      ].join(" ")}
-    >
-      {/* header */}
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-border/60">
-        <span
-          className={`flex items-center justify-center h-7 w-7 rounded-lg shrink-0 ${iconStyles[accent]}`}
-        >
-          <Icon className="h-4 w-4" />
-        </span>
-        <span className="text-sm font-semibold tracking-tight flex-1 truncate">
-          {title}
-        </span>
-        {badge && (
-          <Badge
-            variant="secondary"
-            className="text-[10px] px-2 py-0.5 font-medium shrink-0"
-          >
-            {badge}
-          </Badge>
-        )}
-      </div>
-
-      {/* 内容区：p-0 贴边，w-full h-full 撑满，消除底部空白 */}
-      <div className={`p-0 w-full flex-1 overflow-hidden ${contentClassName}`}>
-        {children}
-      </div>
-    </div>
-  );
-}
-
-/* ─────────────────────────────────────────
-   Stat chip
-───────────────────────────────────────── */
-function StatChip({
-  icon: Icon,
-  label,
-  accent = "amber",
-}: {
-  icon: React.ElementType;
-  label: string;
-  accent?: keyof typeof iconStyles;
-}) {
-  return (
-    <div className="flex items-center gap-2 rounded-full border border-border/60 bg-muted/40 px-3.5 py-1.5">
-      <span
-        className={`flex h-5 w-5 items-center justify-center rounded-full ${iconStyles[accent]}`}
-      >
-        <Icon className="h-3 w-3" />
-      </span>
-      <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
-        {label}
-      </span>
-    </div>
-  );
-}
+import {
+  WidgetCard,
+  StatChip,
+} from "@/components/custom/dashboard/widget-card";
 
 /* ─────────────────────────────────────────
    CryptoMarketDashboard
@@ -266,9 +170,7 @@ export function CryptoMarketDashboard() {
             <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10">
               <Activity className="h-4.5 w-4.5 text-amber-500" />
             </span>
-            <h1 className="text-2xl font-bold tracking-tight">
-              {t("title")}
-            </h1>
+            <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
           </div>
           <p className="text-sm text-muted-foreground pl-10.5">
             {t("subtitle")}
@@ -279,7 +181,11 @@ export function CryptoMarketDashboard() {
         <div className="flex flex-wrap gap-2">
           <StatChip icon={Globe} label={t("globalData")} accent="blue" />
           <StatChip icon={Zap} label={t("liveUpdates")} accent="amber" />
-          <StatChip icon={TrendingUp} label={t("top100Coins")} accent="emerald" />
+          <StatChip
+            icon={TrendingUp}
+            label={t("top100Coins")}
+            accent="emerald"
+          />
         </div>
       </div>
 

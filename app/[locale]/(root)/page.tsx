@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
-const Home = () => {
+export default function Home() {
   const t = useTranslations("home");
 
   return (
@@ -61,6 +61,4 @@ const Home = () => {
       </motion.div>
     </main>
   );
-};
-
-export default Home;
+}

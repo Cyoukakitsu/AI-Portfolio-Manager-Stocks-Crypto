@@ -7,13 +7,17 @@ import { getTranslations } from "next-intl/server";
 
 const chartBars = [38, 52, 34, 68, 58, 78, 62, 88, 72, 94, 82, 100];
 
-const layout = async ({ children }: { children: React.ReactNode }) => {
+export default async function layout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const t = await getTranslations("auth.layout");
 
   const features = [
-    { icon: TrendingUp,       title: t("tracking.title"), desc: t("tracking.desc") },
-    { icon: BotMessageSquare, title: t("ai.title"),       desc: t("ai.desc") },
-    { icon: ShieldCheck,      title: t("security.title"), desc: t("security.desc") },
+    { icon: TrendingUp, title: t("tracking.title"), desc: t("tracking.desc") },
+    { icon: BotMessageSquare, title: t("ai.title"), desc: t("ai.desc") },
+    { icon: ShieldCheck, title: t("security.title"), desc: t("security.desc") },
   ];
 
   return (
@@ -121,6 +125,4 @@ const layout = async ({ children }: { children: React.ReactNode }) => {
       </div>
     </div>
   );
-};
-
-export default layout;
+}

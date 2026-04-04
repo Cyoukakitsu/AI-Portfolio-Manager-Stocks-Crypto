@@ -3,7 +3,8 @@
 // 股票/加密货币符号实时搜索组件
 // 设计模式：受控搜索框 + 防抖（Debounce）+ 服务端中转
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Search, Loader2 } from "lucide-react";
 import {
   Command,
@@ -30,48 +31,35 @@ type Props = {
 
 export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
   const [query, setQuery] = useState(defaultValue);
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+  // 防抖后的 query，只用于触发请求，与输入框值解耦
+  const [debouncedQuery, setDebouncedQuery] = useState(defaultValue);
 
-  // 用 ref 存 timer ID，避免在 state 里存导致额外的重渲染
-  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
+  // 防抖：空字符串立即清除（0ms），有内容时延迟 400ms，始终通过 timer 异步更新
   useEffect(() => {
-    // 输入少于 1 个字符时不发请求，清空结果并关闭下拉
-    if (query.trim().length < 1) {
-      setResults([]);
-      setOpen(false);
-      return;
-    }
-
-    if (timerRef.current) clearTimeout(timerRef.current);
-    timerRef.current = setTimeout(async () => {
-      setLoading(true);
-      try {
-        const res = await fetch(
-          `/api/yahoofinance/search?q=${encodeURIComponent(query)}`,
-        );
-        const data = await res.json();
-        // 容错处理：API 异常时返回的可能不是数组，加 Array.isArray 防止 crash
-        setResults(Array.isArray(data) ? data : []);
-        setOpen(true);
-      } catch {
-        setResults([]);
-      } finally {
-        setLoading(false);
-      }
-    }, 400);
-
-    // Effect cleanup：组件卸载或 query 再次变化时，取消尚未触发的请求
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
+    const delay = query.trim().length < 1 ? 0 : 400;
+    const timer = setTimeout(() => setDebouncedQuery(query), delay);
+    return () => clearTimeout(timer);
   }, [query]);
+
+  const { data, isFetching } = useQuery<SearchResult[]>({
+    queryKey: ["search", debouncedQuery],
+    queryFn: async () => {
+      const res = await fetch(
+        `/api/yahoofinance/search?q=${encodeURIComponent(debouncedQuery)}`,
+      );
+      const data = await res.json();
+      // 容错处理：API 异常时返回的可能不是数组，加 Array.isArray 防止 crash
+      return Array.isArray(data) ? data : [];
+    },
+    enabled: debouncedQuery.trim().length >= 1,
+    staleTime: 5 * 60 * 1000, // 相同关键词 5 分钟内不重复请求
+  });
+
+  const results = data ?? [];
+  const open = debouncedQuery.trim().length >= 1;
 
   function handleSelect(result: SearchResult) {
     setQuery(result.symbol); // 选中后输入框显示 symbol 而非 fullname
-    setOpen(false);
     onSelect(result); // 通知父组件同步填充其他表单字段
   }
 
@@ -80,7 +68,7 @@ export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
       <Command className="border rounded-md" shouldFilter={false}>
         <div className="flex items-center px-3">
           {/* 搜索中显示 loading 动画，否则显示搜索图标，提供即时反馈 */}
-          {loading ? (
+          {isFetching ? (
             <Loader2 className="w-4 h-4 mr-2 animate-spin text-muted-foreground" />
           ) : (
             <Search className="w-4 h-4 mr-2 text-muted-foreground" />
@@ -96,7 +84,7 @@ export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
         {/* 只在有搜索词且用户已触发过搜索时才显示下拉列表 */}
         {open && (
           <CommandList>
-            {results.length === 0 && !loading ? (
+            {results.length === 0 && !isFetching ? (
               <CommandEmpty>No results found</CommandEmpty>
             ) : (
               <CommandGroup>

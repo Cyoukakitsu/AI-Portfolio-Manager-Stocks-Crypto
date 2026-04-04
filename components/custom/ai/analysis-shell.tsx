@@ -4,7 +4,9 @@
 //  - 整合全流程的 UI 布局
 //  - 整合基础交互逻辑
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { useTranslations } from "next-intl";
+import { toast } from "sonner";
 import type { AgentPersona, AnalysisResult } from "@/types/ai";
 import { SearchBar } from "./search-bar";
 import { AgentSelector } from "./agent-selector";
@@ -16,60 +18,66 @@ export function AnalysisShell() {
   const t = useTranslations("pages.ai");
   // 选中的分析师
   const [selected, setSelected] = useState<AgentPersona[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  // 步骤动画是纯 UI 状态，保留为 useState
   const [currentStep, setCurrentStep] = useState<
     "fetching" | "agent1" | "agent2" | "coordinator" | "done" | null
   >(null);
-  const [result, setResult] = useState<AnalysisResult | null>(null);
-  const [symbol, setSymbol] = useState(""); // 记录当前分析的股票
+  const [symbol, setSymbol] = useState("");
 
-  const handleAnalyze = async (inputSymbol: string) => {
-    setSymbol(inputSymbol);
-    setIsLoading(true);
-    setCurrentStep("fetching");
-    setResult(null);
-
-    try {
-      // 模拟获取数据阶段
-      await new Promise((data) => setTimeout(data, 1000));
-      setCurrentStep("agent1");
-
-      // 模拟 Agent1 分析阶段
-      await new Promise((data) => setTimeout(data, 1000));
-      setCurrentStep("agent2");
-
-      // 真正的 API 调用（在 agent2 阶段跑）
+  const mutation = useMutation({
+    mutationFn: async ({
+      inputSymbol,
+      personas,
+    }: {
+      inputSymbol: string;
+      personas: AgentPersona[];
+    }) => {
       const res = await fetch("/api/ai-analysis", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          symbol: inputSymbol,
-          personas: selected,
-        }),
+        body: JSON.stringify({ symbol: inputSymbol, personas }),
       });
+      if (!res.ok) throw new Error("Analysis failed");
+      return res.json() as Promise<AnalysisResult>;
+    },
+    onError: () => {
+      toast.error(t("fetchError"));
+      setCurrentStep(null);
+    },
+  });
 
-      const data: AnalysisResult = await res.json();
+  const handleAnalyze = async (inputSymbol: string) => {
+    setSymbol(inputSymbol);
+    setCurrentStep("fetching");
 
-      // API 返回后进入 coordinator 阶段
-      setCurrentStep("coordinator");
-      await new Promise((data) => setTimeout(data, 800));
+    // 模拟获取数据阶段
+    await new Promise((r) => setTimeout(r, 1000));
+    setCurrentStep("agent1");
 
-      setResult(data);
-      setCurrentStep("done");
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
+    // 模拟 Agent1 分析阶段
+    await new Promise((r) => setTimeout(r, 1000));
+    setCurrentStep("agent2");
+
+    // 真正的 API 调用
+    const data = await mutation.mutateAsync({
+      inputSymbol,
+      personas: selected,
+    });
+    if (!data) return;
+
+    // API 返回后进入 coordinator 阶段
+    setCurrentStep("coordinator");
+    await new Promise((r) => setTimeout(r, 800));
+    setCurrentStep("done");
   };
+
+  const result = mutation.data ?? null;
 
   return (
     <div className="p-6 space-y-6">
       <div>
         <h1 className="text-xl font-medium">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          {t("subtitle")}
-        </p>
+        <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
       </div>
 
       {/* 分析师选择器 */}
@@ -82,17 +90,15 @@ export function AnalysisShell() {
       {/* 搜索栏 */}
       <SearchBar
         onAnalyze={handleAnalyze}
-        isLoading={isLoading}
+        isLoading={mutation.isPending}
         disabled={selected.length < 1}
       />
 
       {/* 进度条 */}
       <ProgressSteps currentStep={currentStep} personas={selected} />
 
-      {isLoading && (
-        <p className="text-sm text-muted-foreground">
-          {t("analyzing")}
-        </p>
+      {mutation.isPending && (
+        <p className="text-sm text-muted-foreground">{t("analyzing")}</p>
       )}
 
       {result && (

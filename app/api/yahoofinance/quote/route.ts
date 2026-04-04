@@ -13,13 +13,26 @@ export async function GET(req: NextRequest) {
   try {
     const quote = await yf.quote(symbol);
 
-    const price = quote.regularMarketPrice ?? null;
-    const prevClose = quote.regularMarketPreviousClose ?? null;
+    if (!quote) {
+      return NextResponse.json({ error: "Quote not found" }, { status: 404 });
+    }
+
+    const price = (quote.regularMarketPrice ??
+      quote.postMarketPrice ??
+      quote.preMarketPrice ??
+      null) as number | null;
+    const prevClose = (quote.regularMarketPreviousClose ?? null) as
+      | number
+      | null;
 
     return NextResponse.json({ price, prevClose });
-  } catch {
+  } catch (err) {
+    console.error(`[API] Error fetching quote for ${symbol}:`, err);
     return NextResponse.json(
-      { error: "Failed to fetch quote" },
+      {
+        error: "Failed to fetch quote",
+        details: err instanceof Error ? err.message : String(err),
+      },
       { status: 500 },
     );
   }

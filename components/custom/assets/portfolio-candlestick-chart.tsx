@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import {
   createChart,
   CandlestickSeries,
@@ -57,8 +58,6 @@ function getFromDate(range: Range, firstTransactionDate?: string): string {
 export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
   const [range, setRange] = useState<Range>("1M");
   const [view, setView] = useState<"usd" | "pct">("usd");
-  const [chartData, setChartData] = useState<OHLCPoint[]>([]);
-  const [loading, setLoading] = useState(false);
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
   const chartRef = useRef<IChartApi | null>(null);
@@ -66,170 +65,154 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
     ISeriesApi<"Candlestick"> | ISeriesApi<"Area"> | null
   >(null);
 
-  useEffect(() => {
-    if (assets.length === 0 || allTransactions.length === 0) return;
+  // 1. 分离 cash 和可交易资产（仅用于 fetch，不含计算逻辑）
+  const cashAssets = assets.filter((a) => a.asset_type === "cash");
+  const tradableAssets = assets.filter((a) => a.asset_type !== "cash");
+  const symbolsKey = tradableAssets.map((a) => a.symbol).join(",");
 
-    async function fetchAndCompute() {
-      setLoading(true);
-      try {
-        // 1. 分离 cash 和可交易资产
-        const cashAssets = assets.filter((a) => a.asset_type === "cash");
-        const tradableAssets = assets.filter((a) => a.asset_type !== "cash");
+  // 2. useQuery 只负责拉取原始 OHLCV 数据，按 range+symbols 缓存
+  const { data: historyData, isFetching } = useQuery({
+    queryKey: ["history", symbolsKey, range],
+    queryFn: async () => {
+      const from = getFromDate(range);
+      const to = new Date().toISOString().split("T")[0];
+      const res = await fetch(
+        `/api/yahoofinance/history?symbols=${symbolsKey}&from=${from}&to=${to}`,
+      );
+      return res.json();
+    },
+    enabled: tradableAssets.length > 0 && allTransactions.length > 0,
+    staleTime: 5 * 60 * 1000,
+  });
 
-        // cash 价值固定不变，直接用 total_cost
-        const cashValue = cashAssets.reduce((sum, a) => sum + a.total_cost, 0);
+  // 3. 计算 chartData：historyData 或 allTransactions 变化时重新计算
+  //    React Compiler 会自动处理 memoization，无需手动 useMemo
+  const chartData = ((): OHLCPoint[] => {
+    if (!historyData?.results) return [];
 
-        if (tradableAssets.length === 0) return;
+    const cashValue = cashAssets.reduce((sum, a) => sum + a.total_cost, 0);
 
-        // 2. 并行拉取所有资产 OHLCV
-        const symbols = tradableAssets.map((a) => a.symbol).join(",");
-        const from = getFromDate(range);
-        const to = new Date().toISOString().split("T")[0];
+    // 建 priceMap：key = "AAPL-2024-01-01"
+    const priceMap = new Map<
+      string,
+      { open: number; high: number; low: number; close: number }
+    >();
 
-        const res = await fetch(
-          `/api/yahoofinance/history?symbols=${symbols}&from=${from}&to=${to}`,
+    (
+      historyData.results as {
+        symbol: string;
+        candles: {
+          date: string;
+          open: number;
+          high: number;
+          low: number;
+          close: number;
+        }[];
+      }[]
+    ).forEach(({ symbol, candles }) => {
+      candles.forEach((c) => {
+        priceMap.set(`${symbol}-${c.date}`, {
+          open: c.open,
+          high: c.high,
+          low: c.low,
+          close: c.close,
+        });
+      });
+    });
+
+    // 收集所有日期并排序
+    const allDates = [
+      ...new Set(
+        (historyData.results as { candles: { date: string }[] }[]).flatMap(
+          (r) => r.candles.map((c) => c.date),
+        ),
+      ),
+    ].sort();
+
+    // 按日期聚合持仓 OHLC
+    const holdingMap = new Map<string, { quantity: number; cost: number }>();
+    const txByAsset = new Map<string, Transaction[]>();
+
+    allTransactions.forEach((tx) => {
+      const list = txByAsset.get(tx.asset_id) ?? [];
+      list.push(tx);
+      txByAsset.set(tx.asset_id, list);
+    });
+
+    // 预填充：处理所有发生在图表日期范围之前的交易
+    if (allDates.length > 0) {
+      tradableAssets.forEach((asset) => {
+        const preDateTx = (txByAsset.get(asset.id) ?? []).filter(
+          (tx) => tx.traded_at < allDates[0],
         );
-        const data = await res.json();
+        preDateTx.sort((a, b) => a.traded_at.localeCompare(b.traded_at));
 
-        // 3. 建 priceMap：key = "AAPL-2024-01-01"
-        const priceMap = new Map<
-          string,
-          { open: number; high: number; low: number; close: number }
-        >();
-
-        (
-          data.results as {
-            symbol: string;
-            candles: {
-              date: string;
-              open: number;
-              high: number;
-              low: number;
-              close: number;
-            }[];
-          }[]
-        ).forEach(({ symbol, candles }) => {
-          candles.forEach((c) => {
-            priceMap.set(`${symbol}-${c.date}`, {
-              open: c.open,
-              high: c.high,
-              low: c.low,
-              close: c.close,
+        preDateTx.forEach((tx) => {
+          const cur = holdingMap.get(asset.id) ?? { quantity: 0, cost: 0 };
+          if (tx.type === "buy") {
+            holdingMap.set(asset.id, {
+              quantity: cur.quantity + tx.quantity,
+              cost: cur.cost + tx.price * tx.quantity,
             });
-          });
-        });
-
-        // 4. 收集所有日期并排序
-        const allDates = [
-          ...new Set(
-            (data.results as { candles: { date: string }[] }[]).flatMap((r) =>
-              r.candles.map((c) => c.date),
-            ),
-          ),
-        ].sort();
-
-        // 5. 按日期聚合持仓 OHLC
-        const holdingMap = new Map<
-          string,
-          { quantity: number; cost: number }
-        >();
-        const txByAsset = new Map<string, Transaction[]>();
-
-        allTransactions.forEach((tx) => {
-          const list = txByAsset.get(tx.asset_id) ?? [];
-          list.push(tx);
-          txByAsset.set(tx.asset_id, list);
-        });
-
-        // 预填充：处理所有发生在图表日期范围之前的交易
-        if (allDates.length > 0) {
-          tradableAssets.forEach((asset) => {
-            const preDateTx = (txByAsset.get(asset.id) ?? []).filter(
-              (tx) => tx.traded_at < allDates[0],
-            );
-            // 按日期排序，确保按时间顺序处理
-            preDateTx.sort((a, b) => a.traded_at.localeCompare(b.traded_at));
-
-            preDateTx.forEach((tx) => {
-              const cur = holdingMap.get(asset.id) ?? { quantity: 0, cost: 0 };
-              if (tx.type === "buy") {
-                holdingMap.set(asset.id, {
-                  quantity: cur.quantity + tx.quantity,
-                  cost: cur.cost + tx.price * tx.quantity,
-                });
-              } else {
-                const ratio = tx.quantity / cur.quantity;
-                holdingMap.set(asset.id, {
-                  quantity: cur.quantity - tx.quantity,
-                  cost: cur.cost * (1 - ratio),
-                });
-              }
+          } else {
+            const ratio = tx.quantity / cur.quantity;
+            holdingMap.set(asset.id, {
+              quantity: cur.quantity - tx.quantity,
+              cost: cur.cost * (1 - ratio),
             });
-          });
-        }
-
-        const points: OHLCPoint[] = allDates.map((date, index) => {
-          tradableAssets.forEach((asset) => {
-            const txToProcess = (txByAsset.get(asset.id) ?? []).filter((tx) => {
-              if (index === 0) return tx.traded_at === date;
-              // 处理落在两个交易日之间的交易（周末/节假日）
-              return tx.traded_at > allDates[index - 1] && tx.traded_at <= date;
-            });
-
-            txToProcess
-              .sort((a, b) => a.traded_at.localeCompare(b.traded_at))
-              .forEach((tx) => {
-                const cur = holdingMap.get(asset.id) ?? {
-                  quantity: 0,
-                  cost: 0,
-                };
-                if (tx.type === "buy") {
-                  holdingMap.set(asset.id, {
-                    quantity: cur.quantity + tx.quantity,
-                    cost: cur.cost + tx.price * tx.quantity,
-                  });
-                } else {
-                  const ratio = tx.quantity / cur.quantity;
-                  holdingMap.set(asset.id, {
-                    quantity: cur.quantity - tx.quantity,
-                    cost: cur.cost * (1 - ratio),
-                  });
-                }
-              });
-          });
-
-          // 当日组合 OHLC = Σ(持仓数量 × 价格) + cash
-          let open = cashValue,
-            high = cashValue,
-            low = cashValue,
-            close = cashValue;
-
-          tradableAssets.forEach((asset) => {
-            const holding = holdingMap.get(asset.id);
-            if (!holding || holding.quantity === 0) return;
-            const price = priceMap.get(`${asset.symbol}-${date}`);
-            if (!price) return;
-
-            open += holding.quantity * price.open;
-            high += holding.quantity * price.high;
-            low += holding.quantity * price.low;
-            close += holding.quantity * price.close;
-          });
-
-          return { time: date, open, high, low, close };
+          }
         });
-
-        console.log("points", points);
-        setChartData(points);
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
+      });
     }
 
-    fetchAndCompute();
-  }, [range, assets, allTransactions]);
+    return allDates.map((date, index) => {
+      tradableAssets.forEach((asset) => {
+        const txToProcess = (txByAsset.get(asset.id) ?? []).filter((tx) => {
+          if (index === 0) return tx.traded_at === date;
+          // 处理落在两个交易日之间的交易（周末/节假日）
+          return tx.traded_at > allDates[index - 1] && tx.traded_at <= date;
+        });
+
+        txToProcess
+          .sort((a, b) => a.traded_at.localeCompare(b.traded_at))
+          .forEach((tx) => {
+            const cur = holdingMap.get(asset.id) ?? { quantity: 0, cost: 0 };
+            if (tx.type === "buy") {
+              holdingMap.set(asset.id, {
+                quantity: cur.quantity + tx.quantity,
+                cost: cur.cost + tx.price * tx.quantity,
+              });
+            } else {
+              const ratio = tx.quantity / cur.quantity;
+              holdingMap.set(asset.id, {
+                quantity: cur.quantity - tx.quantity,
+                cost: cur.cost * (1 - ratio),
+              });
+            }
+          });
+      });
+
+      // 当日组合 OHLC = Σ(持仓数量 × 价格) + cash
+      let open = cashValue,
+        high = cashValue,
+        low = cashValue,
+        close = cashValue;
+
+      tradableAssets.forEach((asset) => {
+        const holding = holdingMap.get(asset.id);
+        if (!holding || holding.quantity === 0) return;
+        const price = priceMap.get(`${asset.symbol}-${date}`);
+        if (!price) return;
+
+        open += holding.quantity * price.open;
+        high += holding.quantity * price.high;
+        low += holding.quantity * price.low;
+        close += holding.quantity * price.close;
+      });
+
+      return { time: date, open, high, low, close };
+    });
+  })();
 
   useEffect(() => {
     if (!chartContainerRef.current || chartData.length === 0) return;
@@ -395,7 +378,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
 
       {/* chart content */}
       <div className="p-4 flex-1">
-        {loading ? (
+        {isFetching ? (
           <div className="flex items-center justify-center h-87.5 text-muted-foreground text-sm">
             Loading...
           </div>

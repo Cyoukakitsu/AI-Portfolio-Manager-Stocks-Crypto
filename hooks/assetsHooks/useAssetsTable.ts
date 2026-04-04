@@ -44,15 +44,32 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
   // 组件挂载时批量并行拉取所有资产的当前价格
   useEffect(() => {
     async function fetchAllPrices() {
+      console.log(
+        `[useAssetsTable] Fetching prices for:`,
+        assets.map((a) => a.symbol),
+      );
       const entries = await Promise.all(
         assets.map(async (asset) => {
           try {
             const res = await fetch(
-              `/api/yahoofinance/quote?symbol=${asset.symbol}`,
+              `/api/yahoofinance/quote?symbol=${encodeURIComponent(asset.symbol)}`,
             );
+            if (!res.ok) {
+              const errorData = await res.json();
+              console.error(`[Hook] API error for ${asset.symbol}:`, errorData);
+              return [asset.symbol, null] as [string, null];
+            }
             const data = await res.json();
-            return [asset.symbol, data.price] as [string, number | null];
-          } catch {
+            console.log(
+              `[Hook] Received price for ${asset.symbol}:`,
+              data.price,
+            );
+            return [asset.symbol, data.price ?? null] as [
+              string,
+              number | null,
+            ];
+          } catch (err) {
+            console.error(`[Hook] Fetch error for ${asset.symbol}:`, err);
             return [asset.symbol, null] as [string, null];
           }
         }),

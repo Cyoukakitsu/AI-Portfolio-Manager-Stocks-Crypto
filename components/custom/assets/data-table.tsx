@@ -130,17 +130,21 @@ export function AssetsTable({ assets }: Props) {
                   {/* 实时市场价格：未加载完成时显示 Loading... */}
                   <TableCell>
                     {asset.symbol in currentPrices
-                      ? currentPrices[asset.symbol] != null
-                        ? `$${currentPrices[asset.symbol]!.toFixed(2)}`
-                        : "—"
+                      ? (() => {
+                          const p = Number(currentPrices[asset.symbol]);
+                          return !isNaN(p) && currentPrices[asset.symbol] != null
+                            ? `$${p.toFixed(2)}`
+                            : "—";
+                        })()
                       : "Loading..."}
                   </TableCell>
                   {/* 收益率：(市场价格 - 均价) / 均价 * 100，正值绿色，负值红色 */}
                   <TableCell>
                     {(() => {
-                      const price = currentPrices[asset.symbol];
+                      const price = Number(currentPrices[asset.symbol]);
                       if (
-                        price === null ||
+                        currentPrices[asset.symbol] == null ||
+                        isNaN(price) ||
                         asset.avg_price === null ||
                         asset.avg_price === 0
                       )

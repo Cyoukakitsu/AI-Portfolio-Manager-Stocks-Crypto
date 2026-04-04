@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useQuery } from "@tanstack/react-query";
 import type { Asset } from "@/types/global";
 import type { SymbolNews, NewsArticle } from "@/app/api/assets/news/route";
 import { RefreshCw, ExternalLink, Newspaper } from "lucide-react";
@@ -82,34 +82,24 @@ function LoadingSkeleton() {
 }
 
 export function DailyAnalysis({ assets }: Props) {
-  const [results, setResults] = useState<SymbolNews[]>([]);
-  const [loading, setLoading] = useState(false);
-  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
-
   const symbols = assets.map((a) => a.symbol);
 
-  const fetchNews = useCallback(async () => {
-    if (symbols.length === 0) return;
-    setLoading(true);
-    try {
+  const { data, isFetching, dataUpdatedAt, refetch } = useQuery<SymbolNews[]>({
+    queryKey: ["news", symbols],
+    queryFn: async () => {
       const res = await fetch(
         `/api/assets/news?symbols=${encodeURIComponent(symbols.join(","))}`,
       );
-      const data = await res.json();
-      setResults(data.results ?? []);
-      setLastUpdated(new Date());
-    } catch {
-      // silent
-    } finally {
-      setLoading(false);
-    }
-  }, [symbols.join(",")]); // eslint-disable-line react-hooks/exhaustive-deps
+      const json = await res.json();
+      return json.results ?? [];
+    },
+    enabled: symbols.length > 0,
+    staleTime: 5 * 60 * 1000, // 5 分钟内不自动重新请求
+  });
 
-  useEffect(() => {
-    fetchNews();
-  }, [fetchNews]);
-
+  const results = data ?? [];
   const hasNews = results.some((r) => r.articles.length > 0);
+  const lastUpdated = dataUpdatedAt ? new Date(dataUpdatedAt) : null;
 
   return (
     <div className="flex flex-col">
@@ -124,16 +114,16 @@ export function DailyAnalysis({ assets }: Props) {
           size="icon"
           variant="ghost"
           className="h-6 w-6"
-          onClick={fetchNews}
-          disabled={loading}
+          onClick={() => refetch()}
+          disabled={isFetching}
         >
-          <RefreshCw className={`h-3 w-3 ${loading ? "animate-spin" : ""}`} />
+          <RefreshCw className={`h-3 w-3 ${isFetching ? "animate-spin" : ""}`} />
         </Button>
       </div>
 
       {/* Content — scrollable, max-height matches chart card (~439px total) */}
       <div className="overflow-y-auto max-h-85.25">
-        {loading && !hasNews ? (
+        {isFetching && !hasNews ? (
           <LoadingSkeleton />
         ) : symbols.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 gap-2 text-muted-foreground">

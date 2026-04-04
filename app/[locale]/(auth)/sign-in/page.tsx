@@ -1,7 +1,5 @@
 import SignInForm from "@/components/custom/auth/sign-in-form";
 
-const SignIn = () => {
+export default function SignInPage() {
   return <SignInForm />;
-};
-
-export default SignIn;
+}

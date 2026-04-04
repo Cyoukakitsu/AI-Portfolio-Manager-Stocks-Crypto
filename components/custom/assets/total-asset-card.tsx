@@ -1,5 +1,8 @@
 "use client";
 
+// 这个组件用于显示总资产、今日资产、总资产收益率、今日资产收益率的卡片
+// 它接收一个资产数组作为 props，计算并显示总资产、今日资产、总资产收益率、今日资产收益率
+// MotionUI库用于实现资产卡片的动画效果
 import { useEffect } from "react";
 import { useAssetReturn } from "@/hooks/assetsHooks/useAssetReturn";
 import type { Asset } from "@/types/global";
@@ -26,12 +29,11 @@ export function TotalAssetCard({ assets }: Props) {
       ? "text-emerald-600 dark:text-emerald-400"
       : "text-red-500 dark:text-red-400";
 
-  // Total Assets
+  // MotionUI库
   const rawValue = useMotionValue(0);
   const springValue = useSpring(rawValue, { stiffness: 80, damping: 20 });
   const displayValue = useTransform(springValue, (v) => `$${v.toFixed(2)}`);
 
-  // Today Return
   const rawToday = useMotionValue(0);
   const springToday = useSpring(rawToday, { stiffness: 80, damping: 20 });
   const displayToday = useTransform(
@@ -45,7 +47,7 @@ export function TotalAssetCard({ assets }: Props) {
     (v) => `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`,
   );
 
-  // Total Return
+  // 总资产收益
   const rawReturn = useMotionValue(0);
   const springReturn = useSpring(rawReturn, { stiffness: 80, damping: 20 });
   const displayReturn = useTransform(

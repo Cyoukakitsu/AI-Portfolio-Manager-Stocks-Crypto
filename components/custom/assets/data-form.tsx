@@ -108,6 +108,7 @@ export function AssetForm({
                 <FieldLabel>Symbol</FieldLabel>
 
                 <SymbolSearch
+                  key={asset?.id ?? "new"}
                   defaultValue={asset?.symbol ?? ""}
                   onSelect={handleSymbolSelect}
                 />

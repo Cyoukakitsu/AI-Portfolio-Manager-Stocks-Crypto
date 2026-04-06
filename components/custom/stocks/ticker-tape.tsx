@@ -6,8 +6,6 @@ function TickerTape() {
   const scriptLoaded = useRef(false);
 
   useEffect(() => {
-    if (scriptLoaded.current) return;
-
     const existing = document.querySelector(
       'script[src="https://widgets.tradingview-widget.com/w/en/tv-ticker-tape.js"]'
     );
@@ -24,7 +22,7 @@ function TickerTape() {
     scriptLoaded.current = true;
 
     return () => {
-      document.head.removeChild(script);
+      script.parentNode?.removeChild(script);
       scriptLoaded.current = false;
     };
   }, []);

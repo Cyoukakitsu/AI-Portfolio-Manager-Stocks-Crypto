@@ -3,7 +3,6 @@
 // 这个组件用于显示总资产、今日资产、总资产收益率、今日资产收益率的卡片
 // 它接收一个资产数组作为 props，计算并显示总资产、今日资产、总资产收益率、今日资产收益率
 // MotionUI库用于实现资产卡片的动画效果
-import { useEffect } from "react";
 import { useAssetReturn } from "@/hooks/assetsHooks/useAssetReturn";
 import type { Asset } from "@/types/global";
 import { Wallet } from "lucide-react";
@@ -46,8 +45,6 @@ export function TotalAssetCard({ assets }: Props) {
     springTodayPct,
     (v) => `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`,
   );
-
-  // 总资产收益
   const rawReturn = useMotionValue(0);
   const springReturn = useSpring(rawReturn, { stiffness: 80, damping: 20 });
   const displayReturn = useTransform(
@@ -61,24 +58,11 @@ export function TotalAssetCard({ assets }: Props) {
     (v) => `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`,
   );
 
-  useEffect(() => {
-    rawValue.set(totalValue);
-    rawToday.set(todayReturn);
-    rawTodayPct.set(todayReturnPct ?? 0);
-    rawReturn.set(totalReturn);
-    rawPct.set(totalReturnPct ?? 0);
-  }, [
-    totalValue,
-    todayReturn,
-    todayReturnPct,
-    totalReturn,
-    totalReturnPct,
-    rawValue,
-    rawToday,
-    rawTodayPct,
-    rawReturn,
-    rawPct,
-  ]);
+  rawValue.set(totalValue);
+  rawToday.set(todayReturn);
+  rawTodayPct.set(todayReturnPct ?? 0);
+  rawReturn.set(totalReturn);
+  rawPct.set(totalReturnPct ?? 0);
 
   return (
     <motion.div

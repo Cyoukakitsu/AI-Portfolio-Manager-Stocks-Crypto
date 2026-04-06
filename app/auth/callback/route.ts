@@ -1,3 +1,5 @@
+// 调用 Supabase 检查 code 是否有效
+// 参考：https://supabase.com/docs/guides/auth/social-login/auth-google?queryGroups=framework&framework=nextjs&queryGroups=environment&environment=server
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 

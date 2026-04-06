@@ -22,8 +22,7 @@ type UseAssetFormParams = {
   onSuccess?: () => void; // 提交成功后的回调（通常是刷新列表）
 };
 
-// ---------- 工具函数 ----------
-
+// 把 Yahoo Finance 的资产类型枚举，翻译成本项目自己的类型枚举
 function mapYahooType(type: string): AssetFormData["asset_type"] | undefined {
   const map: Record<string, AssetFormData["asset_type"]> = {
     EQUITY: "stock", // 股票
@@ -34,7 +33,6 @@ function mapYahooType(type: string): AssetFormData["asset_type"] | undefined {
 }
 
 // 根据 asset prop 生成表单默认值
-// 抽成函数是因为 reset() 和 useForm() 都需要用到同样的逻辑
 function getDefaultValues(asset?: Asset): AssetFormData {
   return {
     symbol: asset?.symbol ?? "",
@@ -77,19 +75,6 @@ export function useAssetForm({
     }
   }, [open, asset, form]);
 
-  // ---- 4. asset_type 切换时的联动逻辑 ----
-  // cash 类型：自动填充 symbol/fullname
-  // 其他类型：清空旧值，让用户重新搜索选择
-  useEffect(() => {
-    if (currentAssetType === "cash") {
-      form.setValue("symbol", "CASH", { shouldValidate: true });
-      form.setValue("fullname", "Cash", { shouldValidate: true });
-    } else {
-      form.setValue("symbol", "", { shouldValidate: false });
-      form.setValue("fullname", "", { shouldValidate: false });
-    }
-  }, [currentAssetType, form]);
-
   // ---- 5. 表单提交处理 ----
   async function onSubmit(data: AssetFormData) {
     try {
@@ -101,7 +86,7 @@ export function useAssetForm({
         toast.success("Asset added successfully");
       }
 
-      // 新增模式重置表单，编辑模式保留数据（方便用户确认修改结果）
+      // 重置表单，编辑模式保留数据
       if (!asset) {
         form.reset();
       }
@@ -131,11 +116,18 @@ export function useAssetForm({
   }
 
   // ---- 7. asset_type Select 变更处理 ----
+  // cash 类型：自动填充 symbol/fullname；其他类型：清空旧值让用户重新搜索
   function handleAssetTypeChange(value: AssetFormData["asset_type"] | null) {
     if (!value) return;
-    form.setValue("asset_type", value, {
-      shouldValidate: true,
-    });
+    form.setValue("asset_type", value, { shouldValidate: true });
+
+    if (value === "cash") {
+      form.setValue("symbol", "CASH", { shouldValidate: true });
+      form.setValue("fullname", "Cash", { shouldValidate: true });
+    } else {
+      form.setValue("symbol", "", { shouldValidate: false });
+      form.setValue("fullname", "", { shouldValidate: false });
+    }
   }
 
   // ---- 返回组件需要的一切 ----
@@ -152,7 +144,7 @@ export function useAssetForm({
     currentAssetType,
 
     // 事件处理函数
-    onSubmit: form.handleSubmit(onSubmit),
+    onSubmit: form.handleSubmit(onSubmit), // React Hook Form 的固定用法
     handleSymbolSelect,
     handleAssetTypeChange,
 

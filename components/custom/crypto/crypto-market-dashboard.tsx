@@ -13,7 +13,6 @@ import {
   Globe,
   Zap,
 } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 
 /* ─────────────────────────────────────────
    Theme-aware color hook

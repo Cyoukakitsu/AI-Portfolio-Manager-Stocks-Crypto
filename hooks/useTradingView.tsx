@@ -17,13 +17,14 @@ const useTradingView = (
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!containerRef.current) return;
+    const container = containerRef.current;
+    if (!container) return;
 
     // dataset.loaded 作为防重复初始化的标志：
     // React 严格模式（StrictMode）会在开发环境中执行两次 Effect，
     // 若不加此检查，TradingView 脚本会被注入两次，导致 Widget 重叠或报错
-    if (containerRef.current.dataset.loaded) return;
-    containerRef.current.innerHTML = `<div class="tradingview-widget-container widget style="height: ${height}px width: 100%; " ></div>`;
+    if (container.dataset.loaded) return;
+    container.innerHTML = `<div class="tradingview-widget-container__widget" style="height: ${height}px; width: 100%;"></div>`;
 
     const script = document.createElement("script");
     script.src = scriptUrl;
@@ -32,9 +33,14 @@ const useTradingView = (
     // 这是其 Widget API 的特殊约定，不是标准做法
     script.innerHTML = JSON.stringify(config);
 
-    containerRef.current.appendChild(script);
+    container.appendChild(script);
     // 打标记，防止后续副作用重复执行时再次注入脚本
-    containerRef.current.dataset.loaded = "true";
+    container.dataset.loaded = "true";
+
+    return () => {
+      container.innerHTML = "";
+      delete container.dataset.loaded;
+    };
   }, [scriptUrl, config, height]);
 
   // 将 ref 返回给调用方，让调用方通过 ref={containerRef} 绑定到目标 DOM 元素

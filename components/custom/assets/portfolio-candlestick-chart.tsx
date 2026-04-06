@@ -68,6 +68,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
   // 1. 分离 cash 和可交易资产（仅用于 fetch，不含计算逻辑）
   const cashAssets = assets.filter((a) => a.asset_type === "cash");
   const tradableAssets = assets.filter((a) => a.asset_type !== "cash");
+  const totalCost = assets.reduce((sum, a) => sum + a.total_cost, 0);
   const symbolsKey = tradableAssets.map((a) => a.symbol).join(",");
 
   // 2. useQuery 只负责拉取原始 OHLCV 数据，按 range+symbols 缓存
@@ -275,7 +276,6 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
       seriesRef.current = series;
     } else {
       // 收益率面积图
-      const totalCost = assets.reduce((sum, a) => sum + a.total_cost, 0);
 
       const areaData = chartData.map((p) => ({
         time: p.time,
@@ -320,7 +320,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
       chartRef.current = null;
       seriesRef.current = null;
     };
-  }, [chartData, view, assets]);
+  }, [chartData, view, totalCost]);
   return (
     <motion.div
       className="group rounded-xl border border-border/60 bg-card shadow-sm transition-shadow duration-200 hover:shadow-md flex flex-col"

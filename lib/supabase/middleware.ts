@@ -3,9 +3,6 @@
 // 职责：
 //   1. 在每次请求时刷新 Supabase session（防止 JWT 过期导致登录失效）
 //   2. 拦截未登录用户，强制跳转到 /sign-in
-//
-// 为什么不在页面组件里做鉴权？
-//   中间件在边缘（Edge）运行，比页面渲染更早，能彻底避免未授权内容闪现（FOUC）
 
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
@@ -16,8 +13,7 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
-  // 中间件里无法使用 Next.js 的 cookies() API，
-  // 必须直接操作 request/response 对象上的 cookie
+  //直接操作 request/response 对象上的 cookie
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
@@ -26,7 +22,7 @@ export async function updateSession(request: NextRequest) {
         getAll() {
           return request.cookies.getAll();
         },
-        // setAll 写两次 cookie 是官方要求：
+
         // 先写 request（让本次请求能读到新值），再写 response（让浏览器保存新值）
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value }) =>
@@ -43,13 +39,11 @@ export async function updateSession(request: NextRequest) {
     },
   );
 
-  // getClaims() 比 getUser() 更轻量（不发网络请求，直接解析 JWT）
-  // 适合中间件这类对延迟敏感的场景
+  //身份验证
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
   // 未登录 且 访问的不是公开页面 → 重定向到登录页
-  // 注意：/sign-in 和 /sign-up 必须放行，否则会造成重定向死循环
   const pathname = request.nextUrl.pathname;
   const locale = pathname.split("/")[1] || "ja";
   if (

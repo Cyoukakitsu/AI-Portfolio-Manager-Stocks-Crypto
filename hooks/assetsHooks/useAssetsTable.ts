@@ -3,7 +3,8 @@
 // AssetsTable 组件的核心逻辑 Hook
 // 职责：行展开、交易记录缓存、当前价格拉取、删除确认状态管理
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -37,13 +38,11 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
     id: string;
     assetId: string;
   } | null>(null);
-  // 各资产的当前价格缓存
-  const [currentPrices, setCurrentPrices] = useState<
-    Record<string, number | null>
-  >({});
-  // 组件挂载时批量并行拉取所有资产的当前价格
-  useEffect(() => {
-    async function fetchAllPrices() {
+  // 各资产的当前价格，与 useAssetReturn 使用相同的 queryKey 共享缓存，不重复请求
+  const symbolsKey = assets.map((a) => a.symbol).join(",");
+  const { data: quotesData = {} } = useQuery<Record<string, { price: number | null }>>({
+    queryKey: ["quotes", symbolsKey],
+    queryFn: async () => {
       const entries = await Promise.all(
         assets.map(async (asset) => {
           try {
@@ -51,17 +50,20 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
               `/api/yahoofinance/quote?symbol=${asset.symbol}`,
             );
             const data = await res.json();
-            return [asset.symbol, data.price] as [string, number | null];
+            return [asset.symbol, { price: data.price ?? null, prevClose: data.prevClose ?? null }];
           } catch {
-            return [asset.symbol, null] as [string, null];
+            return [asset.symbol, { price: null, prevClose: null }];
           }
         }),
       );
-      setCurrentPrices(Object.fromEntries(entries));
-    }
-
-    if (assets.length > 0) fetchAllPrices();
-  }, [assets]);
+      return Object.fromEntries(entries);
+    },
+    enabled: assets.length > 0,
+    staleTime: 60 * 1000,
+  });
+  const currentPrices: Record<string, number | null> = Object.fromEntries(
+    Object.entries(quotesData).map(([symbol, q]) => [symbol, q.price]),
+  );
 
   // 展开/收起某一行；首次展开时懒加载交易数据，已缓存的不重复请求
   async function handleExpand(assetId: string) {

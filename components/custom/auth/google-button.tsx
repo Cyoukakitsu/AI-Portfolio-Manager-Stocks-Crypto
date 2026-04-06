@@ -1,5 +1,6 @@
 "use client";
 
+// 参考：https://supabase.com/docs/guides/auth/social-login/auth-google?queryGroups=framework&framework=nextjs&queryGroups=environment&environment=client
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 

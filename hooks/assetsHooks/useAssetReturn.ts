@@ -1,25 +1,22 @@
 //这个hooks用于计算总资产、今日资产、总资产收益率、今日资产收益率
 //它接收一个资产数组作为参数，返回一个对象，包含总资产、今日资产、总资产收益率、今日资产收益率的属性
+import { useQuery } from "@tanstack/react-query";
 import { Asset } from "@/types/global";
-import { useEffect, useState } from "react";
+
+type QuoteData = { price: number | null; prevClose: number | null };
+type QuotesMap = Record<string, QuoteData>;
 
 type UseAssetReturnParams = {
   assets: Asset[];
 };
+
 export function useAssetReturn({ assets }: UseAssetReturnParams) {
-  // 当前资产价格
-  const [currentPrices, setCurrentPrices] = useState<
-    Record<string, number | null>
-  >({});
+  const symbolsKey = assets.map((a) => a.symbol).join(",");
 
-  // 前一日资产价格
-  const [prevClosePrices, setPrevClosePrices] = useState<
-    Record<string, number | null>
-  >({});
-
-  useEffect(() => {
-    // 从服务器获取资产价格
-    async function fetchAllPrices() {
+  // 与 useAssetsTable 使用相同的 queryKey，两个组件共享同一份缓存，不重复请求
+  const { data: quotes = {} } = useQuery<QuotesMap>({
+    queryKey: ["quotes", symbolsKey],
+    queryFn: async () => {
       const entries = await Promise.all(
         assets.map(async (asset) => {
           try {
@@ -27,30 +24,22 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
               `/api/yahoofinance/quote?symbol=${asset.symbol}`,
             );
             const data = await res.json();
-            return [asset.symbol, data.price, data.prevClose] as [
-              string,
-              number | null,
-              number | null,
-            ];
+            return [asset.symbol, { price: data.price ?? null, prevClose: data.prevClose ?? null }];
           } catch {
-            return [asset.symbol, null, null] as [string, null, null];
+            return [asset.symbol, { price: null, prevClose: null }];
           }
         }),
       );
-      // 将获取到的价格转换为对象，键为资产符号，值为价格
-      setCurrentPrices(Object.fromEntries(entries.map(([s, p]) => [s, p])));
-      setPrevClosePrices(
-        Object.fromEntries(entries.map(([s, , pc]) => [s, pc])),
-      );
-    }
-
-    if (assets.length > 0) fetchAllPrices();
-  }, [assets]);
+      return Object.fromEntries(entries);
+    },
+    enabled: assets.length > 0,
+    staleTime: 60 * 1000,
+  });
 
   // 总市值
   const totalValue = assets.reduce((acc, asset) => {
-    const price = currentPrices[asset.symbol];
-    if (price !== null && price !== undefined && price > 0) {
+    const price = quotes[asset.symbol]?.price;
+    if (price != null && price > 0) {
       return acc + price * asset.total_quantity;
     }
     return acc;
@@ -65,8 +54,8 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
 
   // 今日收益 = sum((currentPrice - prevClose) * quantity)
   const todayReturn = assets.reduce((acc, asset) => {
-    const price = currentPrices[asset.symbol];
-    const prev = prevClosePrices[asset.symbol];
+    const price = quotes[asset.symbol]?.price;
+    const prev = quotes[asset.symbol]?.prevClose;
     if (price != null && prev != null && price > 0 && prev > 0) {
       return acc + (price - prev) * asset.total_quantity;
     }
@@ -75,7 +64,7 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
 
   // 前一日资产市值
   const yesterdayValue = assets.reduce((acc, asset) => {
-    const prev = prevClosePrices[asset.symbol];
+    const prev = quotes[asset.symbol]?.prevClose;
     if (prev != null && prev > 0) return acc + prev * asset.total_quantity;
     return acc;
   }, 0);

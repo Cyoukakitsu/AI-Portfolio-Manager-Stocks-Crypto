@@ -13,6 +13,7 @@ import { getAuthSession } from "./auth-helper";
 
 // 读取当前用户的所有资产（附带实时计算的平均价和持仓成本）
 export async function getAssets() {
+  // 确保用户已登录
   const { supabase, user } = await getAuthSession();
 
   const { data, error } = await supabase
@@ -33,7 +34,7 @@ export async function getAssets() {
 
   if (error) throw new Error(error.message);
 
-  // 3.在服务端聚合交易数据，把原始 transactions 数组转换为每个资产的“均价”和“总成本”
+  // 在服务端聚合交易数据，把原始 transactions 数组转换为每个资产的“均价”和“总成本”
   const assetsWithAvgPrice = data.map((asset) => {
     const transactions = asset.transactions as {
       price: number;

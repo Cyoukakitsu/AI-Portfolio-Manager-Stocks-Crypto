@@ -11,8 +11,8 @@ function AdvancedChart() {
     if (!widgetContainer) return;
 
     widgetContainer.innerHTML = `
-      <div className="tradingview-widget-container__widget"></div>
-      <div className="tradingview-widget-copyright">
+      <div class="tradingview-widget-container__widget"></div>
+      <div class="tradingview-widget-copyright">
         <a
           href="https://www.tradingview.com/symbols/VANTAGE-SP500/"
           rel="noopener nofollow"

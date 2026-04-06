@@ -4,7 +4,6 @@ import MarketDataStock from "@/components/custom/stocks/market-data-stock";
 import StockHeatmap from "@/components/custom/stocks/stock-heatmap";
 import TickerTape from "@/components/custom/stocks/ticker-tape";
 import TopStories from "@/components/custom/stocks/top-stories";
-import { Badge } from "@/components/ui/badge";
 import {
   Activity,
   BarChart2,
@@ -16,7 +15,10 @@ import {
   Zap,
 } from "lucide-react";
 
-import { WidgetCard, StatChip } from "@/components/custom/dashboard/widget-card";
+import {
+  WidgetCard,
+  StatChip,
+} from "@/components/custom/dashboard/widget-card";
 
 /* ─────────────────────────────────────────
    Page
@@ -120,7 +122,8 @@ export default async function Stocks() {
           className="text-center text-xs text-muted-foreground"
           suppressHydrationWarning
         >
-          {t("footer")}{new Date().toLocaleString()}
+          {t("footer")}
+          {new Date().toLocaleString()}
         </p>
       </div>
     </div>

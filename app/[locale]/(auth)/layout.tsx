@@ -1,9 +1,11 @@
-import Image from "next/image";
-import { TrendingUp, ShieldCheck, BotMessageSquare } from "lucide-react";
 import AuthLayoutWrapper from "@/components/custom/auth/auth-layout-wrapper";
 import { HeaderControls } from "@/components/custom/dashboard/header-controls";
-import { Link } from "@/i18n/navigation";
+
+import { TrendingUp, ShieldCheck, BotMessageSquare } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+
+import Image from "next/image";
+import { Link } from "@/i18n/navigation";
 
 const chartBars = [38, 52, 34, 68, 58, 78, 62, 88, 72, 94, 82, 100];
 

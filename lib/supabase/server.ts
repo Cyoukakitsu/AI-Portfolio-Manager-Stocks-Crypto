@@ -1,9 +1,6 @@
-// 服务端 Supabase 客户端（Server Client）
-//
+// Supabase服务端工厂函数
+//功能：让 Supabase 在 Node.js 环境下能够“感知”并“操作”浏览器的 Cookie
 //参考：https://supabase.com/docs/guides/auth/server-side/creating-a-client?queryGroups=framework&framework=nextjs
-// 用于 Server Components、Server Actions 和 API Routes。
-// 每次请求都需要重新创建实例（因为每次请求的 cookie 上下文不同），
-// 所以这里导出的是工厂函数而非单例。
 
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
@@ -17,12 +14,13 @@ export async function createClient() {
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       cookies: {
+        //getAll:读取Cookie
+        //在服务端调用 supabase.auth.getUser()等方法时，Supabase会通过 getAll 这个方法读取请求头中的Cookie
         getAll() {
           return cookieStore.getAll();
         },
-        // setAll 在 Server Action 中刷新 session 时会被调用
-        // try/catch 是因为 Server Component 渲染时 cookie 是只读的，
-        // 写入会抛出异常，这里静默忽略即可（Middleware 会负责实际刷新）
+        //setAll:设置Cookie
+        //在服务端调用 supabase.auth.signUp()等方法后，Supabase会通过 setAll 这个方法设置响应头中的Cookie
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) => {

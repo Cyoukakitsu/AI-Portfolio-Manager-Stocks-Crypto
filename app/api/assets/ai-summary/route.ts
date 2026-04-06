@@ -1,39 +1,53 @@
-import { groq } from "@ai-sdk/groq";
+import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { tavilySearch } from "@tavily/ai-sdk";
 import { streamText, stepCountIs } from "ai";
 
+const openrouter = createOpenRouter({
+  apiKey: process.env.OPENROUTER_API_KEY,
+});
+
 export async function POST(req: Request) {
-  const { assets } = await req.json();
+  const { assets, locale } = await req.json();
 
   const holdings = (assets as { fullname: string; symbol: string; total_quantity: number; total_cost: number }[])
     .map((a) => `${a.fullname} (${a.symbol}), qty: ${a.total_quantity}, cost: $${a.total_cost.toFixed(2)}`)
     .join("\n");
 
   const result = streamText({
-    model: groq("llama-3.3-70b-versatile"),
+    model: openrouter("qwen/qwen3.6-plus:free"),
     tools: {
       tavilySearch: tavilySearch({ maxResults: 2 }),
     },
     stopWhen: stepCountIs(4),
-    system: `You are a professional portfolio analyst. Be concise and insightful.
-Always respond in Japanese.
-Structure your response EXACTLY like this (use these exact markdown headers):
-## 総合評価
-1〜2文で全体的な見通しを述べる。
+    system: `You are a senior portfolio analyst with expertise in equities, ETFs, and crypto assets.
+Your job: deliver a concise, data-driven portfolio review — no filler, no generic advice.
 
-## 注目ポイント
-- 箇条書きで2〜3点
+Always respond in the language matching locale "${locale}".
 
-## リスク
-- 箇条書きで2〜3点
+Output format (use these exact markdown headers, in order):
 
-## 推奨アクション
-1文で具体的なアドバイスを述べる。`,
-    prompt: `以下の持ち株ポートフォリオを分析してください：
+## Portfolio Snapshot
+One sentence on overall positioning: concentration, sector mix, or asset class balance.
+
+## What's Working
+- 2–3 bullets on strongest holdings or tailwinds (cite recent news if found)
+
+## Key Risks
+- 2–3 bullets on concentration risk, macro headwinds, or company-specific concerns
+
+## Action Items
+- 1–2 concrete, prioritized actions the investor should consider this week`,
+    prompt: `Analyze this portfolio:
 ${holdings}
 
-最も比重の高い銘柄についてtavilySearchで最新ニュースを検索してから、
-テクニカルトレンド・企業ファンダメンタルズ・業界動向を踏まえた分析をお願いします。`,
+Step 1 — Search: Use tavilySearch to find the latest news (past 48h) for the largest position by total cost. Focus on earnings, analyst rating changes, or major catalysts.
+
+Step 2 — Analyze: Using the search results and your knowledge, evaluate:
+- Concentration & diversification (sector, asset class)
+- Fundamental strength of top holdings (revenue trend, competitive moat)
+- Risk factors (macro, regulatory, valuation)
+
+Step 3 — Recommend: Give specific, prioritized action items based on current market context. Avoid generic advice like "diversify" — be precise about which positions and why.`,
   });
 
   return result.toTextStreamResponse();

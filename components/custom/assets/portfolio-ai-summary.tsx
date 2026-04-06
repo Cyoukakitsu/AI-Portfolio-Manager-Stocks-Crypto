@@ -4,7 +4,7 @@
 // 它接收一个资产数组作为 props，调用后端 API 进行资产分析，并在组件中显示摘要内容
 import { useRef, useState } from "react";
 import type { Asset } from "@/types/global";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 import { Bot, RefreshCw, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -21,6 +21,7 @@ type Props = { assets: Asset[] };
 
 function AnalysisContent({ assets }: Props) {
   const t = useTranslations("aiSummary");
+  const locale = useLocale();
   const [text, setText] = useState("");
   const [loading, setLoading] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null); // 最后更新时间
@@ -40,7 +41,7 @@ function AnalysisContent({ assets }: Props) {
       const res = await fetch("/api/assets/ai-summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ assets }),
+        body: JSON.stringify({ assets, locale }),
         signal: ctrl.signal,
       });
       if (!res.ok || !res.body) throw new Error("fetch failed");

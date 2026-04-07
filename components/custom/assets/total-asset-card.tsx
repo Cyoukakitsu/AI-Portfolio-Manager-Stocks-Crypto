@@ -28,30 +28,30 @@ export function TotalAssetCard({ assets }: Props) {
       ? "text-emerald-600 dark:text-emerald-400"
       : "text-red-500 dark:text-red-400";
 
-  // MotionUI库
-  const rawValue = useMotionValue(0);
+  // MotionUI库：初始值用实际数据，缓存命中时不会从 0 归零再动画
+  const rawValue = useMotionValue(totalValue);
   const springValue = useSpring(rawValue, { stiffness: 80, damping: 20 });
   const displayValue = useTransform(springValue, (v) => `$${v.toFixed(2)}`);
 
-  const rawToday = useMotionValue(0);
+  const rawToday = useMotionValue(todayReturn);
   const springToday = useSpring(rawToday, { stiffness: 80, damping: 20 });
   const displayToday = useTransform(
     springToday,
     (v) => `${v >= 0 ? "+" : ""}$${v.toFixed(2)}`,
   );
-  const rawTodayPct = useMotionValue(0);
+  const rawTodayPct = useMotionValue(todayReturnPct ?? 0);
   const springTodayPct = useSpring(rawTodayPct, { stiffness: 80, damping: 20 });
   const displayTodayPct = useTransform(
     springTodayPct,
     (v) => `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`,
   );
-  const rawReturn = useMotionValue(0);
+  const rawReturn = useMotionValue(totalReturn);
   const springReturn = useSpring(rawReturn, { stiffness: 80, damping: 20 });
   const displayReturn = useTransform(
     springReturn,
     (v) => `${v >= 0 ? "+" : ""}$${v.toFixed(2)}`,
   );
-  const rawPct = useMotionValue(0);
+  const rawPct = useMotionValue(totalReturnPct ?? 0);
   const springPct = useSpring(rawPct, { stiffness: 80, damping: 20 });
   const displayPct = useTransform(
     springPct,

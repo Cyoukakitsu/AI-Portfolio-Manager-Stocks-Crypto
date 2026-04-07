@@ -4,7 +4,7 @@
 // 职责：行展开、交易记录缓存、当前价格拉取、删除确认状态管理
 
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -60,6 +60,8 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
     },
     enabled: assets.length > 0,
     staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,
+    placeholderData: keepPreviousData,
   });
   const currentPrices: Record<string, number | null> = Object.fromEntries(
     Object.entries(quotesData).map(([symbol, q]) => [symbol, q.price]),

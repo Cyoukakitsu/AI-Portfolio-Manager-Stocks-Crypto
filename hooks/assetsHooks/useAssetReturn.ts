@@ -1,6 +1,6 @@
 //这个hooks用于计算总资产、今日资产、总资产收益率、今日资产收益率
 //它接收一个资产数组作为参数，返回一个对象，包含总资产、今日资产、总资产收益率、今日资产收益率的属性
-import { useQuery } from "@tanstack/react-query";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { Asset } from "@/types/global";
 
 type QuoteData = { price: number | null; prevClose: number | null };
@@ -34,6 +34,8 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
     },
     enabled: assets.length > 0,
     staleTime: 60 * 1000,
+    gcTime: 5 * 60 * 1000,       // 数据在内存中保留 5 分钟，导航回来时直接用
+    placeholderData: keepPreviousData, // 重新获取时保持旧数据，避免闪烁为空
   });
 
   // 总市值

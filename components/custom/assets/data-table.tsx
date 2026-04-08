@@ -35,7 +35,7 @@ import type { Asset } from "@/types/global";
 import { useAssetsTable } from "@/hooks/assetsHooks/useAssetsTable";
 import { motion, AnimatePresence } from "motion/react";
 
-const MotionTableRow = motion(TableRow);
+const MotionTableRow = motion.create(TableRow);
 
 type Props = {
   assets: Asset[];

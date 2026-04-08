@@ -15,9 +15,11 @@ import { Button } from "@/components/ui/button";
 
 export default async function Assets() {
   const t = await getTranslations("pages.assets");
-  const assets = await getAssets();
+  const [assets, allTransactions] = await Promise.all([
+    getAssets(),
+    getAllTransactions(),
+  ]);
   const list = assets ?? [];
-  const allTransactions = await getAllTransactions();
 
   return (
     <div className="min-w-0 w-full overflow-x-hidden flex flex-col gap-6 p-6">

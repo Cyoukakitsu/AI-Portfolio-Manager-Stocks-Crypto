@@ -6,6 +6,13 @@ import type { NextRequest } from "next/server";
 const handleI18nRouting = createMiddleware(routing);
 
 export async function proxy(request: NextRequest) {
+  const { pathname } = request.nextUrl;
+
+  // /auth/* はロケール処理不要（Google OAuth コールバックなど）
+  if (pathname.startsWith("/auth/")) {
+    return await updateSession(request);
+  }
+
   const i18nResponse = handleI18nRouting(request);
 
   // next-intl がリダイレクト（/ → /ja/）を発行した場合はそのまま返す

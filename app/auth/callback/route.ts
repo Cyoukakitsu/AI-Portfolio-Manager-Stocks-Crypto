@@ -6,7 +6,8 @@ import { createClient } from "@/lib/supabase/server";
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/dashboard";
+  // next 默认跳转到日语 dashboard（localePrefix: "always" 要求带 locale）
+  const next = searchParams.get("next") ?? "/ja/dashboard/assets";
 
   if (code) {
     const supabase = await createClient();
@@ -26,5 +27,5 @@ export async function GET(request: Request) {
     }
   }
 
-  return NextResponse.redirect(`${origin}/sign-in?error=oauth_callback_error`);
+  return NextResponse.redirect(`${origin}/ja/sign-in?error=oauth_callback_error`);
 }

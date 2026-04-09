@@ -49,7 +49,7 @@ export function WidgetCard({
         className,
       ].join(" ")}
     >
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-border/60">
+      <div className="flex items-center gap-3 px-3 py-2.5 sm:px-5 sm:py-3.5 border-b border-border/60">
         <span
           className={`flex items-center justify-center h-7 w-7 rounded-lg shrink-0 ${iconStyles[accent]}`}
         >

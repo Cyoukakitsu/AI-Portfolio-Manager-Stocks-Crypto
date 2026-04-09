@@ -27,7 +27,7 @@ function ArticleItem({ article }: { article: NewsArticle }) {
       href={article.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group/item flex flex-col gap-0.5 px-4 py-2.5 border-b border-border/40 last:border-0 hover:bg-muted/40 transition-colors"
+      className="group/item flex flex-col gap-0.5 px-3 sm:px-4 py-2 sm:py-2.5 border-b border-border/40 last:border-0 hover:bg-muted/40 transition-colors"
     >
       <div className="flex items-start justify-between gap-2">
         <span className="text-xs font-medium leading-snug line-clamp-2 group-hover/item:text-primary transition-colors">
@@ -122,7 +122,7 @@ export function DailyAnalysis({ assets }: Props) {
       </div>
 
       {/* Content — scrollable, max-height matches chart card (~439px total) */}
-      <div className="overflow-y-auto max-h-85.25">
+      <div className="overflow-y-auto max-h-60 sm:max-h-85.25">
         {isFetching && !hasNews ? (
           <LoadingSkeleton />
         ) : symbols.length === 0 ? (

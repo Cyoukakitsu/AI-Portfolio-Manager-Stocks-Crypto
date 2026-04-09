@@ -73,7 +73,7 @@ export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
   };
 
   return (
-    <div className="flex gap-2">
+    <div className="flex flex-col sm:flex-row gap-2">
       <div className="flex-1">
         <Command className="border rounded-3xl" shouldFilter={false}>
           <div className="flex items-center px-6">
@@ -138,7 +138,7 @@ export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
       <Button
         onClick={handleSubmit}
         disabled={disabled || isLoading || !(selectedSymbol || query.trim())}
-        className="rounded-3xl px-6 self-start mt-0.5"
+        className="rounded-3xl px-6 w-full sm:w-auto sm:self-start sm:mt-0.5"
       >
         {isLoading ? "Loading..." : "Analyze"}
       </Button>

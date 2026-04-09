@@ -28,19 +28,19 @@ export function ProgressSteps({ currentStep, personas = [] }: ProgressStepsProps
       : STEPS.findIndex((s) => s.id === currentStep);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1 sm:gap-2 overflow-x-auto pb-1">
       {STEPS.map((step, index) => {
         const isDone = index < currentIndex;
         const isActive = index === currentIndex;
 
         return (
-          <div key={step.id} className="flex items-center gap-2 flex-1">
-            <div className="flex items-center gap-2">
+          <div key={step.id} className="flex items-center gap-1 sm:gap-2 flex-1 min-w-0">
+            <div className="flex items-center gap-1 sm:gap-2 min-w-0">
               {/* 圆点 */}
               <div
                 className={`
-                w-5 h-5 rounded-full flex items-center justify-center
-                text-xs font-medium shrink-0
+                w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center
+                text-[10px] sm:text-xs font-medium shrink-0
                 ${
                   isDone
                     ? "bg-primary text-primary-foreground"
@@ -55,7 +55,7 @@ export function ProgressSteps({ currentStep, personas = [] }: ProgressStepsProps
               {/* 文字 */}
               <span
                 className={`
-                text-xs whitespace-nowrap
+                text-[10px] sm:text-xs truncate
                 ${isActive ? "text-foreground font-medium" : "text-muted-foreground"}
               `}
               >
@@ -65,7 +65,7 @@ export function ProgressSteps({ currentStep, personas = [] }: ProgressStepsProps
             {/* 连接线 */}
             {index < STEPS.length - 1 && (
               <div
-                className={`h-px flex-1 mx-1 transition-colors duration-500 ${isDone ? "bg-primary" : "bg-border"}`}
+                className={`h-px flex-1 mx-0.5 sm:mx-1 transition-colors duration-500 shrink-0 min-w-2 ${isDone ? "bg-primary" : "bg-border"}`}
               />
             )}
           </div>

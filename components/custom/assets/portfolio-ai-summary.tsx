@@ -132,7 +132,7 @@ export function PortfolioAISummary({ assets }: Props) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       {/* Card body — minimal, no content overflow */}
-      <div className="px-5 py-4 flex flex-col items-center justify-center gap-3 text-center">
+      <div className="px-3 sm:px-5 py-4 flex flex-col items-center justify-center gap-3 text-center">
         <div>
           <p className="text-[13px] font-medium">{t("title")}</p>
           <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -153,7 +153,7 @@ export function PortfolioAISummary({ assets }: Props) {
         </DialogTrigger>
       </div>
 
-      <DialogContent className="max-w-2xl">
+      <DialogContent className="w-[95vw] max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <Bot className="h-4 w-4 text-violet-500" />

@@ -71,7 +71,7 @@ export function TotalAssetCard({ assets }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" as const }}
     >
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-border/60">
+      <div className="flex items-center gap-3 px-3 sm:px-5 py-3.5 border-b border-border/60">
         <span className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 bg-amber-500/10 text-amber-500 dark:bg-amber-400/10 dark:text-amber-400">
           <Wallet className="h-4 w-4" />
         </span>
@@ -80,29 +80,30 @@ export function TotalAssetCard({ assets }: Props) {
         </span>
       </div>
 
-      <div className="px-5 py-3 flex flex-1 items-center">
+      <div className="px-3 sm:px-5 py-3 flex flex-col sm:flex-row flex-1 items-center gap-3 sm:gap-0">
         {/* Total Assets */}
-        <div className="flex-1 flex justify-center">
+        <div className="flex-1 flex justify-center w-full sm:w-auto">
           <div>
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-0.5">
               Total Assets
             </p>
-            <motion.div className="text-3xl font-bold tabular-nums">
+            <motion.div className="text-2xl sm:text-3xl font-bold tabular-nums">
               {displayValue}
             </motion.div>
           </div>
         </div>
 
-        <div className="w-px h-10 bg-border/60 shrink-0" />
+        <div className="hidden sm:block w-px h-10 bg-border/60 shrink-0" />
+        <div className="sm:hidden w-full h-px bg-border/60" />
 
         {/* Today Return */}
-        <div className="flex-1 flex justify-center">
+        <div className="flex-1 flex justify-center w-full sm:w-auto">
           <div className="text-center">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-0.5">
               Today Return
             </p>
             <motion.div
-              className={`text-xl font-bold tabular-nums ${todayColor}`}
+              className={`text-lg sm:text-xl font-bold tabular-nums ${todayColor}`}
             >
               {displayToday}
             </motion.div>
@@ -112,16 +113,17 @@ export function TotalAssetCard({ assets }: Props) {
           </div>
         </div>
 
-        <div className="w-px h-10 bg-border/60 shrink-0" />
+        <div className="hidden sm:block w-px h-10 bg-border/60 shrink-0" />
+        <div className="sm:hidden w-full h-px bg-border/60" />
 
         {/* Total Return */}
-        <div className="flex-1 flex justify-center">
-          <div className="text-right">
+        <div className="flex-1 flex justify-center w-full sm:w-auto">
+          <div className="text-center sm:text-right">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-0.5">
               Total Return
             </p>
             <motion.div
-              className={`text-xl font-bold tabular-nums ${returnColor}`}
+              className={`text-lg sm:text-xl font-bold tabular-nums ${returnColor}`}
             >
               {displayReturn}
             </motion.div>

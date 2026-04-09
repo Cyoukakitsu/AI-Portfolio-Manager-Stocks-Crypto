@@ -22,7 +22,7 @@ export default async function Assets() {
   const list = assets ?? [];
 
   return (
-    <div className="min-w-0 w-full overflow-x-hidden flex flex-col gap-6 p-6">
+    <div className="min-w-0 w-full overflow-x-hidden flex flex-col gap-4 sm:gap-6 p-3 sm:p-6">
       {/* ── Page header ── */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
@@ -39,13 +39,15 @@ export default async function Assets() {
       </div>
 
       {/* ── KPI cards ── */}
-      <div className="grid gap-4 grid-cols-3">
-        <div className="col-span-2">
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-3">
+        <div className="sm:col-span-2">
           <TotalAssetCard assets={list} />
         </div>
+        <div className="sm:col-span-1">
         <WidgetCard icon={Bot} title={t("aiSummaryWidget")} accent="amber">
           <PortfolioAISummary assets={list} />
         </WidgetCard>
+        </div>
       </div>
 
       {/* ── Charts row ── */}
@@ -77,7 +79,7 @@ export default async function Assets() {
           <AssetForm trigger={<Button size="sm">{t("addAsset")}</Button>} />
         }
       >
-        <div className="p-4">
+        <div className="p-2 sm:p-4">
           <AssetsTable assets={list} />
         </div>
       </WidgetCard>

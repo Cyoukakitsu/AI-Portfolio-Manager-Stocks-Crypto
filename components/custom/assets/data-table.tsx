@@ -71,6 +71,7 @@ export function AssetsTable({ assets }: Props) {
 
   return (
     <>
+      <div className="overflow-x-auto w-full">
       <Table>
         <TableHeader>
           <TableRow>
@@ -286,6 +287,8 @@ export function AssetsTable({ assets }: Props) {
           )}
         </TableBody>
       </Table>
+
+      </div>
 
       {/*
         Dialog 渲染在 Table 外部，而非 TableRow 内部。

@@ -74,7 +74,7 @@ export function AnalysisShell() {
   const result = mutation.data ?? null;
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       <div>
         <h1 className="text-xl font-medium">{t("title")}</h1>
         <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
@@ -107,7 +107,7 @@ export function AnalysisShell() {
             {t("results")} — {symbol}
           </p>
           {/* 分析结果 */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {result.agentResults.map((agent) => (
               <AgentCard
                 key={agent.persona}

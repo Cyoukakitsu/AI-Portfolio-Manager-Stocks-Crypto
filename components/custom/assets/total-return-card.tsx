@@ -26,13 +26,13 @@ export function TotalReturnCard({ assets }: Props) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" as const, delay: 0.08 }}
     >
-      <div className="flex items-center gap-3 px-5 py-2.5 border-b border-border/60">
+      <div className="flex items-center gap-3 px-3 sm:px-5 py-2.5 border-b border-border/60">
         <span className="flex items-center justify-center h-6 w-6 rounded-lg shrink-0 bg-emerald-500/10 text-emerald-500 dark:bg-emerald-400/10 dark:text-emerald-400">
           <BarChart3 className="h-3.5 w-3.5" />
         </span>
         <span className="text-sm font-semibold tracking-tight">Holdings</span>
       </div>
-      <div className="px-5 py-3 flex items-center justify-between">
+      <div className="px-3 sm:px-5 py-3 flex items-center justify-between">
         {TYPE_CONFIG.map(({ type, label }) => (
           <div key={type} className="flex-1 flex flex-col items-center gap-0.5">
             <span className="text-[10px] text-muted-foreground">{label}</span>

@@ -329,7 +329,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
       transition={{ duration: 0.45, ease: "easeOut" as const }}
     >
       {/* WidgetCard header */}
-      <div className="flex items-center gap-3 px-5 py-3.5 border-b border-border/60 flex-wrap gap-y-2">
+      <div className="flex flex-wrap items-center gap-2 px-3 sm:px-5 py-3 sm:py-3.5 border-b border-border/60">
         <span className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 bg-violet-500/10 text-violet-500 dark:bg-violet-400/10 dark:text-violet-400">
           <TrendingUp className="h-4 w-4" />
         </span>
@@ -338,13 +338,13 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
         </span>
 
         {/* controls */}
-        <div className="flex items-center gap-2 shrink-0">
+        <div className="flex items-center gap-2 shrink-0 flex-wrap">
           {/* USD / % 切换 */}
           <div className="flex rounded-md border border-border/60 overflow-hidden">
             <Button
               variant={view === "usd" ? "default" : "ghost"}
               size="sm"
-              className="rounded-none text-xs px-3"
+              className="rounded-none text-xs px-2 sm:px-3"
               onClick={() => setView("usd")}
             >
               USD
@@ -352,7 +352,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
             <Button
               variant={view === "pct" ? "default" : "ghost"}
               size="sm"
-              className="rounded-none text-xs px-3"
+              className="rounded-none text-xs px-2 sm:px-3"
               onClick={() => setView("pct")}
             >
               %
@@ -360,13 +360,13 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
           </div>
 
           {/* 时间范围切换 */}
-          <div className="flex gap-1">
+          <div className="flex gap-0.5 sm:gap-1">
             {RANGES.map((r) => (
               <Button
                 key={r}
                 variant={range === r ? "default" : "ghost"}
                 size="sm"
-                className="text-xs px-2"
+                className="text-xs px-1.5 sm:px-2"
                 onClick={() => setRange(r)}
               >
                 {r}
@@ -377,13 +377,13 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
       </div>
 
       {/* chart content */}
-      <div className="p-4 flex-1">
+      <div className="p-2 sm:p-4 flex-1">
         {isFetching ? (
-          <div className="flex items-center justify-center h-87.5 text-muted-foreground text-sm">
+          <div className="flex items-center justify-center h-52 sm:h-87.5 text-muted-foreground text-sm">
             Loading...
           </div>
         ) : chartData.length === 0 ? (
-          <div className="flex items-center justify-center h-87.5 text-muted-foreground text-sm">
+          <div className="flex items-center justify-center h-52 sm:h-87.5 text-muted-foreground text-sm">
             No data
           </div>
         ) : (

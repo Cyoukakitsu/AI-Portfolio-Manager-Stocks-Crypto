@@ -18,7 +18,7 @@ export function CoordinatorCard({
   return (
     <Card>
       <CardHeader className="pb-3">
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <div className="flex items-center gap-2">
             <span className="text-2xl">⚖️</span>
             <div>
@@ -27,10 +27,10 @@ export function CoordinatorCard({
             </div>
           </div>
           {/* verdict 标签 + score 进度条 */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 flex-wrap">
             <Badge className={`text-sm px-3 py-1 ${VERDICT_STYLE[verdict]}`}>{VERDICT_LABEL[verdict]}</Badge>
             <span className="text-sm text-muted-foreground">Score</span>
-            <div className="w-24 h-2 rounded-full bg-muted overflow-hidden">
+            <div className="w-20 sm:w-24 h-2 rounded-full bg-muted overflow-hidden">
               <div
                 className="h-full bg-primary rounded-full"
                 style={{ width: `${score}%` }}
@@ -42,7 +42,7 @@ export function CoordinatorCard({
       </CardHeader>
 
       <CardContent>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* 左侧：综合摘要 */}
           <p className="text-sm text-muted-foreground leading-relaxed">
             {summary}

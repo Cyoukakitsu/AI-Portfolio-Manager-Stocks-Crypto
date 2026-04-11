@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
-import AdvancedChart from "@/components/custom/stocks/advanced-chart";
-import MarketDataStock from "@/components/custom/stocks/market-data-stock";
-import StockHeatmap from "@/components/custom/stocks/stock-heatmap";
-import TickerTape from "@/components/custom/stocks/ticker-tape";
-import TopStories from "@/components/custom/stocks/top-stories";
+import AdvancedChart from "@/features/stocks/components/advanced-chart";
+import MarketDataStock from "@/features/stocks/components/market-data-stock";
+import StockHeatmap from "@/features/stocks/components/stock-heatmap";
+import TickerTape from "@/features/stocks/components/ticker-tape";
+import TopStories from "@/features/stocks/components/top-stories";
 import {
   Activity,
   BarChart2,
@@ -18,7 +18,7 @@ import {
 import {
   WidgetCard,
   StatChip,
-} from "@/components/custom/dashboard/widget-card";
+} from "@/features/dashboard/components/widget-card";
 
 /* ─────────────────────────────────────────
    Page

@@ -1,14 +1,14 @@
 import { getTranslations } from "next-intl/server";
-import { getAssets } from "@/server/assets";
-import { getAllTransactions } from "@/server/transactions";
+import { getAssets } from "@/features/assets/server/assets";
+import { getAllTransactions } from "@/features/assets/server/transactions";
 
-import { AssetsTable } from "@/components/custom/assets/data-table";
-import { AssetForm } from "@/components/custom/assets/data-form";
-import { TotalAssetCard } from "@/components/custom/assets/total-asset-card";
-import { PortfolioCandlestickChart } from "@/components/custom/assets/portfolio-candlestick-chart";
-import { DailyAnalysis } from "@/components/custom/assets/daily-analysis";
-import { PortfolioAISummary } from "@/components/custom/assets/portfolio-ai-summary";
-import { WidgetCard } from "@/components/custom/dashboard/widget-card";
+import { AssetsTable } from "@/features/assets/components/data-table";
+import { AssetForm } from "@/features/assets/components/data-form";
+import { TotalAssetCard } from "@/features/assets/components/total-asset-card";
+import { PortfolioCandlestickChart } from "@/features/assets/components/portfolio-candlestick-chart";
+import { DailyAnalysis } from "@/features/assets/components/daily-analysis";
+import { PortfolioAISummary } from "@/features/assets/components/portfolio-ai-summary";
+import { WidgetCard } from "@/features/dashboard/components/widget-card";
 
 import { LayoutDashboard, Database, Newspaper, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";

@@ -1,16 +1,16 @@
 import { deepseek } from "@ai-sdk/deepseek";
 import { generateText, stepCountIs } from "ai";
-import { AgentPersona, AnalysisResult } from "@/types/ai";
+import { AgentPersona, AnalysisResult } from "@/features/ai/types";
 
-import { getStockPrice } from "@/lib/ai/getStockPrice";
-import { getFinancials } from "@/lib/ai/getFinancials";
-import { getNews } from "@/lib/ai/getNews";
-import { cleanJSON, parseAgent } from "@/lib/ai/parse-agent";
+import { getStockPrice } from "@/features/ai/lib/getStockPrice";
+import { getFinancials } from "@/features/ai/lib/getFinancials";
+import { getNews } from "@/features/ai/lib/getNews";
+import { cleanJSON, parseAgent } from "@/features/ai/lib/parse-agent";
 import {
   ANALYSIS_PROMPT,
   COORDINATOR_PROMPT,
   PERSONA_PROMPTS,
-} from "@/lib/ai/prompts";
+} from "@/features/ai/lib/prompts";
 
 //接收前端传的「股票代码 + 投资大师人设」
 // 调用大模型 + 工具分析，返回结构化分析结果

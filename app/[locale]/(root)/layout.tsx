@@ -1,5 +1,5 @@
 import React from "react";
-import { HeaderControls } from "@/components/custom/dashboard/header-controls";
+import { HeaderControls } from "@/features/dashboard/components/header-controls";
 
 export default function RootLayout({
   children,

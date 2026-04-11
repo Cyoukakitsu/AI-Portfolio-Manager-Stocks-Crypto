@@ -180,16 +180,20 @@ export function AgentSelector({
               <DialogHeader>
                 {/* 头像 + 姓名 + 职称 */}
                 <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 rounded-full overflow-hidden ring-2 ring-primary flex-shrink-0 bg-muted flex items-center justify-center">
+                  <div className={`
+                    w-20 aspect-square rounded-xl overflow-hidden ring-2 ring-primary shrink-0
+                    bg-linear-to-b ${activePersona.gradientClass}
+                    flex items-end justify-center
+                  `}>
                     {!activePersona.avatarUrl || imgErrors.has(modalOpen) ? (
-                      <span className="text-4xl">{activePersona.emoji}</span>
+                      <span className="text-4xl pb-1">{activePersona.emoji}</span>
                     ) : (
                       <Image
                         src={activePersona.avatarUrl}
                         alt={activePersona.name}
                         width={80}
-                        height={80}
-                        className="w-full h-full object-cover"
+                        height={45}
+                        className="w-full h-full object-cover object-bottom"
                         onError={() => handleImgError(modalOpen)}
                       />
                     )}
@@ -260,7 +264,7 @@ export function AgentSelector({
                           key={item}
                           className="flex items-start gap-2 text-sm text-muted-foreground"
                         >
-                          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                          <span className="mt-1.5 w-1.5 h-1.5 rounded-full bg-primary shrink-0" />
                           {item}
                         </li>
                       ),

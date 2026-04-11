@@ -138,8 +138,8 @@ export function AgentSelector({
                     <Image
                       src={meta.avatarUrl}
                       alt={meta.name}
-                      width={200}
-                      height={200}
+                      width={320}
+                      height={180}
                       className="w-full h-full object-cover object-bottom"
                       onError={() => handleImgError(id)}
                     />

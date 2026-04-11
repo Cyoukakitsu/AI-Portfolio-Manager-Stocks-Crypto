@@ -90,10 +90,10 @@ export function AgentSelector({
                 onClick={() => handleClick(id)}
                 disabled={isDisabled}
                 className={`
-                  relative flex flex-col items-center gap-1.5 rounded-lg border p-3 transition-all duration-200 text-left
+                  relative flex flex-col items-center gap-1.5 rounded-lg border p-3 transition-all duration-200 text-left overflow-hidden
                   ${
                     isSelected
-                      ? "border-2 border-primary bg-primary/5"
+                      ? "border-2 border-primary"
                       : "border border-border bg-card hover:border-primary/40"
                   }
                   ${isDisabled && !isSelected ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}

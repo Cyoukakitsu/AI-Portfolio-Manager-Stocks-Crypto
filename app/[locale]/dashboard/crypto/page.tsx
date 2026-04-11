@@ -1,4 +1,4 @@
-import { CryptoMarketDashboard } from "@/components/custom/crypto/crypto-market-dashboard";
+import { CryptoMarketDashboard } from "@/features/crypto/components/crypto-market-dashboard";
 
 export default function CryptoPage() {
   return <CryptoMarketDashboard />;

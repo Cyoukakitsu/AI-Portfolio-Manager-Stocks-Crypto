@@ -1,4 +1,4 @@
-import { AnalysisShell } from "@/components/custom/ai/analysis-shell";
+import { AnalysisShell } from "@/features/ai/components/analysis-shell";
 
 export default async function AIPage() {
   return <AnalysisShell />;

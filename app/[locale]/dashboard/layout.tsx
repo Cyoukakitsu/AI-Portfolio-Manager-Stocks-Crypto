@@ -1,6 +1,6 @@
-import { AppSidebar } from "@/components/custom/dashboard/app-sidebar";
-import { DashboardBreadcrumb } from "@/components/custom/dashboard/dashboard-breadcrumb";
-import { HeaderControls } from "@/components/custom/dashboard/header-controls";
+import { AppSidebar } from "@/features/dashboard/components/app-sidebar";
+import { DashboardBreadcrumb } from "@/features/dashboard/components/dashboard-breadcrumb";
+import { HeaderControls } from "@/features/dashboard/components/header-controls";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,

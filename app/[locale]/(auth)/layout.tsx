@@ -1,5 +1,5 @@
-import AuthLayoutWrapper from "@/components/custom/auth/auth-layout-wrapper";
-import { HeaderControls } from "@/components/custom/dashboard/header-controls";
+import AuthLayoutWrapper from "@/features/auth/components/auth-layout-wrapper";
+import { HeaderControls } from "@/features/dashboard/components/header-controls";
 
 import { TrendingUp, ShieldCheck, BotMessageSquare } from "lucide-react";
 import { getTranslations } from "next-intl/server";

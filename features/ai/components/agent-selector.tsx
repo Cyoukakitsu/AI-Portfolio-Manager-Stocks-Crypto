@@ -146,21 +146,23 @@ export function AgentSelector({
                   )}
                 </div>
 
-                {/* 姓名 */}
-                <p className="text-xs font-semibold text-foreground leading-tight text-center">
-                  {meta.name}
-                </p>
-
-                {/* 角色或已选状态 */}
-                {isSelected ? (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-medium">
-                    ✓ {t("selected")}
-                  </span>
-                ) : (
-                  <p className="text-[10px] text-muted-foreground text-center leading-tight">
-                    {t(`${id}.role`)}
+                {/* 姓名 + 状态 */}
+                <div className={`w-full flex flex-col items-center gap-1 px-1 py-1.5 rounded-b-xl transition-colors
+                  ${isSelected ? "bg-primary/10" : ""}
+                `}>
+                  <p className="text-xs font-semibold text-foreground leading-tight text-center">
+                    {meta.name}
                   </p>
-                )}
+                  {isSelected ? (
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-medium">
+                      ✓ {t("selected")}
+                    </span>
+                  ) : (
+                    <p className="text-[10px] text-muted-foreground text-center leading-tight">
+                      {t(`${id}.role`)}
+                    </p>
+                  )}
+                </div>
               </button>
             );
           })}

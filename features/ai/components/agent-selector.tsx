@@ -128,7 +128,7 @@ export function AgentSelector({
                 {/* 头像区域 */}
                 <div className={`
                   w-full aspect-square rounded-xl overflow-hidden
-                  bg-gradient-to-b ${meta.gradientClass}
+                  bg-linear-to-b ${meta.gradientClass}
                   flex items-end justify-center
                   ${isSelected ? "ring-2 ring-primary" : ""}
                 `}>

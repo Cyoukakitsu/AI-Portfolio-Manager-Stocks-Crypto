@@ -5,8 +5,9 @@
 //  - 整合基础交互逻辑
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { Brain } from "lucide-react";
 import type { AgentPersona, AnalysisResult } from "@/features/ai/types";
 import { SearchBar } from "./search-bar";
 import { AgentSelector } from "./agent-selector";
@@ -16,6 +17,7 @@ import { CoordinatorCard } from "./coordinator-card";
 
 export function AnalysisShell() {
   const t = useTranslations("pages.ai");
+  const locale = useLocale();
   // 选中的分析师
   const [selected, setSelected] = useState<AgentPersona[]>([]);
   // 步骤动画是纯 UI 状态，保留为 useState
@@ -35,7 +37,7 @@ export function AnalysisShell() {
       const res = await fetch("/api/ai-analysis", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ symbol: inputSymbol, personas }),
+        body: JSON.stringify({ symbol: inputSymbol, personas, locale }),
       });
       if (!res.ok) throw new Error("Analysis failed");
       return res.json() as Promise<AnalysisResult>;
@@ -76,8 +78,13 @@ export function AnalysisShell() {
   return (
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-xl font-medium">{t("title")}</h1>
-        <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
+        <div className="flex items-center gap-2.5 mb-1">
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10">
+            <Brain className="h-4 w-4 text-blue-500" />
+          </span>
+          <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
+        </div>
+        <p className="text-sm text-muted-foreground pl-10.5">{t("subtitle")}</p>
       </div>
 
       {/* 分析师选择器 */}
@@ -115,6 +122,7 @@ export function AnalysisShell() {
                 points={agent.points}
                 score={agent.score}
                 verdict={agent.verdict}
+                buyRange={agent.buyRange}
               />
             ))}
           </div>
@@ -125,7 +133,7 @@ export function AnalysisShell() {
               verdict={result.coordinator.verdict}
               score={result.coordinator.score}
               summary={result.coordinator.summary}
-              keyLevels={result.coordinator.keyLevels}
+              buyRange={result.coordinator.buyRange}
             />
           )}
         </div>

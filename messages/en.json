@@ -113,7 +113,82 @@
       "title": "AI Analysis",
       "subtitle": "Select analysts, enter a symbol, and start the analysis",
       "analyzing": "Analyzing, please wait...",
-      "results": "RESULTS"
+      "results": "RESULTS",
+      "fetchError": "Analysis failed. Please try again.",
+      "buyRange": "Buy Range",
+      "targetPriceRange": "Target Price Range",
+      "combinedRangeNote": "Combined buy range from both analysts"
+    }
+  },
+  "aiAnalyst": {
+    "selectTitle": "Select Analysts",
+    "selectCount": "{count} / 2 selected",
+    "selected": "Selected",
+    "modal": {
+      "philosophy": "Investment Philosophy",
+      "expertise": "Areas of Expertise",
+      "achievements": "Representative Works",
+      "close": "Close"
+    },
+    "buffett": {
+      "role": "Father of Value Investing",
+      "tooltip": "Seeks businesses with durable moats to buy at fair prices and hold forever",
+      "philosophy": "Seek companies with durable competitive moats at fair prices and hold them for decades. Focus on ROE, free cash flow, and management integrity, always maintaining a margin of safety.",
+      "expertise": ["Consumer Goods", "Finance", "Insurance", "Infrastructure"],
+      "achievements": [
+        "Berkshire Hathaway — ~20% annual return sustained for 50+ years",
+        "Successful investments in Coca-Cola, American Express, and Apple",
+        "Net worth exceeds $120B, multiple-time world's richest person"
+      ],
+      "styleTags": ["Conservative", "Long-term Hold", "Value First"]
+    },
+    "lynch": {
+      "role": "Growth Stock Hunter",
+      "tooltip": "Uncovers 10-bagger growth stocks using the PEG ratio before Wall Street notices",
+      "philosophy": "Find fast-growing companies with PEG ratios below 1.0 before institutions discover them. Invest in what you know, look for 'tenbaggers', and focus on companies with strong earnings growth potential.",
+      "expertise": ["Small/Mid Cap Growth", "Retail & Consumer", "Emerging Industries"],
+      "achievements": [
+        "Managed Fidelity Magellan Fund — 29.2% annual return over 13 years",
+        "Best-selling author of 'One Up on Wall Street'",
+        "Transformed retail investor thinking with grassroots research approach"
+      ],
+      "styleTags": ["Growth-Focused", "Bottom-Up", "Individual Research"]
+    },
+    "wood": {
+      "role": "Queen of Disruptive Innovation",
+      "tooltip": "Bets on 5-year disruptive technology themes with high-conviction, concentrated positions",
+      "philosophy": "Identify and concentrate on companies driving disruptive innovation across AI, genomics, energy storage, robotics, and fintech. Use a 5-year investment horizon and total addressable market analysis to justify bold, high-conviction positions.",
+      "expertise": ["AI & Machine Learning", "Genomics", "Clean Energy", "Fintech", "Robotics"],
+      "achievements": [
+        "ARK Innovation ETF (ARKK) — 150%+ gain in 2020",
+        "Early conviction on Tesla when it traded below $20 per share",
+        "Pioneer of thematic ETF investing in disruptive technology"
+      ],
+      "styleTags": ["High Conviction", "Thematic", "Long Horizon"]
+    },
+    "burry": {
+      "role": "Contrarian Master",
+      "tooltip": "Identifies overvalued bubbles and hidden risks through deep contrarian research",
+      "philosophy": "Conduct rigorous bottom-up analysis to identify securities trading far below intrinsic value. Embrace contrarian positions when the market is wrong, focus on downside protection first, and hold unpopular theses with conviction.",
+      "expertise": ["Deep Value", "Credit Analysis", "Bubble Identification", "Short Selling"],
+      "achievements": [
+        "Predicted and profited from the 2008 subprime mortgage crisis (basis of 'The Big Short')",
+        "Scion Asset Management delivered exceptional long-term returns",
+        "Warned early about multiple market bubbles including tech and housing"
+      ],
+      "styleTags": ["Contrarian", "Risk-Focused", "Deep Research"]
+    },
+    "dalio": {
+      "role": "Macro Cycle Hunter",
+      "tooltip": "Uses debt cycle and geopolitical analysis to navigate macro shifts before they happen",
+      "philosophy": "Understand the economic machine through debt cycles, productivity growth, and political shifts. Diversify across uncorrelated assets using an 'All Weather' approach, and use systematic principles to remove emotion from decision-making.",
+      "expertise": ["Global Macro", "Currency Markets", "Debt Cycles", "Geopolitics", "Asset Allocation"],
+      "achievements": [
+        "Founded Bridgewater Associates — world's largest hedge fund ($150B+ AUM)",
+        "Pioneered the 'All Weather' portfolio strategy",
+        "Author of 'Principles' — bestselling guide to decision-making and life"
+      ],
+      "styleTags": ["Macro-Driven", "Systematic", "Diversified"]
     }
   }
 }

@@ -90,60 +90,59 @@ export function AgentSelector({
                 onClick={() => handleClick(id)}
                 disabled={isDisabled}
                 className={`
-                  relative flex flex-col items-center gap-1.5 rounded-lg border p-3 transition-all duration-200 text-left overflow-hidden
+                  relative flex flex-col items-center gap-1.5 rounded-lg p-3 transition-all duration-200 text-left overflow-hidden
                   ${
                     isSelected
                       ? "border-2 border-primary"
-                      : "border border-border bg-card hover:border-primary/40"
+                      : "border-2 border-border bg-card hover:border-primary/40"
                   }
                   ${isDisabled && !isSelected ? "opacity-40 cursor-not-allowed" : "cursor-pointer"}
                 `}
               >
-                {/* 右上角「?」按钮 */}
-                <Tooltip>
-                  <TooltipPrimitive.Trigger
-                    data-slot="tooltip-trigger"
-                    render={<span />}
-                    onClick={(e) => openModal(e, id)}
-                    className={`
-                      absolute top-1.5 right-1.5 w-5 h-5 rounded-full flex items-center justify-center
-                      text-[10px] font-bold transition-colors cursor-pointer
-                      ${
-                        isSelected
-                          ? "bg-primary/10 border border-primary/30 text-primary"
-                          : "bg-muted border border-border text-muted-foreground hover:border-primary/40 hover:text-primary"
-                      }
-                    `}
-                  >
-                    ?
-                  </TooltipPrimitive.Trigger>
-                  <TooltipContent
-                    side="top"
-                    className="max-w-50 text-center text-xs"
-                  >
-                    {t(`${id}.tooltip`)}
-                  </TooltipContent>
-                </Tooltip>
+                {/* 头像区域（「?」按钮叠加在右上角） */}
+                <div className="relative w-full aspect-square rounded-xl overflow-hidden">
+                  {/* 渐变背景 + 照片 */}
+                  <div className={`
+                    w-full h-full bg-linear-to-b ${meta.gradientClass}
+                    flex items-end justify-center
+                  `}>
+                    {!meta.avatarUrl || imgErrors.has(id) ? (
+                      <span className="text-3xl pb-1">{meta.emoji}</span>
+                    ) : (
+                      <Image
+                        src={meta.avatarUrl}
+                        alt={meta.name}
+                        width={320}
+                        height={180}
+                        className="w-full h-full object-cover object-bottom"
+                        onError={() => handleImgError(id)}
+                      />
+                    )}
+                  </div>
 
-                {/* 头像区域 */}
-                <div className={`
-                  w-full aspect-square rounded-xl overflow-hidden
-                  bg-linear-to-b ${meta.gradientClass}
-                  flex items-end justify-center
-                  ${isSelected ? "ring-2 ring-primary" : ""}
-                `}>
-                  {!meta.avatarUrl || imgErrors.has(id) ? (
-                    <span className="text-3xl pb-1">{meta.emoji}</span>
-                  ) : (
-                    <Image
-                      src={meta.avatarUrl}
-                      alt={meta.name}
-                      width={320}
-                      height={180}
-                      className="w-full h-full object-cover object-bottom"
-                      onError={() => handleImgError(id)}
-                    />
-                  )}
+                  {/* 右上角「?」按钮 */}
+                  <Tooltip>
+                    <TooltipPrimitive.Trigger
+                      data-slot="tooltip-trigger"
+                      render={<span />}
+                      onClick={(e) => openModal(e, id)}
+                      className={`
+                        absolute top-1.5 right-1.5 z-10
+                        w-5 h-5 rounded-full flex items-center justify-center
+                        text-[10px] font-bold transition-colors cursor-pointer
+                        bg-white text-gray-700 border border-gray-200
+                        hover:bg-primary hover:text-primary-foreground hover:border-primary
+                      `}
+                    >
+                      ?
+                    </TooltipPrimitive.Trigger>
+                    <TooltipContent
+                      side="top"
+                      className="max-w-50 text-center text-xs"
+                    >
+                      {t(`${id}.tooltip`)}
+                    </TooltipContent>
+                  </Tooltip>
                 </div>
 
                 {/* 姓名 + 状态 */}
@@ -154,11 +153,11 @@ export function AgentSelector({
                     {meta.name}
                   </p>
                   {isSelected ? (
-                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-medium">
+                    <span className="text-[10px] px-2 py-0.5 rounded-full bg-primary text-primary-foreground font-medium leading-tight">
                       ✓ {t("selected")}
                     </span>
                   ) : (
-                    <p className="text-[10px] text-muted-foreground text-center leading-tight">
+                    <p className="text-[10px] text-muted-foreground text-center leading-tight py-0.5">
                       {t(`${id}.role`)}
                     </p>
                   )}

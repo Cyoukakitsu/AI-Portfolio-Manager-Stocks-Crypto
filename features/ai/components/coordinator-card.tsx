@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { CoordinatorResult } from "@/features/ai/types";
@@ -9,12 +10,9 @@ export function CoordinatorCard({
   verdict,
   score,
   summary,
-  keyLevels,
+  buyRange,
 }: CoordinatorResult) {
-  const risk = keyLevels.entry - keyLevels.stopLoss;
-  const reward = keyLevels.target - keyLevels.entry;
-  const ratio = (reward / risk).toFixed(1);
-
+  const t = useTranslations("pages.ai");
   return (
     <Card>
       <CardHeader className="pb-3">
@@ -48,32 +46,20 @@ export function CoordinatorCard({
             {summary}
           </p>
 
-          {/* 右侧：关键价位 */}
-          <div className="space-y-2 rounded-lg bg-muted/50 p-3">
-            <p className="text-xs font-medium text-muted-foreground mb-2">
-              Key Levels
-            </p>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Entry Zone</span>
-              <span className="font-medium">${keyLevels.entry}</span>
+          {/* 右侧：目标价格区间 */}
+          {buyRange.low > 0 && buyRange.high > 0 && (
+            <div className="rounded-lg bg-muted/50 p-3">
+              <p className="text-xs font-medium text-muted-foreground mb-2">
+                {t("targetPriceRange")}
+              </p>
+              <p className="text-lg font-semibold text-green-600 dark:text-green-400">
+                ${buyRange.low} – ${buyRange.high}
+              </p>
+              <p className="text-xs text-muted-foreground mt-1">
+                {t("combinedRangeNote")}
+              </p>
             </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Stop Loss</span>
-              <span className="font-medium text-destructive">
-                ${keyLevels.stopLoss}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Target</span>
-              <span className="font-medium text-primary">
-                ${keyLevels.target}
-              </span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Risk / Reward</span>
-              <span className="font-medium">1 : {ratio}</span>
-            </div>
-          </div>
+          )}
         </div>
       </CardContent>
     </Card>

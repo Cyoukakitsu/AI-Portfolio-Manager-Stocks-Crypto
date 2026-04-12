@@ -6,18 +6,12 @@ import { motion } from "motion/react";
 
 type Props = { assets: Asset[] };
 
-const TYPE_CONFIG = [
-  { type: "stock",  label: "Stock"  },
-  { type: "etf",    label: "ETF"    },
-  { type: "crypto", label: "Crypto" },
-] as const;
-
 export function TotalReturnCard({ assets }: Props) {
-  const counts = {
-    stock:  assets.filter((a) => a.asset_type === "stock").length,
-    etf:    assets.filter((a) => a.asset_type === "etf").length,
-    crypto: assets.filter((a) => a.asset_type === "crypto").length,
-  };
+  const types = [
+    { type: "stock",  label: "Stock",  count: assets.filter((a) => a.asset_type === "stock").length },
+    { type: "etf",    label: "ETF",    count: assets.filter((a) => a.asset_type === "etf").length },
+    { type: "crypto", label: "Crypto", count: assets.filter((a) => a.asset_type === "crypto").length },
+  ];
 
   return (
     <motion.div
@@ -33,10 +27,10 @@ export function TotalReturnCard({ assets }: Props) {
         <span className="text-sm font-semibold tracking-tight">Holdings</span>
       </div>
       <div className="px-3 sm:px-5 py-3 flex items-center justify-between">
-        {TYPE_CONFIG.map(({ type, label }) => (
+        {types.map(({ type, label, count }) => (
           <div key={type} className="flex-1 flex flex-col items-center gap-0.5">
             <span className="text-[10px] text-muted-foreground">{label}</span>
-            <span className="text-xl font-bold tabular-nums">{counts[type]}</span>
+            <span className="text-xl font-bold tabular-nums">{count}</span>
           </div>
         ))}
       </div>

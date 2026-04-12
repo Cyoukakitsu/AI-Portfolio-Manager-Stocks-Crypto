@@ -12,6 +12,9 @@ export type AgentPersona =
 /** 分析结论方向 */
 export type Verdict = "buy" | "hold" | "sell";
 
+/** 买入价格区间 */
+export type BuyRange = { low: number; high: number };
+
 /**
  * 单个 Agent 的分析结论
  * 由 generateText + maxSteps 跑完后返回
@@ -21,6 +24,7 @@ export type AgentResult = {
   points: string[]; // 3个核心观点
   score: number; // 0-100
   verdict: Verdict;
+  buyRange: BuyRange; // 建议买入价格区间
 };
 
 /**
@@ -30,11 +34,7 @@ export type CoordinatorResult = {
   verdict: Verdict;
   score: number;
   summary: string;
-  keyLevels: {
-    entry: number; // 建议买入价
-    stopLoss: number; // 止损价
-    target: number; // 目标价
-  };
+  buyRange: BuyRange; // 综合两位分析师的买入价格区间
 };
 
 /**

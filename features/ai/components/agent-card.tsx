@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AgentResult } from "@/features/ai/types";
@@ -7,7 +8,8 @@ import { PERSONA_META, VERDICT_LABEL, VERDICT_STYLE } from "@/features/ai/lib/co
 
 type AgentCardProps = AgentResult;
 
-export function AgentCard({ persona, score, verdict, points }: AgentCardProps) {
+export function AgentCard({ persona, score, verdict, points, buyRange }: AgentCardProps) {
+  const t = useTranslations("pages.ai");
   const meta = PERSONA_META[persona];
   const verdictLabel = VERDICT_LABEL[verdict];
 
@@ -42,6 +44,16 @@ export function AgentCard({ persona, score, verdict, points }: AgentCardProps) {
             />
           </div>
         </div>
+
+        {/* 买入区间 */}
+        {buyRange.low > 0 && buyRange.high > 0 && (
+          <div className="flex justify-between text-sm mb-4">
+            <span className="text-muted-foreground">{t("buyRange")}</span>
+            <span className="font-medium text-green-600 dark:text-green-400">
+              ${buyRange.low} – ${buyRange.high}
+            </span>
+          </div>
+        )}
 
         {/* 3个分析观点 */}
         <ul className="space-y-2">

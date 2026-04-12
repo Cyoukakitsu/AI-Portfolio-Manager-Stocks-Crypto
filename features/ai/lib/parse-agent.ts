@@ -15,6 +15,6 @@ export const parseAgent = (text: string, persona: AgentPersona): AgentResult => 
     return { persona, ...json };
   } catch {
     //失败了就返回一个默认值：评分50，持有
-    return { persona, points: [text], score: 50, verdict: "hold" };
+    return { persona, points: [text], score: 50, verdict: "hold", buyRange: { low: 0, high: 0 } };
   }
 };

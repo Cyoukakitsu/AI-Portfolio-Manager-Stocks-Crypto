@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, memo } from "react";
+import { useEffect, useRef } from "react";
 
 function TopStories() {
   const container = useRef<HTMLDivElement>(null);
@@ -51,4 +51,4 @@ function TopStories() {
   );
 }
 
-export default memo(TopStories);
+export default TopStories;

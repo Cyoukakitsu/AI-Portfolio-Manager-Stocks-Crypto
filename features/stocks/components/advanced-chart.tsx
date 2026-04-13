@@ -1,7 +1,7 @@
 // TradingViewWidget.jsx
 "use client";
 
-import { useEffect, useRef, memo } from "react";
+import { useEffect, useRef } from "react";
 
 function AdvancedChart() {
   const container = useRef<HTMLDivElement>(null);
@@ -70,4 +70,4 @@ function AdvancedChart() {
   );
 }
 
-export default memo(AdvancedChart);
+export default AdvancedChart;

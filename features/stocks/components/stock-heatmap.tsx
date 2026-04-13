@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, memo } from "react";
+import { useEffect, useRef } from "react";
 
 function TradingViewWidget() {
   const container = useRef<HTMLDivElement>(null);
@@ -57,4 +57,4 @@ function TradingViewWidget() {
   return <div className="tradingview-widget-container" ref={container}></div>;
 }
 
-export default memo(TradingViewWidget);
+export default TradingViewWidget;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, memo } from "react";
+import { useEffect, useRef } from "react";
 
 function MarketDataStocks() {
   const container = useRef<HTMLDivElement>(null);
@@ -128,4 +128,4 @@ function MarketDataStocks() {
   );
 }
 
-export default memo(MarketDataStocks);
+export default MarketDataStocks;

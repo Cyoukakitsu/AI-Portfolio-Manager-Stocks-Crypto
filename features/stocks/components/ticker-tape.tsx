@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, memo } from "react";
+import { useEffect, useRef } from "react";
 
 function TickerTape() {
   const scriptLoaded = useRef(false);
@@ -35,4 +35,4 @@ function TickerTape() {
   );
 }
 
-export default memo(TickerTape);
+export default TickerTape;

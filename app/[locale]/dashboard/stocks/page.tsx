@@ -46,7 +46,6 @@ export default async function Stocks() {
         <div className="flex flex-wrap gap-2">
           <StatChip icon={Globe} label={t("globalData")} accent="blue" />
           <StatChip icon={Zap} label={t("liveUpdates")} accent="amber" />
-          <StatChip icon={BarChart2} label="S&P 500" accent="emerald" />
         </div>
       </div>
 
@@ -80,7 +79,7 @@ export default async function Stocks() {
         <WidgetCard
           icon={Flame}
           title={t("heatmap")}
-          badge="SPX500"
+          badge="SPX500 Heatmap"
           accent="orange"
           className="xl:h-140"
         >
@@ -92,7 +91,7 @@ export default async function Stocks() {
         <WidgetCard
           icon={Newspaper}
           title={t("topStories")}
-          badge="Reuters"
+          badge="News"
           accent="blue"
           className="xl:h-140"
         >
@@ -106,7 +105,7 @@ export default async function Stocks() {
       <WidgetCard
         icon={BarChart2}
         title={t("marketData")}
-        badge="S&P 500"
+        badge="Market Data"
         accent="emerald"
         className="h-130"
       >

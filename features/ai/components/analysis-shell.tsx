@@ -18,14 +18,17 @@ import { CoordinatorCard } from "./coordinator-card";
 export function AnalysisShell() {
   const t = useTranslations("pages.ai");
   const locale = useLocale();
+
   // 选中的分析师
   const [selected, setSelected] = useState<AgentPersona[]>([]);
   // 步骤动画是纯 UI 状态，保留为 useState
   const [currentStep, setCurrentStep] = useState<
     "fetching" | "agent1" | "agent2" | "coordinator" | "done" | null
   >(null);
+  //  股票代码
   const [symbol, setSymbol] = useState("");
 
+  // 用Tanstack Query来做 API 调用
   const mutation = useMutation({
     mutationFn: async ({
       inputSymbol,
@@ -36,6 +39,7 @@ export function AnalysisShell() {
     }) => {
       const res = await fetch("/api/ai-analysis", {
         method: "POST",
+        //⬇️告知收发双方：主体是 JSON 格式（UTF-8 编码），遵循 RFC 8259 标准
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ symbol: inputSymbol, personas, locale }),
       });
@@ -48,17 +52,20 @@ export function AnalysisShell() {
     },
   });
 
+  //AI 分析总指挥
   const handleAnalyze = async (inputSymbol: string) => {
     setSymbol(inputSymbol);
     setCurrentStep("fetching");
 
-    // 模拟获取数据阶段
+    // 模拟获取数据阶段（假加载）
     await new Promise((r) => setTimeout(r, 1000));
     setCurrentStep("agent1");
 
-    // 模拟 Agent1 分析阶段
     await new Promise((r) => setTimeout(r, 1000));
     setCurrentStep("agent2");
+
+    await new Promise((r) => setTimeout(r, 1000));
+    setCurrentStep("coordinator");
 
     // 真正的 API 调用
     const data = await mutation.mutateAsync({

@@ -87,7 +87,6 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
   });
 
   // 3. 计算 chartData：historyData 或 allTransactions 变化时重新计算
-  //    React Compiler 会自动处理 memoization，无需手动 useMemo
   const chartData = ((): OHLCPoint[] => {
     if (!historyData?.results) return [];
 

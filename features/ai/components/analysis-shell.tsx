@@ -6,14 +6,16 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useLocale, useTranslations } from "next-intl";
-import { toast } from "sonner";
-import { Brain } from "lucide-react";
+
 import type { AgentPersona, AnalysisResult } from "@/features/ai/types";
 import { SearchBar } from "./search-bar";
 import { AgentSelector } from "./agent-selector";
 import { ProgressSteps } from "./progress-steps";
 import { AgentCard } from "./agent-card";
 import { CoordinatorCard } from "./coordinator-card";
+
+import { Brain } from "lucide-react";
+import { toast } from "sonner";
 
 export function AnalysisShell() {
   const t = useTranslations("pages.ai");
@@ -23,7 +25,7 @@ export function AnalysisShell() {
   const [selected, setSelected] = useState<AgentPersona[]>([]);
   // 步骤动画是纯 UI 状态，保留为 useState
   const [currentStep, setCurrentStep] = useState<
-    "fetching" | "agent1" | "agent2" | "coordinator" | "done" | null
+    "analysis start" | "agent1" | "agent2" | "coordinator" | "done" | null
   >(null);
   //  股票代码
   const [symbol, setSymbol] = useState("");
@@ -55,27 +57,32 @@ export function AnalysisShell() {
   //AI 分析总指挥
   const handleAnalyze = async (inputSymbol: string) => {
     setSymbol(inputSymbol);
-    setCurrentStep("fetching");
+    setCurrentStep("analysis start");
 
     // 模拟获取数据阶段（假加载）
-    await new Promise((r) => setTimeout(r, 1000));
-    setCurrentStep("agent1");
+    const runFakeProgress = async () => {
+      await new Promise((r) => setTimeout(r, 2000));
+      setCurrentStep("agent1");
 
-    await new Promise((r) => setTimeout(r, 1000));
-    setCurrentStep("agent2");
+      await new Promise((r) => setTimeout(r, 2000));
+      setCurrentStep("agent2");
 
-    await new Promise((r) => setTimeout(r, 1000));
-    setCurrentStep("coordinator");
+      await new Promise((r) => setTimeout(r, 2000));
+      setCurrentStep("coordinator");
+    };
 
     // 真正的 API 调用
-    const data = await mutation.mutateAsync({
-      inputSymbol,
-      personas: selected,
-    });
+    const runAPI = () =>
+      mutation.mutateAsync({
+        inputSymbol,
+        personas: selected,
+      });
+
+    //API 调用和假进度条并行
+    const [data] = await Promise.all([runAPI(), runFakeProgress()]);
     if (!data) return;
 
     // API 返回后进入 coordinator 阶段
-    setCurrentStep("coordinator");
     await new Promise((r) => setTimeout(r, 800));
     setCurrentStep("done");
   };

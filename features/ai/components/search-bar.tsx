@@ -14,16 +14,16 @@ import {
   CommandList,
 } from "@/components/ui/command";
 
-type SearchResult = {
-  symbol: string; // 股票代码，如 AAPL
-  fullname: string; // 公司全称
-  type: string; // 资产类型，如 stock / crypto
-};
-
 type SearchBarProps = {
   onAnalyze: (text: string) => void; // 提交分析时的回调
   isLoading: boolean; // AI 分析进行中
   disabled: boolean; // 外部禁用控制
+};
+
+type SearchResult = {
+  symbol: string; // 股票代码，如 AAPL
+  fullname: string; // 公司全称
+  type: string; // 资产类型，如 stock / crypto
 };
 
 export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
@@ -35,12 +35,12 @@ export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
   useEffect(() => {
     const delay = query.trim().length < 1 ? 0 : 500;
     const timer = setTimeout(() => setDebouncedQuery(query), delay);
-    return () => clearTimeout(timer);
+    return () => clearTimeout(timer); // 每次 query 变化就取消上一个timer
   }, [query]);
 
   // 调用 Yahoo Finance 搜索 API，仅在有输入且未选中代码时触发
   const { data, isFetching } = useQuery<SearchResult[]>({
-    queryKey: ["ai-symbol-search", debouncedQuery],
+    queryKey: ["ai-symbol-search", debouncedQuery], // debouncedQuery 变化时自动重新请求
     queryFn: async () => {
       const res = await fetch(
         `/api/yahoofinance/search?q=${encodeURIComponent(debouncedQuery)}`,
@@ -49,7 +49,7 @@ export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
       return Array.isArray(data) ? data : [];
     },
     enabled: debouncedQuery.trim().length >= 1 && !selectedSymbol,
-    staleTime: 5 * 60 * 1000, // 5 分钟内不重复请求
+    staleTime: 5 * 60 * 1000, // 5 分钟内不重复请求（TanStack配置）
   });
 
   const results = data ?? [];
@@ -93,10 +93,6 @@ export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
                   setSelectedSymbol("");
                 }
               }}
-              // 下拉关闭时按 Enter 直接提交
-              onKeyDown={(e) =>
-                e.key === "Enter" && !showDropdown && handleSubmit()
-              }
               disabled={isLoading}
               className="flex-1 bg-transparent outline-none py-2 text-sm placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50"
             />

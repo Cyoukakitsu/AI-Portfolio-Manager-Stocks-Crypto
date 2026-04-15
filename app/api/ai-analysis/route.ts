@@ -29,7 +29,7 @@ export async function POST(request: Request) {
     }: { symbol: string; personas: AgentPersona[]; locale?: string } =
       await request.json();
 
-    // 多语言指令
+    // Agent回答（多语言指令）
     const langInstruction =
       locale === "ja"
         ? "\n\nIMPORTANT: Write all text content (points, summary) in Japanese. Numbers and proper nouns (stock symbols, company names) remain in their original form."
@@ -46,6 +46,7 @@ export async function POST(request: Request) {
     // 2. 分支 1：仅选 1 个人设 → 单 Agent 分析
     if (personas.length === 1) {
       const result = await generateText({
+        // generateText：文本生成函数，接受前端请求，与LLM模型api通信
         model: deepseek("deepseek-reasoner"), // 调用DeepSeek推理模型
         tools: { getStockPrice, getFinancials, getNews }, // 大模型可调用的工具（查股价/财报/新闻）
         stopWhen: stepCountIs(5), // 大模型思考步数上限（防止无限推理）
@@ -59,7 +60,7 @@ export async function POST(request: Request) {
         symbol,
         agentResults,
         coordinator: null, // 只有1个 Agent，没有 Coordinator
-        analyzedAt: new Date().toISOString(), //记录
+        analyzedAt: new Date().toISOString(), //记录分析时间
       };
 
       return Response.json(response);
@@ -82,7 +83,7 @@ export async function POST(request: Request) {
         system: `${PERSONA_PROMPTS[personas[1]]}${langInstruction}`,
         prompt: ANALYSIS_PROMPT(symbol),
       }),
-      // 与 agent 分析并行获取实时价格，注入 Coordinator 防止使用训练数据旧价格
+      // 获取股票的实时价格，使用 .catch(() => null) 处理可能的错误
       yf.quote(symbol).catch(() => null),
     ]);
 

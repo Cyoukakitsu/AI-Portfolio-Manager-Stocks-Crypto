@@ -1,17 +1,25 @@
+// AI 工具函数 —— 让 AI 模型能够主动查询股票新闻
+//参考：https://ai-sdk.dev/docs/reference/ai-sdk-core/tool
+
 import { tool } from "ai";
 import { z } from "zod";
 
 export const getNews = tool({
+  // AI 工具描述
   description:
     "Search recent news articles for a stock or crypto or etf asset by its symbol.",
+
+  //定义输入参数的验证规则
   inputSchema: z.object({
     symbol: z
       .string()
       .describe("The stock or crypto or etf symbol, e.g. AAPL, BTC-USD, SPY"),
   }),
-  //AI 传入的参数只能包含inputSchema中定义的symbol字段
+
+  // 严格模式，确保参数符合 schema
   strict: true,
 
+  // AI 工具执行函数
   execute: async ({ symbol }) => {
     const apiKey = process.env.TAVILY_API_KEY;
     if (!apiKey) return { symbol, articles: [] };

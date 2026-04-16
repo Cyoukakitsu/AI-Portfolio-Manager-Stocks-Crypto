@@ -38,7 +38,7 @@ export function FooterSection() {
           ))}
         </div>
         <div className="border-t border-[#c9a84c]/20 pt-6 text-center text-xs text-stone-400">
-          © 2025 AI Portfolio Manager |{" "}
+          © {new Date().getFullYear()} AI Portfolio Manager |{" "}
           <a href="#" className="hover:text-[#c9a84c] transition-colors">
             Terms
           </a>{" "}

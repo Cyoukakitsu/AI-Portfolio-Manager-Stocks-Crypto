@@ -4,11 +4,11 @@ import { motion } from "motion/react";
 import { GLASS_CARD } from "../constants";
 
 const miniAgents = [
-  { initial: "B", bg: "bg-stone-700" },
-  { initial: "L", bg: "bg-stone-800" },
-  { initial: "W", bg: "bg-amber-800" },
-  { initial: "B", bg: "bg-stone-900" },
-  { initial: "D", bg: "bg-amber-900" },
+  { initial: "B", name: "Buffett", bg: "bg-stone-700" },
+  { initial: "L", name: "Lynch",   bg: "bg-stone-800" },
+  { initial: "W", name: "Wood",    bg: "bg-amber-800" },
+  { initial: "B", name: "Burry",   bg: "bg-stone-900" },
+  { initial: "D", name: "Dalio",   bg: "bg-amber-900" },
 ];
 
 function PortfolioDashboardMockup() {
@@ -63,9 +63,9 @@ function AIAnalysisMockup() {
   return (
     <div className={`${GLASS_CARD} p-4 w-full`}>
       <div className="flex gap-2 mb-3">
-        {miniAgents.map((a, i) => (
+        {miniAgents.map((a) => (
           <div
-            key={i}
+            key={a.name}
             className={`w-8 h-8 rounded-full ${a.bg} ring-1 ring-[#c9a84c] flex items-center justify-center text-white text-xs font-bold`}
           >
             {a.initial}

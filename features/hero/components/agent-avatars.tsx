@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import type { Variants } from "motion/react";
 
 const agents = [
   { initial: "B", name: "Buffett", bg: "bg-stone-700" },
@@ -10,14 +11,14 @@ const agents = [
   { initial: "D", name: "Dalio",   bg: "bg-amber-900" },
 ];
 
-const container = {
+const container: Variants = {
   hidden: {},
   show: { transition: { staggerChildren: 0.1 } },
 };
 
-const item = {
+const item: Variants = {
   hidden: { opacity: 0, y: 20 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" as const } },
 };
 
 export function AgentAvatars() {

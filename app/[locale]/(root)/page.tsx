@@ -1,64 +1,21 @@
-"use client";
-
-import Image from "next/image";
-import { motion } from "motion/react";
-import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
+import { NavBar } from "@/features/hero/components/nav-bar";
+import { HeroSection } from "@/features/hero/components/hero-section";
+import { StatsBar } from "@/features/hero/components/stats-bar";
+import { AgentAvatars } from "@/features/hero/components/agent-avatars";
+import { FeaturesSection } from "@/features/hero/components/features-section";
+import { CTASection } from "@/features/hero/components/cta-section";
+import { FooterSection } from "@/features/hero/components/footer-section";
 
 export default function Home() {
-  const t = useTranslations("home");
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-muted gap-8 px-4">
-      {/* Logo */}
-      <motion.div
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="w-full max-w-4xl"
-      >
-        <Image
-          src="/hero-illustration.svg"
-          alt="Logo"
-          width={680}
-          height={380}
-          className="w-full h-auto"
-        />
-      </motion.div>
-
-      {/* 标题区域 */}
-      <motion.div
-        className="text-center space-y-2"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.15 }}
-      >
-        <h1 className="text-2xl font-semibold text-foreground">
-          AI Portfolio Manager
-        </h1>
-        <p className="text-muted-foreground">{t("tagline")}</p>
-      </motion.div>
-
-      {/* 按钮区域 */}
-      <motion.div
-        className="flex gap-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
-      >
-        <Link
-          href="/sign-in"
-          className="px-6 py-2 bg-primary text-primary-foreground font-semibold rounded-md hover:bg-primary/90 transition-colors cursor-pointer"
-        >
-          {t("signIn")}
-        </Link>
-        <Link
-          href="/sign-up"
-          className="px-6 py-2 border border-border text-foreground font-semibold rounded-md hover:bg-accent hover:text-accent-foreground transition-colors cursor-pointer"
-        >
-          {t("signUp")}
-        </Link>
-      </motion.div>
+    <main>
+      <NavBar />
+      <HeroSection />
+      <StatsBar />
+      <AgentAvatars />
+      <FeaturesSection />
+      <CTASection />
+      <FooterSection />
     </main>
   );
 }

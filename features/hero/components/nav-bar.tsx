@@ -22,10 +22,7 @@ export function NavBar() {
             Features
           </a>
           <a href="#" className="hover:text-[#c9a84c] transition-colors">
-            Pricing
-          </a>
-          <a href="#" className="hover:text-[#c9a84c] transition-colors">
-            Partners
+            About Developers
           </a>
         </div>
 

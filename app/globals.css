@@ -45,11 +45,11 @@
 
 :root {
   /* ── 背景 / 文字 ── */
-  --background: oklch(0.97 0.02 70);
+  --background: oklch(0.946 0.018 78);
   --foreground: oklch(0.25 0.04 55);
 
   /* ── 卡片 ── */
-  --card: oklch(0.97 0.02 70);
+  --card: oklch(0.946 0.018 78);
   --card-foreground: oklch(0.25 0.04 55);
 
   /* ── 弹出层 ── */
@@ -89,7 +89,7 @@
   --chart-5: oklch(0.5608 0.1348 42.0584);
 
   /* ── 侧边栏 ── */
-  --sidebar: oklch(0.95 0.03 75);
+  --sidebar: oklch(0.936 0.018 78);
   --sidebar-foreground: oklch(0.3 0.04 55);
   --sidebar-primary: oklch(0.6171 0.1375 39.0427);
   --sidebar-primary-foreground: oklch(1 0 0);

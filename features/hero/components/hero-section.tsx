@@ -1,80 +1,41 @@
 "use client";
 
+import { useEffect } from "react";
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
 import { GLASS_CARD } from "../constants";
 
-function AAPLCard() {
-  return (
-    <div className={`${GLASS_CARD} p-4 min-w-[160px]`}>
-      <div className="text-xs text-stone-500 mb-1">AAPL</div>
-      <svg viewBox="0 0 120 50" className="w-full h-10 mb-2">
-        <defs>
-          <linearGradient id="aaplGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#22c55e" stopOpacity="0.3" />
-            <stop offset="100%" stopColor="#22c55e" stopOpacity="0" />
-          </linearGradient>
-        </defs>
-        <path
-          d="M0,45 L20,38 L40,30 L60,22 L80,16 L100,10 L120,5"
-          stroke="#22c55e"
-          strokeWidth="2"
-          fill="none"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M0,45 L20,38 L40,30 L60,22 L80,16 L100,10 L120,5 L120,50 L0,50Z"
-          fill="url(#aaplGrad)"
-        />
-      </svg>
-      <div className="flex items-baseline gap-2">
-        <span className="text-sm font-semibold text-stone-800">$182.63</span>
-        <span className="text-xs text-green-500">+2.3%</span>
-      </div>
-    </div>
-  );
+const TV_SCRIPT_SRC =
+  "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js";
+
+let scriptLoaded = false;
+
+function loadTvScript() {
+  if (scriptLoaded || document.querySelector(`script[src="${TV_SCRIPT_SRC}"]`))
+    return;
+  scriptLoaded = true;
+  const script = document.createElement("script");
+  script.src = TV_SCRIPT_SRC;
+  script.type = "module";
+  document.head.appendChild(script);
 }
 
-function BTCCard() {
-  const candles = [
-    { x: 15, top: 30, h: 14, wick_top: 26, wick_bot: 48, green: true },
-    { x: 35, top: 22, h: 16, wick_top: 18, wick_bot: 42, green: false },
-    { x: 55, top: 18, h: 12, wick_top: 14, wick_bot: 34, green: true },
-    { x: 75, top: 12, h: 14, wick_top: 8,  wick_bot: 30, green: true },
-    { x: 95, top: 8,  h: 10, wick_top: 4,  wick_bot: 22, green: true },
-  ];
+function TvChartCard({ symbol }: { symbol: string }) {
+  useEffect(() => {
+    loadTvScript();
+  }, []);
 
   return (
-    <div className={`${GLASS_CARD} p-4 min-w-[160px]`}>
-      <div className="text-xs text-stone-500 mb-1">BTC/USD</div>
-      <svg viewBox="0 0 120 50" className="w-full h-10 mb-2">
-        {candles.map((c) => (
-          <g key={c.x}>
-            <line
-              x1={c.x}
-              y1={c.wick_top}
-              x2={c.x}
-              y2={c.wick_bot}
-              stroke={c.green ? "#22c55e" : "#ef4444"}
-              strokeWidth="1"
-            />
-            <rect
-              x={c.x - 5}
-              y={c.top}
-              width="10"
-              height={c.h}
-              fill={c.green ? "#22c55e" : "#ef4444"}
-              rx="1"
-            />
-          </g>
-        ))}
-      </svg>
-      <div className="flex items-baseline gap-2">
-        <span className="text-sm font-semibold text-stone-800">$43,250</span>
-        <span className="text-xs text-green-500">+1.8%</span>
-      </div>
+    <div
+      className={`${GLASS_CARD} overflow-hidden`}
+      style={{ width: 220, height: 160 }}
+    >
+      <div
+        dangerouslySetInnerHTML={{
+          __html: `<tv-mini-chart symbol="${symbol}" time-frame="1M" show-time-scale style="display:block;width:220px;height:160px;"></tv-mini-chart>`,
+        }}
+      />
     </div>
   );
 }
@@ -109,7 +70,7 @@ export function HeroSection() {
         Your Portfolio,
         <br />
         Analyzed by{" "}
-        <span className="bg-gradient-to-r from-[#c9a84c] to-[#e8c96a] bg-clip-text text-transparent">
+        <span className="bg-linear-to-r from-[#c9a84c] to-[#e8c96a] bg-clip-text text-transparent">
           Legends
         </span>
       </motion.h1>
@@ -124,20 +85,10 @@ export function HeroSection() {
       </motion.p>
 
       <motion.div
-        className="flex flex-col sm:flex-row gap-4 mb-10"
+        className="flex gap-4 mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
-      >
-        <AAPLCard />
-        <BTCCard />
-      </motion.div>
-
-      <motion.div
-        className="flex gap-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
       >
         <Link
           href="/sign-in"
@@ -151,6 +102,17 @@ export function HeroSection() {
         >
           Sign Up
         </Link>
+      </motion.div>
+
+      <motion.div
+        className="flex flex-col sm:flex-row gap-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
+      >
+        <TvChartCard symbol="AMEX:SPY" />
+        <TvChartCard symbol="BLACKBULL:JPN225" />
+        <TvChartCard symbol="OANDA:XAUUSD" />
       </motion.div>
     </section>
   );

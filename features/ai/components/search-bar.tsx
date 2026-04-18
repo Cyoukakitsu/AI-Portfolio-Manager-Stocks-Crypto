@@ -75,7 +75,7 @@ export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
   return (
     <div className="flex flex-col sm:flex-row gap-2">
       <div className="flex-1">
-        <Command className="border rounded-3xl" shouldFilter={false}>
+        <Command className="border rounded-md" shouldFilter={false}>
           <div className="flex items-center px-6">
             {/* 搜索中显示加载动画，否则显示搜索图标 */}
             {isFetching ? (
@@ -134,7 +134,7 @@ export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
       <Button
         onClick={handleSubmit}
         disabled={disabled || isLoading || !(selectedSymbol || query.trim())}
-        className="rounded-3xl px-6 w-full sm:w-auto sm:self-start sm:mt-0.5"
+        className="px-6 w-full sm:w-auto sm:self-start sm:mt-0.5"
       >
         {isLoading ? "Loading..." : "Analyze"}
       </Button>

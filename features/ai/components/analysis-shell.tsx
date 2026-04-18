@@ -93,8 +93,8 @@ export function AnalysisShell() {
     <div className="p-3 sm:p-6 space-y-4 sm:space-y-6">
       <div>
         <div className="flex items-center gap-2.5 mb-1">
-          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/10">
-            <Brain className="h-4 w-4 text-blue-500" />
+          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+            <Brain className="h-4 w-4 text-primary" />
           </span>
           <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
         </div>

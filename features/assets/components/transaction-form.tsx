@@ -118,18 +118,18 @@ export function TransactionForm({
               )}
             />
 
-            <div className="flex gap-4">
+            <div className="grid grid-cols-3 gap-4">
               {/* Quantity：自定义加减按钮 + 原生 number input */}
               <Controller
                 name="quantity"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid} className="flex-1">
+                  <Field data-invalid={fieldState.invalid} className="min-w-0">
                     <FieldLabel>Quantity</FieldLabel>
-                    <div className="flex items-center border rounded-md">
+                    <div className="flex items-center border rounded-md h-8">
                       <button
                         type="button"
-                        className="px-3 py-2 hover:bg-muted"
+                        className="px-3 h-full hover:bg-muted"
                         // Math.max(1, ...) 防止数量减到 0 或负数
                         onClick={() =>
                           field.onChange(Math.max(1, Number(field.value) - 1))
@@ -156,7 +156,7 @@ export function TransactionForm({
                       />
                       <button
                         type="button"
-                        className="px-3 py-2 hover:bg-muted"
+                        className="px-3 h-full hover:bg-muted"
                         onClick={() => field.onChange(Number(field.value) + 1)}
                       >
                         <Plus className="w-4 h-4" />
@@ -174,7 +174,7 @@ export function TransactionForm({
                 name="traded_at"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid} className="flex-1">
+                  <Field data-invalid={fieldState.invalid} className="min-w-0">
                     <FieldLabel>
                       {currentType === "buy" ? "Purchase Date" : "Sell Date"}
                     </FieldLabel>
@@ -185,7 +185,7 @@ export function TransactionForm({
                             variant="outline"
                             className="w-full justify-start"
                           >
-                            <CalendarIcon className="mr-2 w-4 h-4" />
+                            <CalendarIcon className="w-4 h-4" />
                             {field.value ? field.value : "Select date"}
                           </Button>
                         }
@@ -226,7 +226,7 @@ export function TransactionForm({
                 name="price"
                 control={form.control}
                 render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid} className="flex-1">
+                  <Field data-invalid={fieldState.invalid} className="min-w-0">
                     <FieldLabel>
                       {currentType === "buy" ? "Purchase Price" : "Sell Price"}
                     </FieldLabel>

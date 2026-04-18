@@ -72,7 +72,7 @@ export function TotalAssetCard({ assets }: Props) {
       transition={{ duration: 0.45, ease: "easeOut" as const }}
     >
       <div className="flex items-center gap-3 px-3 sm:px-5 py-3.5 border-b border-border/60">
-        <span className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 bg-amber-500/10 text-amber-500 dark:bg-amber-400/10 dark:text-amber-400">
+        <span className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 bg-primary/10 text-primary">
           <Wallet className="h-4 w-4" />
         </span>
         <span className="text-sm font-semibold tracking-tight">

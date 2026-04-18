@@ -27,8 +27,8 @@ export default async function Assets() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2.5 mb-1">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10">
-              <LayoutDashboard className="h-4 w-4 text-amber-500" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <LayoutDashboard className="h-4 w-4 text-primary" />
             </span>
             <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
           </div>
@@ -44,7 +44,7 @@ export default async function Assets() {
           <TotalAssetCard assets={list} />
         </div>
         <div className="sm:col-span-1">
-        <WidgetCard icon={Bot} title={t("aiSummaryWidget")} accent="amber">
+        <WidgetCard icon={Bot} title={t("aiSummaryWidget")} accent="primary">
           <PortfolioAISummary assets={list} />
         </WidgetCard>
         </div>
@@ -62,7 +62,7 @@ export default async function Assets() {
           <WidgetCard
             icon={Newspaper}
             title={t("dailyAnalysisWidget")}
-            accent="violet"
+            accent="primary"
           >
             <DailyAnalysis assets={list} />
           </WidgetCard>
@@ -74,7 +74,7 @@ export default async function Assets() {
         icon={Database}
         title={t("allAssetsWidget")}
         badge={list.length > 0 ? `${list.length}` : undefined}
-        accent="blue"
+        accent="primary"
         action={
           <AssetForm trigger={<Button size="sm">{t("addAsset")}</Button>} />
         }

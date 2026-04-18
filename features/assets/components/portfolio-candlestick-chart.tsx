@@ -329,7 +329,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
     >
       {/* WidgetCard header */}
       <div className="flex flex-wrap items-center gap-2 px-3 sm:px-5 py-3 sm:py-3.5 border-b border-border/60">
-        <span className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 bg-violet-500/10 text-violet-500 dark:bg-violet-400/10 dark:text-violet-400">
+        <span className="flex items-center justify-center h-7 w-7 rounded-lg shrink-0 bg-primary/10 text-primary">
           <TrendingUp className="h-4 w-4" />
         </span>
         <span className="text-sm font-semibold tracking-tight flex-1 truncate">

@@ -32,8 +32,8 @@ export default async function Stocks() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2.5 mb-1">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/10">
-              <Activity className="h-4 w-4 text-violet-500" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <Activity className="h-4 w-4 text-primary" />
             </span>
             <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
           </div>
@@ -44,8 +44,8 @@ export default async function Stocks() {
 
         {/* stat chips */}
         <div className="flex flex-wrap gap-2">
-          <StatChip icon={Globe} label={t("globalData")} accent="blue" />
-          <StatChip icon={Zap} label={t("liveUpdates")} accent="amber" />
+          <StatChip icon={Globe} label={t("globalData")} accent="primary" />
+          <StatChip icon={Zap} label={t("liveUpdates")} accent="primary" />
         </div>
       </div>
 
@@ -54,7 +54,7 @@ export default async function Stocks() {
         icon={Radio}
         title={t("liveTicker")}
         badge={t("streaming")}
-        accent="amber"
+        accent="primary"
       >
         <div className="py-2 px-4">
           <TickerTape />
@@ -66,7 +66,7 @@ export default async function Stocks() {
         icon={TrendingUp}
         title={t("liveChart")}
         badge="AAPL"
-        accent="violet"
+        accent="primary"
         className="h-165"
       >
         <div className="h-full p-4">
@@ -92,7 +92,7 @@ export default async function Stocks() {
           icon={Newspaper}
           title={t("topStories")}
           badge="News"
-          accent="blue"
+          accent="primary"
           className="xl:h-140"
         >
           <div className="h-full p-4">
@@ -106,7 +106,7 @@ export default async function Stocks() {
         icon={BarChart2}
         title={t("marketData")}
         badge="Market Data"
-        accent="emerald"
+        accent="primary"
         className="h-130"
       >
         <div className="h-full p-4">

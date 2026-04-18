@@ -37,10 +37,10 @@ const features = [
 
 export function FeaturesSection() {
   return (
-    <section id="features" className="py-20 px-6 bg-[#f5f0e8]">
+    <section id="features" className="py-20 px-6 bg-background">
       <div className="max-w-5xl mx-auto">
         <motion.h2
-          className="text-3xl font-bold text-center text-stone-800 mb-4"
+          className="text-3xl font-bold text-center text-foreground mb-4"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -49,7 +49,7 @@ export function FeaturesSection() {
           Core Features
         </motion.h2>
         <motion.p
-          className="text-stone-500 text-center mb-14"
+          className="text-muted-foreground text-center mb-14"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -68,7 +68,7 @@ export function FeaturesSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: i * 0.1 }}
             >
-              <div className="relative w-full aspect-video bg-stone-100">
+              <div className="relative w-full aspect-video bg-muted">
                 <Image
                   src={f.image}
                   alt={f.title}
@@ -78,10 +78,10 @@ export function FeaturesSection() {
                 />
               </div>
               <div className="p-5">
-                <h3 className="text-base font-bold text-stone-800 mb-2">
+                <h3 className="text-base font-bold text-foreground mb-2">
                   {f.title}
                 </h3>
-                <p className="text-sm text-stone-500 leading-relaxed">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {f.description}
                 </p>
               </div>

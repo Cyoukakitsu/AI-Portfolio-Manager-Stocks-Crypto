@@ -83,7 +83,7 @@ export function PortfolioAISummary({ assets }: Props) {
           render={
             <Button
               size="sm"
-              className="gap-1.5 bg-amber-500 hover:bg-amber-600 text-white"
+              className="gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground"
               disabled={assets.length === 0}
             />
           }
@@ -96,7 +96,7 @@ export function PortfolioAISummary({ assets }: Props) {
       <DialogContent className="w-[95vw] max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
-            <Bot className="h-4 w-4 text-violet-500" />
+            <Bot className="h-4 w-4 text-primary" />
             {t("title")}
           </DialogTitle>
         </DialogHeader>

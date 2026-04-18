@@ -24,7 +24,6 @@ export function ModeToggle() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
-        bg-background
         align="end"
         className="rounded-xl p-1.5 min-w-32.5"
       >

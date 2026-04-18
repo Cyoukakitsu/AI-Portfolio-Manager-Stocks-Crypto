@@ -166,8 +166,8 @@ export function CryptoMarketDashboard() {
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <div className="flex items-center gap-2.5 mb-1">
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/10">
-              <Activity className="h-4.5 w-4.5 text-amber-500" />
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/10">
+              <Activity className="h-4.5 w-4.5 text-primary" />
             </span>
             <h1 className="text-2xl font-bold tracking-tight">{t("title")}</h1>
           </div>
@@ -178,13 +178,8 @@ export function CryptoMarketDashboard() {
 
         {/* stat chips */}
         <div className="flex flex-wrap gap-2">
-          <StatChip icon={Globe} label={t("globalData")} accent="blue" />
-          <StatChip icon={Zap} label={t("liveUpdates")} accent="amber" />
-          <StatChip
-            icon={TrendingUp}
-            label={t("top100Coins")}
-            accent="emerald"
-          />
+          <StatChip icon={Globe} label={t("globalData")} accent="primary" />
+          <StatChip icon={Zap} label={t("liveUpdates")} accent="primary" />
         </div>
       </div>
 
@@ -193,7 +188,7 @@ export function CryptoMarketDashboard() {
         icon={TrendingUp}
         title={t("livePrices")}
         badge={t("streaming")}
-        accent="amber"
+        accent="primary"
       >
         <MarqueeWidget />
       </WidgetCard>
@@ -204,7 +199,7 @@ export function CryptoMarketDashboard() {
           icon={LineChart}
           title={t("coinCompareChart")}
           badge="BTC"
-          accent="violet"
+          accent="primary"
           className="xl:h-145"
         >
           <CoinCompareChartWidget />
@@ -214,7 +209,7 @@ export function CryptoMarketDashboard() {
           icon={Flame}
           title={t("marketHeatmap")}
           badge="Top 100"
-          accent="orange"
+          accent="primary"
           className="xl:h-145"
         >
           <HeatmapWidget />
@@ -227,7 +222,7 @@ export function CryptoMarketDashboard() {
           icon={ArrowLeftRight}
           title={t("converter")}
           badge="BTC / USD"
-          accent="emerald"
+          accent="primary"
           className="lg:col-span-2"
           contentClassName="overflow-visible"
         >
@@ -238,7 +233,7 @@ export function CryptoMarketDashboard() {
           icon={BarChart2}
           title={t("topCoins")}
           badge="12 Assets"
-          accent="blue"
+          accent="primary"
           className="lg:col-span-1"
           contentClassName="overflow-visible"
         >

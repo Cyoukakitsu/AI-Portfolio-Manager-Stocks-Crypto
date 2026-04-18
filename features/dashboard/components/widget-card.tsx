@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
    Icon accent colours
 ───────────────────────────────────────── */
 export const iconStyles = {
+  primary: "bg-primary/10 text-primary",
   amber:
     "bg-amber-500/10 text-amber-500 dark:bg-amber-400/10 dark:text-amber-400",
   violet:

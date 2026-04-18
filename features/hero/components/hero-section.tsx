@@ -43,11 +43,10 @@ function TvChartCard({ symbol }: { symbol: string }) {
 export function HeroSection() {
   return (
     <section
-      className="min-h-screen flex flex-col items-center justify-center px-6 pt-4 pb-24 relative"
+      className="min-h-screen flex flex-col items-center justify-center px-6 pt-4 pb-24 relative bg-background"
       style={{
-        backgroundImage: `radial-gradient(circle, #c9a84c33 1px, transparent 1px)`,
+        backgroundImage: `radial-gradient(circle, color-mix(in oklch, var(--primary) 20%, transparent) 1px, transparent 1px)`,
         backgroundSize: `24px 24px`,
-        backgroundColor: "#f5f0e8",
       }}
     >
       <motion.div
@@ -56,13 +55,13 @@ export function HeroSection() {
         transition={{ duration: 0.5, ease: "easeOut", delay: 0 }}
         className="mb-6"
       >
-        <Badge className="bg-[#c9a84c]/10 text-[#c9a84c] border border-[#c9a84c]/30 px-4 py-1">
+        <Badge className="bg-primary/10 text-primary border border-primary/30 px-4 py-1">
           ✦ AI-Powered · Stock · Crypto
         </Badge>
       </motion.div>
 
       <motion.h1
-        className="text-5xl md:text-6xl font-serif font-bold text-center text-stone-800 leading-tight mb-4"
+        className="text-5xl md:text-6xl font-serif font-bold text-center text-foreground leading-tight mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
@@ -70,13 +69,13 @@ export function HeroSection() {
         Your Portfolio,
         <br />
         Analyzed by{" "}
-        <span className="bg-linear-to-r from-[#c9a84c] to-[#e8c96a] bg-clip-text text-transparent">
+        <span className="bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
           Legends
         </span>
       </motion.h1>
 
       <motion.p
-        className="text-lg text-stone-500 text-center max-w-xl mb-10"
+        className="text-lg text-muted-foreground text-center max-w-xl mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
@@ -92,13 +91,13 @@ export function HeroSection() {
       >
         <Link
           href="/sign-in"
-          className="px-6 py-3 bg-[#c9a84c] text-white font-semibold rounded-lg hover:bg-[#b8973b] transition-colors"
+          className="px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
         >
           Sign In
         </Link>
         <Link
           href="/sign-up"
-          className="px-6 py-3 border-2 border-[#c9a84c] text-[#c9a84c] font-semibold rounded-lg hover:bg-[#c9a84c]/10 transition-colors"
+          className="px-6 py-3 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary/10 transition-colors"
         >
           Sign Up
         </Link>

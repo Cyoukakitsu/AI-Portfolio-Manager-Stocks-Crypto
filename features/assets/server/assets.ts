@@ -104,6 +104,19 @@ export async function deleteAsset(id: string) {
   revalidatePath("/dashboard/assets");
 }
 
+// 当前ユーザーのすべての資産を削除
+export async function deleteAllAssets() {
+  const { supabase, user } = await getAuthSession();
+
+  const { error } = await supabase
+    .from("assets")
+    .delete()
+    .eq("user_id", user.id);
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/dashboard/assets");
+}
+
 // 更新资产
 export async function updateAsset(id: string, rawData: unknown) {
   const { supabase, user } = await getAuthSession();

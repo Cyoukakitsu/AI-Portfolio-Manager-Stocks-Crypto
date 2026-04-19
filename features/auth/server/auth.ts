@@ -67,3 +67,18 @@ export async function signIn(formatData: unknown) {
 
   redirect("/dashboard/assets");
 }
+
+export async function signOut() {
+  const supabase = await createClient();
+  await supabase.auth.signOut();
+  redirect("/sign-in");
+}
+
+export async function changePassword(newPassword: string) {
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password: newPassword });
+  if (error) {
+    return { error: "パスワードの変更に失敗しました。もう一度お試しください。" };
+  }
+  return { success: true };
+}

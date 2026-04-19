@@ -49,7 +49,8 @@ export async function updateSession(request: NextRequest) {
   if (
     !user &&
     !pathname.includes("/sign-in") &&
-    !pathname.includes("/sign-up")
+    !pathname.includes("/sign-up") &&
+    !pathname.startsWith("/auth/")
   ) {
     const url = request.nextUrl.clone();
     url.pathname = `/${locale}/sign-in`;

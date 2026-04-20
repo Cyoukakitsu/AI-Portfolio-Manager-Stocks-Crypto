@@ -3,7 +3,7 @@
 // 这个组件用于显示总资产、今日资产、总资产收益率、今日资产收益率的卡片
 // 它接收一个资产数组作为 props，计算并显示总资产、今日资产、总资产收益率、今日资产收益率
 // MotionUI库用于实现资产卡片的动画效果
-import { useAssetReturn } from "@/features/assets/hooks/useAssetReturn";
+import { useAssetReturn } from "@/features/assets/hooks/use-total-asset-card";
 import type { Asset } from "@/types/global";
 import { Wallet } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";

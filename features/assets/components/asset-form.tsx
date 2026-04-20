@@ -30,10 +30,10 @@ import {
 
 import { SymbolSearch } from "./symbol-search";
 import type { Asset } from "@/types/global";
-import { useAssetForm } from "@/features/assets/hooks/useAssetForm";
+import { useAssetForm } from "@/features/assets/hooks/use-asset-form";
 
 // trigger 可选：支持"由外部 open 状态控制"和"由内置触发按钮控制"两种模式
-// 这样 AssetForm 既能作为独立的"＋添加"按钮，也能被 data-table 以受控方式打开
+// 这样 AssetForm 既能作为独立的"＋添加"按钮，也能被 asset-table 以受控方式打开
 type Props = {
   asset?: Asset;
   trigger?: React.ReactNode;

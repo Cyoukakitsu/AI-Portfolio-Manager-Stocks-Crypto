@@ -2,8 +2,8 @@ import { getTranslations } from "next-intl/server";
 import { getAssets } from "@/features/assets/server/assets";
 import { getAllTransactions } from "@/features/assets/server/transactions";
 
-import { AssetsTable } from "@/features/assets/components/data-table";
-import { AssetForm } from "@/features/assets/components/data-form";
+import { AssetsTable } from "@/features/assets/components/asset-table";
+import { AssetForm } from "@/features/assets/components/asset-form";
 import { TotalAssetCard } from "@/features/assets/components/total-asset-card";
 import { PortfolioCandlestickChart } from "@/features/assets/components/portfolio-candlestick-chart";
 import { DailyAnalysis } from "@/features/assets/components/daily-analysis";

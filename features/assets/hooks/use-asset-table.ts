@@ -1,4 +1,4 @@
-// hooks/useAssetsTable.ts
+// hooks/use-asset-table.ts
 //
 // AssetsTable 组件的核心逻辑 Hook
 // 职责：行展开、交易记录缓存、当前价格拉取、删除确认状态管理
@@ -38,7 +38,7 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
     id: string;
     assetId: string;
   } | null>(null);
-  // 各资产的当前价格，与 useAssetReturn 使用相同的 queryKey 共享缓存，不重复请求
+  // 各资产的当前价格，与 use-total-asset-card 使用相同的 queryKey 共享缓存，不重复请求
   const symbolsKey = assets.map((a) => a.symbol).join(",");
   const { data: quotesData = {} } = useQuery<Record<string, { price: number | null }>>({
     queryKey: ["quotes", symbolsKey],

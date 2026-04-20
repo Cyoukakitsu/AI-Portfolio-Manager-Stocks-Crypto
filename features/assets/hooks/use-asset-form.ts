@@ -1,4 +1,4 @@
-// hooks/useAssetForm.ts
+// hooks/use-asset-form.ts
 //
 // AssetForm 组件的核心逻辑 Hook
 // 职责：表单状态管理、Dialog 开关控制、提交处理、asset_type 联动
@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import type { SearchResult } from "@/features/assets/hooks/use-symbol-search";
 
 import { createAsset, updateAsset } from "@/features/assets/server/assets";
 import { assetSchema, type AssetFormData } from "@/features/assets/schemas/asset";
@@ -99,11 +100,7 @@ export function useAssetForm({
 
   // ---- 6. 搜索结果选中的处理函数 ----
   // 被 SymbolSearch / CryptoSearch 的 onSelect 调用
-  function handleSymbolSelect(result: {
-    symbol: string;
-    fullname: string;
-    type?: string;
-  }) {
+  function handleSymbolSelect(result: SearchResult) {
     form.setValue("symbol", result.symbol, { shouldValidate: true });
     form.setValue("fullname", result.fullname, { shouldValidate: true });
 

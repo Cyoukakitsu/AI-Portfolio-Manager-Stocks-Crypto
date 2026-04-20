@@ -13,7 +13,7 @@ type UseAssetReturnParams = {
 export function useAssetReturn({ assets }: UseAssetReturnParams) {
   const symbolsKey = assets.map((a) => a.symbol).join(",");
 
-  // 与 useAssetsTable 使用相同的 queryKey，两个组件共享同一份缓存，不重复请求
+  // 与 use-asset-table 使用相同的 queryKey，两个组件共享同一份缓存，不重复请求
   const { data: quotes = {} } = useQuery<QuotesMap>({
     queryKey: ["quotes", symbolsKey],
     queryFn: async () => {

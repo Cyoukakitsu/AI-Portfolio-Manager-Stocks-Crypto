@@ -1,26 +1,22 @@
 "use client";
 
-import { useQuery } from "@tanstack/react-query";
+// 每日新闻分析组件
+// 逻辑层见 hooks/use-daily-analysis.ts
+
 import type { Asset } from "@/types/global";
-import type { SymbolNews, NewsArticle } from "@/app/api/assets/news/route";
+import type { NewsArticle } from "@/app/api/assets/news/route";
 import { RefreshCw, ExternalLink, Newspaper } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { useDailyAnalysis } from "@/features/assets/hooks/use-daily-analysis";
+import { timeAgo } from "@/features/assets/lib/date-utils";
 
 type Props = { assets: Asset[] };
 
-function timeAgo(dateStr: string): string {
-  if (!dateStr) return "";
-  const date = new Date(dateStr);
-  if (isNaN(date.getTime())) return "";
-  const diff = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (diff < 60) return `${diff}秒前`;
-  if (diff < 3600) return `${Math.floor(diff / 60)}分前`;
-  if (diff < 86400) return `${Math.floor(diff / 3600)}時間前`;
-  return `${Math.floor(diff / 86400)}日前`;
-}
-
+// ==============================
+// 子组件：单条新闻文章（可点击跳转原文）
+// ==============================
 function ArticleItem({ article }: { article: NewsArticle }) {
   return (
     <a
@@ -48,15 +44,15 @@ function ArticleItem({ article }: { article: NewsArticle }) {
   );
 }
 
-function SymbolSection({ item }: { item: SymbolNews }) {
+// ==============================
+// 子组件：单个 symbol 的新闻分组
+// ==============================
+function SymbolSection({ item }: { item: { symbol: string; articles: NewsArticle[] } }) {
   if (item.articles.length === 0) return null;
   return (
     <div>
       <div className="px-4 py-1.5 flex items-center gap-2 bg-muted/30 border-b border-border/40">
-        <Badge
-          variant="secondary"
-          className="text-[10px] px-1.5 py-0 font-mono font-semibold"
-        >
+        <Badge variant="secondary" className="text-[10px] px-1.5 py-0 font-mono font-semibold">
           {item.symbol}
         </Badge>
       </div>
@@ -67,6 +63,9 @@ function SymbolSection({ item }: { item: SymbolNews }) {
   );
 }
 
+// ==============================
+// 子组件：加载中占位骨架屏
+// ==============================
 function LoadingSkeleton() {
   return (
     <div className="flex flex-col divide-y divide-border/40">
@@ -81,29 +80,16 @@ function LoadingSkeleton() {
   );
 }
 
+// ==============================
+// 主组件
+// ==============================
 export function DailyAnalysis({ assets }: Props) {
-  const symbols = assets.map((a) => a.symbol);
-
-  const { data, isFetching, dataUpdatedAt, refetch } = useQuery<SymbolNews[]>({
-    queryKey: ["news", symbols],
-    queryFn: async () => {
-      const res = await fetch(
-        `/api/assets/news?symbols=${encodeURIComponent(symbols.join(","))}`,
-      );
-      const json = await res.json();
-      return json.results ?? [];
-    },
-    enabled: symbols.length > 0,
-    staleTime: 5 * 60 * 1000, // 5 分钟内不自动重新请求
-  });
-
-  const results = data ?? [];
-  const hasNews = results.some((r) => r.articles.length > 0);
-  const lastUpdated = dataUpdatedAt ? new Date(dataUpdatedAt) : null;
+  const { symbols, results, isFetching, hasNews, lastUpdated, refetch } =
+    useDailyAnalysis({ assets });
 
   return (
     <div className="flex flex-col">
-      {/* Sub-header */}
+      {/* 顶部状态栏：显示上次更新时间 + 手动刷新按钮 */}
       <div className="flex items-center justify-between px-4 py-2 border-b border-border/40">
         <span className="text-[11px] text-muted-foreground">
           {lastUpdated
@@ -121,7 +107,7 @@ export function DailyAnalysis({ assets }: Props) {
         </Button>
       </div>
 
-      {/* Content — scrollable, max-height matches chart card (~439px total) */}
+      {/* 新闻内容区（可滚动） */}
       <div className="overflow-y-auto max-h-60 sm:max-h-85.25">
         {isFetching && !hasNews ? (
           <LoadingSkeleton />

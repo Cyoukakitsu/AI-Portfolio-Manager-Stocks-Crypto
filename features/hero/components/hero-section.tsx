@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import { GLASS_CARD } from "../constants";
 
 const TV_SCRIPT_SRC =
@@ -21,10 +22,18 @@ function loadTvScript() {
   document.head.appendChild(script);
 }
 
-function TvChartCard({ symbol }: { symbol: string }) {
+function TvChartCard({
+  symbol,
+  showTimeRange = false,
+}: {
+  symbol: string;
+  showTimeRange?: boolean;
+}) {
   useEffect(() => {
     loadTvScript();
   }, []);
+
+  const attrs = showTimeRange ? "show-time-range" : "show-time-scale";
 
   return (
     <div
@@ -33,7 +42,7 @@ function TvChartCard({ symbol }: { symbol: string }) {
     >
       <div
         dangerouslySetInnerHTML={{
-          __html: `<tv-mini-chart symbol="${symbol}" time-frame="1M" show-time-scale style="display:block;width:220px;height:160px;"></tv-mini-chart>`,
+          __html: `<tv-mini-chart symbol="${symbol}" time-frame="1M" ${attrs} style="display:block;width:220px;height:160px;"></tv-mini-chart>`,
         }}
       />
     </div>
@@ -41,9 +50,11 @@ function TvChartCard({ symbol }: { symbol: string }) {
 }
 
 export function HeroSection() {
+  const t = useTranslations("hero");
+
   return (
     <section
-      className="min-h-screen flex flex-col items-center justify-center px-6 pt-4 pb-24 relative bg-background"
+      className="min-h-screen flex flex-col items-center justify-center px-6 pt-4 pb-10 bg-background"
       style={{
         backgroundImage: `radial-gradient(circle, color-mix(in oklch, var(--primary) 20%, transparent) 1px, transparent 1px)`,
         backgroundSize: `24px 24px`,
@@ -56,7 +67,7 @@ export function HeroSection() {
         className="mb-6"
       >
         <Badge className="bg-primary/10 text-primary border border-primary/30 px-4 py-1">
-          ✦ AI-Powered · Stock · Crypto
+          {t("badge")}
         </Badge>
       </motion.div>
 
@@ -66,11 +77,11 @@ export function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
       >
-        Your Portfolio,
+        {t("headlineLine1")}
         <br />
-        Analyzed by{" "}
+        {t("headlinePrefix")}{" "}
         <span className="bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-          Legends
+          {t("headlineAccent")}
         </span>
       </motion.h1>
 
@@ -80,7 +91,7 @@ export function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
       >
-        Track stocks &amp; crypto. Get AI insights from 5 legendary investors.
+        {t("subheadline")}
       </motion.p>
 
       <motion.div
@@ -91,27 +102,34 @@ export function HeroSection() {
       >
         <Link
           href="/sign-in"
-          className="px-6 py-3 bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
+          className="px-6 py-3 min-w-36 text-center border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary/10 transition-colors"
         >
-          Sign In
+          {t("signIn")}
         </Link>
         <Link
           href="/sign-up"
-          className="px-6 py-3 border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary/10 transition-colors"
+          className="px-6 py-3 min-w-36 text-center bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
         >
-          Sign Up
+          {t("signUp")}
         </Link>
       </motion.div>
 
       <motion.div
-        className="flex flex-col sm:flex-row gap-4"
+        className="flex flex-col gap-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
       >
-        <TvChartCard symbol="AMEX:SPY" />
-        <TvChartCard symbol="BLACKBULL:JPN225" />
-        <TvChartCard symbol="OANDA:XAUUSD" />
+        <div className="flex flex-col sm:flex-row gap-4">
+          <TvChartCard symbol="AMEX:SPY" />
+          <TvChartCard symbol="BLACKBULL:JPN225" />
+          <TvChartCard symbol="OANDA:XAUUSD" />
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4">
+          <TvChartCard symbol="BINANCE:BTCUSDT" showTimeRange />
+          <TvChartCard symbol="FX:USDJPY" showTimeRange />
+          <TvChartCard symbol="FOREXCOM:CHINA50" showTimeRange />
+        </div>
       </motion.div>
     </section>
   );

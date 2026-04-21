@@ -211,5 +211,47 @@
       ],
       "styleTags": ["Macro-Driven", "Systematic", "Diversified"]
     }
+  },
+  "hero": {
+    "nav": {
+      "features": "Features",
+      "aboutDevelopers": "About Developers",
+      "signIn": "Sign In",
+      "getStarted": "Get Started"
+    },
+    "badge": "✦ AI-Powered · Stock · Crypto",
+    "headlineLine1": "Your Portfolio,",
+    "headlinePrefix": "Analyzed by",
+    "headlineAccent": "Legends",
+    "subheadline": "Track stocks & crypto. Get AI insights from 5 legendary investors.",
+    "signIn": "Sign In",
+    "signUp": "Get Started",
+    "features": {
+      "title": "Core Features",
+      "subtitle": "Everything you need to manage and grow your investments.",
+      "items": {
+        "portfolio": {
+          "title": "Portfolio Overview",
+          "description": "See your total net worth, asset breakdown, and portfolio diversity score across stocks, crypto, and cash in one view."
+        },
+        "ai": {
+          "title": "AI Agent Analysis",
+          "description": "Get investment insights from 5 legendary investor AI agents — Buffett, Lynch, Wood, Burry, and Dalio — debating your portfolio."
+        },
+        "stock": {
+          "title": "Stock Market",
+          "description": "Browse and search global stocks with real-time quotes, price charts, and key market data to inform your next investment decision."
+        },
+        "crypto": {
+          "title": "Crypto Market",
+          "description": "Explore Bitcoin, Ethereum, and hundreds of altcoins with live prices, market cap rankings, and trend indicators."
+        }
+      }
+    },
+    "footer": {
+      "brand": "AI Portfolio Manager",
+      "terms": "Terms",
+      "privacy": "Privacy Policy"
+    }
   }
 }

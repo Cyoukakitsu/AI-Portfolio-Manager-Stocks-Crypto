@@ -207,5 +207,47 @@
       ],
       "styleTags": ["マクロ主導", "システマティック", "分散投資"]
     }
+  },
+  "hero": {
+    "nav": {
+      "features": "機能",
+      "aboutDevelopers": "開発者について",
+      "signIn": "サインイン",
+      "getStarted": "新規登録"
+    },
+    "badge": "✦ AI搭載 · 株式 · 暗号資産",
+    "headlineLine1": "あなたのポートフォリオを、",
+    "headlinePrefix": "伝説が",
+    "headlineAccent": "分析する",
+    "subheadline": "株式と暗号資産をトラッキング。5人の伝説的投資家AIがポートフォリオを分析。",
+    "signIn": "サインイン",
+    "signUp": "新規登録",
+    "features": {
+      "title": "主要機能",
+      "subtitle": "投資を管理・成長させるために必要なすべてを一箇所に。",
+      "items": {
+        "portfolio": {
+          "title": "ポートフォリオ概要",
+          "description": "株式・暗号資産・現金の純資産総額、資産配分、分散スコアを一画面で確認。"
+        },
+        "ai": {
+          "title": "AIエージェント分析",
+          "description": "バフェット、リンチ、ウッド、バーリ、ダリオの5人の伝説的投資家AIがあなたのポートフォリオを議論し、インサイトを提供。"
+        },
+        "stock": {
+          "title": "株式マーケット",
+          "description": "世界の株式をリアルタイム価格・チャート・主要市場データで閲覧・検索し、次の投資判断に役立てる。"
+        },
+        "crypto": {
+          "title": "暗号資産マーケット",
+          "description": "ビットコイン、イーサリアム、数百のアルトコインをライブ価格・時価総額ランキング・トレンド指標で探索。"
+        }
+      }
+    },
+    "footer": {
+      "brand": "AI Portfolio Manager",
+      "terms": "利用規約",
+      "privacy": "プライバシーポリシー"
+    }
   }
 }

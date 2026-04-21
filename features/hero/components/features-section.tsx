@@ -2,42 +2,28 @@
 
 import Image from "next/image";
 import { motion } from "motion/react";
+import { useTranslations } from "next-intl";
 import { GLASS_CARD } from "../constants";
 
-const features = [
-  {
-    id: "portfolio",
-    image: "/Portfolio-Page.png",
-    title: "Portfolio Overview",
-    description:
-      "See your total net worth, asset breakdown, and portfolio diversity score across stocks, crypto, and cash in one view.",
-  },
-  {
-    id: "ai",
-    image: "/AI-Agent-Analysis.png",
-    title: "AI Agent Analysis",
-    description:
-      "Get investment insights from 5 legendary investor AI agents — Buffett, Lynch, Wood, Burry, and Dalio — debating your portfolio.",
-  },
-  {
-    id: "stock",
-    image: "/Stock-Page.png",
-    title: "Stock Market",
-    description:
-      "Browse and search global stocks with real-time quotes, price charts, and key market data to inform your next investment decision.",
-  },
-  {
-    id: "crypto",
-    image: "/Crypto-Page.png",
-    title: "Crypto Market",
-    description:
-      "Explore Bitcoin, Ethereum, and hundreds of altcoins with live prices, market cap rankings, and trend indicators.",
-  },
-];
+const featureIds = [
+  { id: "portfolio", image: "/Portfolio-Page.png" },
+  { id: "ai", image: "/AI-Agent-Analysis.png" },
+  { id: "stock", image: "/Stock-Page.png" },
+  { id: "crypto", image: "/Crypto-Page.png" },
+] as const;
 
 export function FeaturesSection() {
+  const t = useTranslations("hero.features");
+
   return (
-    <section id="features" className="py-20 px-6 bg-background">
+    <section
+      id="features"
+      className="pt-10 pb-20 px-6 bg-background"
+      style={{
+        backgroundImage: `radial-gradient(circle, color-mix(in oklch, var(--primary) 20%, transparent) 1px, transparent 1px)`,
+        backgroundSize: `24px 24px`,
+      }}
+    >
       <div className="max-w-5xl mx-auto">
         <motion.h2
           className="text-3xl font-bold text-center text-foreground mb-4"
@@ -46,7 +32,7 @@ export function FeaturesSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
         >
-          Core Features
+          {t("title")}
         </motion.h2>
         <motion.p
           className="text-muted-foreground text-center mb-14"
@@ -55,11 +41,11 @@ export function FeaturesSection() {
           viewport={{ once: true }}
           transition={{ duration: 0.5, delay: 0.1 }}
         >
-          Everything you need to manage and grow your investments.
+          {t("subtitle")}
         </motion.p>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {features.map((f, i) => (
+          {featureIds.map((f, i) => (
             <motion.div
               key={f.id}
               className={`${GLASS_CARD} overflow-hidden`}
@@ -71,7 +57,7 @@ export function FeaturesSection() {
               <div className="relative w-full aspect-video bg-muted">
                 <Image
                   src={f.image}
-                  alt={f.title}
+                  alt={t(`items.${f.id}.title`)}
                   fill
                   className="object-cover object-top"
                   sizes="(max-width: 640px) 100vw, 50vw"
@@ -79,10 +65,10 @@ export function FeaturesSection() {
               </div>
               <div className="p-5">
                 <h3 className="text-base font-bold text-foreground mb-2">
-                  {f.title}
+                  {t(`items.${f.id}.title`)}
                 </h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">
-                  {f.description}
+                  {t(`items.${f.id}.description`)}
                 </p>
               </div>
             </motion.div>

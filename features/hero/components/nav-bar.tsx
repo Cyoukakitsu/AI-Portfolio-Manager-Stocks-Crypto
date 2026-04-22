@@ -1,26 +1,50 @@
 "use client";
 
-import { Link } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/features/dashboard/components/locale-switcher";
 import { ModeToggle } from "@/features/dashboard/components/mode-toggle";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 export function NavBar() {
   const t = useTranslations("hero.nav");
+  const pathname = usePathname();
+  const locale = useLocale();
+  const isHeroPage = pathname === "/";
 
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/30">
       <div className="px-4 h-16 flex items-center relative">
         {/* Logo */}
-        <span className="text-xl font-bold text-primary tracking-wider px-2">
-          AIPM
-        </span>
+        {isHeroPage ? (
+          <span
+            className="text-xl font-bold text-primary tracking-wider px-2 cursor-pointer"
+            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          >
+            PortfolioX
+          </span>
+        ) : (
+          <a
+            href={`/${locale}`}
+            className="text-xl font-bold text-primary tracking-wider px-2"
+          >
+            PortfolioX
+          </a>
+        )}
 
         {/* Nav Links (desktop only) — truly centered */}
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 text-sm text-muted-foreground">
-          <a href="#features" className="hover:text-primary transition-colors">
-            {t("features")}
-          </a>
+          {isHeroPage ? (
+            <a href="#features" className="hover:text-primary transition-colors">
+              {t("features")}
+            </a>
+          ) : (
+            <a
+              href={`/${locale}#features`}
+              className="hover:text-primary transition-colors"
+            >
+              {t("features")}
+            </a>
+          )}
           <a
             href="https://cyoukakitsu-portfolio.pages.dev/"
             target="_blank"

@@ -1,5 +1,5 @@
 import AuthLayoutWrapper from "@/features/auth/components/auth-layout-wrapper";
-import { HeaderControls } from "@/features/dashboard/components/header-controls";
+import { NavBar } from "@/features/hero/components/nav-bar";
 
 import { TrendingUp, ShieldCheck, BotMessageSquare } from "lucide-react";
 import { getTranslations } from "next-intl/server";
@@ -24,9 +24,7 @@ export default async function layout({
 
   return (
     <div className="min-h-screen flex flex-col">
-      <header className="flex h-14 shrink-0 items-center justify-end border-b px-4">
-        <HeaderControls />
-      </header>
+      <NavBar />
       <div className="flex flex-1">
         {/* ── Left branding panel (desktop only) ── */}
         <div className="hidden lg:flex lg:w-[45%] bg-sidebar flex-col justify-between p-12 relative overflow-hidden border-r border-sidebar-border">

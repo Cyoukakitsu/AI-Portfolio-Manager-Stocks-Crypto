@@ -91,7 +91,9 @@ export function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
       >
-        {t("subheadline")}
+        {t("subheadline1")}
+        <br />
+        {t("subheadline2")}
       </motion.p>
 
       <motion.div

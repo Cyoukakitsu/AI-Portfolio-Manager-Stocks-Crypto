@@ -1,4 +1,41 @@
 {
+  "settings": {
+    "title": "設定",
+    "dropdown": {
+      "settings": "設定",
+      "signOut": "ログアウト"
+    },
+    "portfolioData": {
+      "title": "ポートフォリオデータ",
+      "description": "現在のポートフォリオにある全てのデータを削除します。この操作は取り消せません。",
+      "deleteButton": "全データを削除",
+      "confirmTitle": "本当に削除しますか？",
+      "confirmDescription": "ポートフォリオ内の全ての資産と取引履歴が完全に削除されます。この操作は取り消せません。",
+      "cancel": "キャンセル",
+      "deleting": "削除中...",
+      "confirm": "削除する"
+    },
+    "password": {
+      "title": "パスワード変更",
+      "currentPassword": "現在のパスワード",
+      "newPassword": "新しいパスワード（6文字以上）",
+      "confirmPassword": "新しいパスワード（確認）",
+      "changing": "変更中...",
+      "submit": "パスワードを変更"
+    },
+    "toast": {
+      "deleteSuccess": "ポートフォリオデータをすべて削除しました。",
+      "deleteFailed": "削除に失敗しました。もう一度お試しください。",
+      "currentPasswordRequired": "現在のパスワードを入力してください。",
+      "passwordTooShort": "パスワードは6文字以上で設定してください。",
+      "passwordMismatch": "パスワードが一致しません。",
+      "passwordChanged": "パスワードを変更しました。",
+      "passwordChangeFailed": "パスワードの変更に失敗しました。",
+      "invalidCurrentPassword": "現在のパスワードが正しくありません。",
+      "userNotFound": "ユーザー情報を取得できませんでした。",
+      "updateFailed": "パスワードの更新に失敗しました。もう一度お試しください。"
+    }
+  },
   "nav": {
     "assets": "アセット",
     "personalPortfolio": "ポートフォリオ",
@@ -6,7 +43,7 @@
     "marketOverview": "マーケット概況",
     "crypto": "暗号資産",
     "aiAnalysis": "AI分析",
-    "multiAgentAnalysis": "マルチエージェント分析"
+    "multiAgentAnalysis": "AI 投資家"
   },
   "auth": {
     "signIn": {
@@ -219,7 +256,8 @@
     "headlineLine1": "あなたのポートフォリオを、",
     "headlinePrefix": "伝説が",
     "headlineAccent": "分析する",
-    "subheadline": "株式と暗号資産をトラッキング。5人の伝説的投資家AIがポートフォリオを分析。",
+    "subheadline1": "株式と暗号資産を追跡",
+    "subheadline2": "5人の伝説的投資家AIがポートフォリオを分析",
     "signIn": "サインイン",
     "signUp": "新規登録",
     "features": {

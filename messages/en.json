@@ -1,4 +1,41 @@
 {
+  "settings": {
+    "title": "Settings",
+    "dropdown": {
+      "settings": "Settings",
+      "signOut": "Sign Out"
+    },
+    "portfolioData": {
+      "title": "Portfolio Data",
+      "description": "Delete all data in your current portfolio. This action cannot be undone.",
+      "deleteButton": "Delete All Data",
+      "confirmTitle": "Are you sure?",
+      "confirmDescription": "All assets and transaction history in your portfolio will be permanently deleted. This action cannot be undone.",
+      "cancel": "Cancel",
+      "deleting": "Deleting...",
+      "confirm": "Delete"
+    },
+    "password": {
+      "title": "Change Password",
+      "currentPassword": "Current password",
+      "newPassword": "New password (min. 6 characters)",
+      "confirmPassword": "Confirm new password",
+      "changing": "Changing...",
+      "submit": "Change Password"
+    },
+    "toast": {
+      "deleteSuccess": "All portfolio data has been deleted.",
+      "deleteFailed": "Failed to delete. Please try again.",
+      "currentPasswordRequired": "Please enter your current password.",
+      "passwordTooShort": "Password must be at least 6 characters.",
+      "passwordMismatch": "Passwords do not match.",
+      "passwordChanged": "Password changed successfully.",
+      "passwordChangeFailed": "Failed to change password.",
+      "invalidCurrentPassword": "Current password is incorrect.",
+      "userNotFound": "Could not retrieve user information.",
+      "updateFailed": "Failed to update password. Please try again."
+    }
+  },
   "nav": {
     "assets": "Your Assets",
     "personalPortfolio": "Personal Portfolio",
@@ -6,7 +43,7 @@
     "marketOverview": "Market Overview",
     "crypto": "Crypto",
     "aiAnalysis": "AI Analysis",
-    "multiAgentAnalysis": "Multi-Agent Analysis"
+    "multiAgentAnalysis": "AI Investors"
   },
   "auth": {
     "signIn": {
@@ -223,7 +260,8 @@
     "headlineLine1": "Your Portfolio,",
     "headlinePrefix": "Analyzed by",
     "headlineAccent": "Legends",
-    "subheadline": "Track stocks & crypto. Get AI insights from 5 legendary investors.",
+    "subheadline1": "Track stocks & crypto.",
+    "subheadline2": "Get AI insights from 5 legendary investors.",
     "signIn": "Sign In",
     "signUp": "Get Started",
     "features": {

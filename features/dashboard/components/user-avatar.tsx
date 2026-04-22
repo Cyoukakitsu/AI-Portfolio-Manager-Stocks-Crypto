@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Settings, LogOut } from "lucide-react";
+import { useTranslations } from "next-intl";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,6 +18,7 @@ interface UserAvatarProps {
 }
 
 export function UserAvatar({ email }: UserAvatarProps) {
+  const t = useTranslations("settings.dropdown");
   const [settingsOpen, setSettingsOpen] = useState(false);
   const initial = email.charAt(0).toUpperCase();
 
@@ -31,12 +33,12 @@ export function UserAvatar({ email }: UserAvatarProps) {
         <DropdownMenuContent align="end" side="bottom">
           <DropdownMenuItem onClick={() => setSettingsOpen(true)}>
             <Settings />
-            設定
+            {t("settings")}
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem variant="destructive" onClick={() => signOut()}>
             <LogOut />
-            ログアウト
+            {t("signOut")}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -74,11 +74,25 @@ export async function signOut() {
   redirect("/sign-in");
 }
 
-export async function changePassword(newPassword: string) {
+export async function changePassword(currentPassword: string, newPassword: string) {
   const supabase = await createClient();
+
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user?.email) {
+    return { errorCode: "userNotFound" };
+  }
+
+  const { error: verifyError } = await supabase.auth.signInWithPassword({
+    email: user.email,
+    password: currentPassword,
+  });
+  if (verifyError) {
+    return { errorCode: "invalidCurrentPassword" };
+  }
+
   const { error } = await supabase.auth.updateUser({ password: newPassword });
   if (error) {
-    return { error: "パスワードの変更に失敗しました。もう一度お試しください。" };
+    return { errorCode: "updateFailed" };
   }
   return { success: true };
 }

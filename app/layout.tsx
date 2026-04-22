@@ -21,7 +21,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Portfolio Manager",
+  title: "PortfolioX",
   description: "Track your stocks and crypto with AI-powered insights",
 };
 

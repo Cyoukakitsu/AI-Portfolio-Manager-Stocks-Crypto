@@ -47,7 +47,7 @@ export async function POST(request: Request) {
     if (personas.length === 1) {
       const result = await generateText({
         // generateText：文本生成函数，接受前端请求，与LLM模型api通信
-        model: deepseek("deepseek-reasoner"), // 调用DeepSeek推理模型
+        model: deepseek("deepseek-v4-flash"),
         tools: { getStockPrice, getFinancials, getNews }, // 大模型可调用的工具（查股价/财报/新闻）
         stopWhen: stepCountIs(5), // 大模型思考步数上限（防止无限推理）
         system: `${PERSONA_PROMPTS[personas[0]]}${langInstruction}`, //设定 AI 的角色、性格、行为规则
@@ -70,14 +70,14 @@ export async function POST(request: Request) {
     const yf = new YahooFinance({ suppressNotices: ["yahooSurvey"] });
     const [result1, result2, quote] = await Promise.all([
       generateText({
-        model: deepseek("deepseek-reasoner"),
+        model: deepseek("deepseek-v4-flash"),
         tools: { getStockPrice, getFinancials, getNews },
         stopWhen: stepCountIs(5),
         system: `${PERSONA_PROMPTS[personas[0]]}${langInstruction}`,
         prompt: ANALYSIS_PROMPT(symbol),
       }),
       generateText({
-        model: deepseek("deepseek-reasoner"),
+        model: deepseek("deepseek-v4-flash"),
         tools: { getStockPrice, getFinancials, getNews },
         stopWhen: stepCountIs(5),
         system: `${PERSONA_PROMPTS[personas[1]]}${langInstruction}`,
@@ -96,7 +96,10 @@ export async function POST(request: Request) {
 
     // 总结：最终决策
     const coordinatorResult = await generateText({
-      model: deepseek("deepseek-chat"), //Coordinator 不需要深度推理，所以使用chat模式
+      model: deepseek("deepseek-v4-flash"),
+      providerOptions: {
+        deepseek: { thinking: { type: "disabled" } },
+      },
       system: `${COORDINATOR_PROMPT}${langInstruction}`,
 
       //告诉 Coordinator 当前真实股价，防止用训练数据里的旧价格

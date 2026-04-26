@@ -14,7 +14,7 @@ export async function POST(req: Request) {
     .join("\n");
 
   const result = streamText({
-    model: openrouter("qwen/qwen3.6-plus:free"),
+    model: openrouter("openrouter/free"),
     tools: {
       tavilySearch: tavilySearch({ maxResults: 2 }),
     },

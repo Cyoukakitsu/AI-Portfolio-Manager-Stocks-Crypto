@@ -6,6 +6,7 @@
 import type { Asset } from "@/types/global";
 import type { NewsArticle } from "@/app/api/assets/news/route";
 import { RefreshCw, ExternalLink, Newspaper } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -84,6 +85,7 @@ function LoadingSkeleton() {
 // 主组件
 // ==============================
 export function DailyAnalysis({ assets }: Props) {
+  const t = useTranslations("dailyAnalysis");
   const { symbols, results, isFetching, hasNews, lastUpdated, refetch } =
     useDailyAnalysis({ assets });
 
@@ -93,8 +95,8 @@ export function DailyAnalysis({ assets }: Props) {
       <div className="flex items-center justify-between px-4 py-2 border-b border-border/40">
         <span className="text-[11px] text-muted-foreground">
           {lastUpdated
-            ? `更新: ${lastUpdated.toLocaleTimeString("ja-JP", { hour: "2-digit", minute: "2-digit" })}`
-            : "持ち株の最新ニュースを取得中…"}
+            ? `${t("updating")}${lastUpdated.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" })}`
+            : t("loading")}
         </span>
         <Button
           size="icon"
@@ -114,12 +116,12 @@ export function DailyAnalysis({ assets }: Props) {
         ) : symbols.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-40 gap-2 text-muted-foreground">
             <Newspaper className="h-6 w-6 opacity-30" />
-            <p className="text-xs">資産を追加するとニュースが表示されます</p>
+            <p className="text-xs">{t("emptyState")}</p>
           </div>
         ) : !hasNews ? (
           <div className="flex flex-col items-center justify-center h-40 gap-2 text-muted-foreground">
             <Newspaper className="h-6 w-6 opacity-30" />
-            <p className="text-xs">ニュースが見つかりませんでした</p>
+            <p className="text-xs">{t("noNews")}</p>
           </div>
         ) : (
           results.map((item) => <SymbolSection key={item.symbol} item={item} />)

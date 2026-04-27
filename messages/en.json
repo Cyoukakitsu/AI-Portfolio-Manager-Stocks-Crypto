@@ -93,7 +93,7 @@
     "signUp": "Sign Up"
   },
   "aiSummary": {
-    "analyzing": "AI analyzing...",
+    "analyzing": "AI is analyzing, please wait...",
     "reanalyze": "Re-analyze",
     "title": "AI Portfolio Analysis",
     "description": "Comprehensive analysis of technical, fundamental & industry trends",
@@ -108,7 +108,16 @@
     "finalVerdict": "Final Verdict"
   },
   "verdict": {
-    "score": "Score"
+    "score": "Score",
+    "buy": "Buy",
+    "hold": "Hold",
+    "sell": "Sell"
+  },
+  "dailyAnalysis": {
+    "updating": "Updated: ",
+    "loading": "Fetching latest news for your holdings…",
+    "emptyState": "Add assets to see news",
+    "noNews": "No news found"
   },
   "pages": {
     "assets": {
@@ -154,7 +163,9 @@
       "fetchError": "Analysis failed. Please try again.",
       "buyRange": "Buy Range",
       "targetPriceRange": "Target Price Range",
-      "combinedRangeNote": "Combined buy range from both analysts"
+      "combinedRangeNote": "Combined buy range from both analysts",
+      "coordinatorName": "Coordinator",
+      "coordinatorRole": "Final Verdict"
     }
   },
   "aiAnalyst": {

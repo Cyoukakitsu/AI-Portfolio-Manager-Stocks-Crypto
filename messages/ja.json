@@ -93,7 +93,7 @@
     "signUp": "新規登録"
   },
   "aiSummary": {
-    "analyzing": "AI分析中...",
+    "analyzing": "AI分析中、しばらくお待ちください...",
     "reanalyze": "再分析",
     "title": "AIポートフォリオ分析",
     "description": "テクニカル・ファンダメンタルズ・業界動向を総合分析",
@@ -108,7 +108,16 @@
     "finalVerdict": "最終判定"
   },
   "verdict": {
-    "score": "スコア"
+    "score": "スコア",
+    "buy": "買い",
+    "hold": "保有",
+    "sell": "売り"
+  },
+  "dailyAnalysis": {
+    "updating": "更新: ",
+    "loading": "持ち株の最新ニュースを取得中…",
+    "emptyState": "資産を追加するとニュースが表示されます",
+    "noNews": "ニュースが見つかりませんでした"
   },
   "pages": {
     "assets": {
@@ -154,7 +163,9 @@
       "fetchError": "分析に失敗しました。もう一度お試しください。",
       "buyRange": "買入レンジ",
       "targetPriceRange": "目標価格帯",
-      "combinedRangeNote": "両アナリストの買入レンジの統合"
+      "combinedRangeNote": "両アナリストの買入レンジの統合",
+      "coordinatorName": "コーディネーター",
+      "coordinatorRole": "最終判定"
     }
   },
   "aiAnalyst": {

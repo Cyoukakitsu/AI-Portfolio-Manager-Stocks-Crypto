@@ -63,10 +63,8 @@ export function PortfolioAISummary({ assets }: Props) {
         {/* 加载中：骨架屏动画；加载完成：渲染 Markdown */}
         <div className="min-h-50 max-h-[60vh] overflow-y-auto pr-1">
           {loading ? (
-            <div className="space-y-2.5 animate-pulse pt-2">
-              {[75, 55, 85, 45, 65, 70, 50].map((w, i) => (
-                <div key={i} className="h-3 rounded bg-muted" style={{ width: `${w}%` }} />
-              ))}
+            <div className="flex items-center justify-center h-full min-h-50 text-sm text-muted-foreground">
+              {t("analyzing")}
             </div>
           ) : text ? (
             <div className="prose prose-sm dark:prose-invert max-w-none text-[13px] leading-relaxed">

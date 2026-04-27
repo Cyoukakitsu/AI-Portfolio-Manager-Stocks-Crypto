@@ -57,7 +57,7 @@ export function AgentDetailModal({ modalOpen, onClose }: AgentDetailModalProps) 
                     {activePersona.name}
                   </DialogTitle>
                   <p className="text-sm text-muted-foreground mt-0.5">
-                    {activePersona.role}
+                    {t(`${modalOpen}.role`)}
                   </p>
                   {/* 分析风格标签 */}
                   <div className="flex flex-wrap gap-1.5 mt-2">

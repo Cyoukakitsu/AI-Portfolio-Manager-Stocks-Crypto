@@ -4,14 +4,15 @@ import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AgentResult } from "@/features/ai/types";
-import { PERSONA_META, VERDICT_LABEL, VERDICT_STYLE } from "@/features/ai/lib/constants";
+import { PERSONA_META, VERDICT_STYLE } from "@/features/ai/lib/constants";
 
 type AgentCardProps = AgentResult;
 
 export function AgentCard({ persona, score, verdict, points, buyRange }: AgentCardProps) {
   const t = useTranslations("pages.ai");
+  const tAnalyst = useTranslations("aiAnalyst");
+  const tVerdict = useTranslations("verdict");
   const meta = PERSONA_META[persona];
-  const verdictLabel = VERDICT_LABEL[verdict];
 
   return (
     <Card>
@@ -22,11 +23,11 @@ export function AgentCard({ persona, score, verdict, points, buyRange }: AgentCa
             <span className="text-2xl">{meta.emoji}</span>
             <div>
               <p className="text-sm font-medium">{meta.name}</p>
-              <p className="text-xs text-muted-foreground">{meta.role}</p>
+              <p className="text-xs text-muted-foreground">{tAnalyst(`${persona}.role`)}</p>
             </div>
           </div>
           {/* 右侧：verdict badge */}
-          <Badge className={VERDICT_STYLE[verdict]}>{verdictLabel}</Badge>
+          <Badge className={VERDICT_STYLE[verdict]}>{tVerdict(verdict)}</Badge>
         </div>
       </CardHeader>
 
@@ -34,7 +35,7 @@ export function AgentCard({ persona, score, verdict, points, buyRange }: AgentCa
         {/* 分数进度条 */}
         <div className="mb-4 space-y-1.5">
           <div className="flex justify-between text-xs text-muted-foreground">
-            <span>Score</span>
+            <span>{tVerdict("score")}</span>
             <span className="font-medium text-foreground">{score} / 100</span>
           </div>
           <div className="h-1.5 rounded-full bg-muted overflow-hidden">

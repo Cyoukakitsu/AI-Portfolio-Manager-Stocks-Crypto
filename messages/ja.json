@@ -73,6 +73,10 @@
       "signIn": "サインイン"
     },
     "layout": {
+      "headline": "AIが支える",
+      "headlineAccent": "ポートフォリオ管理センター",
+      "subtitle": "株式・ETF・暗号資産をリアルタイムデータとAIインサイトで一元管理。",
+      "chartLabel": "ポートフォリオパフォーマンス",
       "tracking": {
         "title": "リアルタイム資産追跡",
         "desc": "株式・ETF・暗号資産を一つのダッシュボードで管理"

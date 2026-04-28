@@ -59,13 +59,12 @@ export default async function layout({
           <div className="relative z-10 space-y-10">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold text-sidebar-foreground leading-tight tracking-tight">
-                Your AI-Powered
+                {t("headline")}
                 <br />
-                <span className="text-primary">Portfolio Command Center</span>
+                <span className="text-primary">{t("headlineAccent")}</span>
               </h1>
               <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
-                Monitor stocks, ETFs, and crypto with real-time data and
-                AI-generated insights — all from a single dashboard.
+                {t("subtitle")}
               </p>
             </div>
 
@@ -100,7 +99,7 @@ export default async function layout({
               ))}
             </div>
             <p className="text-[11px] text-muted-foreground mt-2 tracking-wide uppercase">
-              Portfolio Performance
+              {t("chartLabel")}
             </p>
           </div>
         </div>

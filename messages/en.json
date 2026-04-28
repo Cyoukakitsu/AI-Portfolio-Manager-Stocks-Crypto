@@ -73,6 +73,10 @@
       "signIn": "Sign in"
     },
     "layout": {
+      "headline": "Your AI-Powered",
+      "headlineAccent": "Portfolio Command Center",
+      "subtitle": "Monitor stocks, ETFs, and crypto with real-time data and AI-generated insights — all from a single dashboard.",
+      "chartLabel": "Portfolio Performance",
       "tracking": {
         "title": "Real-Time Portfolio Tracking",
         "desc": "Stocks, ETFs & crypto unified in one dashboard"

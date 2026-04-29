@@ -1,9 +1,6 @@
 "use client";
 
-// 组合资产 K 线图 / 收益率面积图
-// 逻辑层见 hooks/use-portfolio-candlestick-chart.ts
-// 计算层见 lib/portfolio-ohlc.ts
-
+import { useTranslations } from "next-intl";
 import { TrendingUp } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
@@ -19,6 +16,7 @@ type Props = {
 };
 
 export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
+  const t = useTranslations("pages.assets");
   const {
     range,
     setRange,
@@ -42,7 +40,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
           <TrendingUp className="h-4 w-4" />
         </span>
         <span className="text-sm font-semibold tracking-tight flex-1 truncate">
-          Portfolio Value
+          {t("portfolioValue")}
         </span>
 
         <div className="flex items-center gap-2 shrink-0 flex-wrap">
@@ -87,11 +85,11 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
       <div className="p-2 sm:p-4 flex-1">
         {isFetching ? (
           <div className="flex items-center justify-center h-52 sm:h-87.5 text-muted-foreground text-sm">
-            Loading...
+            {t("loading")}
           </div>
         ) : chartData.length === 0 ? (
           <div className="flex items-center justify-center h-52 sm:h-87.5 text-muted-foreground text-sm">
-            No data
+            {t("noData")}
           </div>
         ) : (
           <div ref={chartContainerRef} className="w-full" />

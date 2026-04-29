@@ -1,11 +1,6 @@
 "use client";
 
-// 交易记录录入表单（买入 / 卖出）
-//
-// 设计模式：Controller 受控模式 + useWatch 实时联动
-// 使用 Controller 而非 register()，是因为 Tabs、Calendar 等第三方组件
-// 无法直接接受 React 的 ref，必须通过 Controller 的 field.onChange 桥接
-
+import { useTranslations } from "next-intl";
 import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { format } from "date-fns";
@@ -53,6 +48,7 @@ export function TransactionForm({
   onOpenChange,
   onSuccess,
 }: Props) {
+  const t = useTranslations("pages.assets.transactionForm");
   const form = useForm<TransactionFormData>({
     resolver: zodResolver(transactionSchema),
     defaultValues: {
@@ -70,12 +66,12 @@ export function TransactionForm({
   async function onSubmit(data: TransactionFormData) {
     try {
       await createTransaction(data);
-      toast.success("Transaction added");
+      toast.success(t("toastSuccess"));
       form.reset();
       onOpenChange(false);
-      onSuccess?.(); // 触发父组件重新拉取交易列表
+      onSuccess?.();
     } catch {
-      toast.error("Failed to add transaction, please try again");
+      toast.error(t("toastError"));
     }
   }
 
@@ -83,17 +79,13 @@ export function TransactionForm({
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
-          {/* 标题根据当前选中的 Buy/Sell 动态变化，提升用户感知 */}
           <DialogTitle>
-            {currentType === "buy"
-              ? "Record Buy Transaction"
-              : "Record Sell Transaction"}
+            {currentType === "buy" ? t("titleBuy") : t("titleSell")}
           </DialogTitle>
         </DialogHeader>
 
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <FieldGroup>
-            {/* Buy / Sell 切换：用 Tabs 而非 radio，视觉上更清晰 */}
             <Controller
               name="type"
               control={form.control}
@@ -101,17 +93,15 @@ export function TransactionForm({
                 <Tabs
                   value={field.value}
                   onValueChange={(val) =>
-                    // onValueChange 回调的参数类型是 string，
-                    // 断言回联合类型 "buy" | "sell" 以满足 Zod schema 的要求
                     field.onChange(val as "buy" | "sell")
                   }
                 >
                   <TabsList className="w-full">
                     <TabsTrigger value="buy" className="flex-1">
-                      Buy
+                      {t("buy")}
                     </TabsTrigger>
                     <TabsTrigger value="sell" className="flex-1">
-                      Sell
+                      {t("sell")}
                     </TabsTrigger>
                   </TabsList>
                 </Tabs>
@@ -119,13 +109,12 @@ export function TransactionForm({
             />
 
             <div className="grid grid-cols-3 gap-4">
-              {/* Quantity：自定义加减按钮 + 原生 number input */}
               <Controller
                 name="quantity"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="min-w-0">
-                    <FieldLabel>Quantity</FieldLabel>
+                    <FieldLabel>{t("quantity")}</FieldLabel>
                     <div className="flex items-center border rounded-md h-8">
                       <button
                         type="button"
@@ -169,14 +158,13 @@ export function TransactionForm({
                 )}
               />
 
-              {/* 交易日期：日历选择器，限制不能选未来日期 */}
               <Controller
                 name="traded_at"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="min-w-0">
                     <FieldLabel>
-                      {currentType === "buy" ? "Purchase Date" : "Sell Date"}
+                      {currentType === "buy" ? t("purchaseDate") : t("sellDate")}
                     </FieldLabel>
                     <Popover>
                       <PopoverTrigger
@@ -186,7 +174,7 @@ export function TransactionForm({
                             className="w-full justify-start"
                           >
                             <CalendarIcon className="w-4 h-4" />
-                            {field.value ? field.value : "Select date"}
+                            {field.value ? field.value : t("selectDate")}
                           </Button>
                         }
                       />
@@ -221,14 +209,13 @@ export function TransactionForm({
                 )}
               />
 
-              {/* 交易价格：step="0.01" 支持小数输入 */}
               <Controller
                 name="price"
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="min-w-0">
                     <FieldLabel>
-                      {currentType === "buy" ? "Purchase Price" : "Sell Price"}
+                      {currentType === "buy" ? t("purchasePrice") : t("sellPrice")}
                     </FieldLabel>
                     <Input
                       type="number"
@@ -255,10 +242,10 @@ export function TransactionForm({
                 variant="ghost"
                 onClick={() => onOpenChange(false)}
               >
-                Cancel
+                {t("cancel")}
               </Button>
               <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "Saving..." : "Save"}
+                {form.formState.isSubmitting ? t("saving") : t("save")}
               </Button>
             </div>
           </FieldGroup>

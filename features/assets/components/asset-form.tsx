@@ -1,11 +1,6 @@
 "use client";
 
-// 资产新增 / 编辑表单（对话框形式）
-//
-// 设计意图：同一个组件同时承担"新增"和"编辑"两种模式，
-// 通过 asset prop 是否存在来区分：有值 = 编辑，无值 = 新增。
-// 这样减少了组件数量，保证了两种模式下 UI 的一致性。
-
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -49,7 +44,7 @@ export function AssetForm({
   onOpenChange,
   onSuccess,
 }: Props) {
-  // 双模式 open 状态：外部传了 open/onOpenChange 就用外部控制，否则自己维护
+  const t = useTranslations("pages.assets.assetForm");
   const {
     open,
     setOpen,
@@ -67,27 +62,26 @@ export function AssetForm({
       {trigger && <DialogTrigger render={trigger as React.ReactElement} />}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEditing ? "Edit Asset" : "Add Asset"}</DialogTitle>
+          <DialogTitle>{isEditing ? t("titleEdit") : t("titleAdd")}</DialogTitle>
         </DialogHeader>
 
         <form onSubmit={onSubmit}>
           <FieldGroup>
             {/* 1. asset_type */}
             <Field data-invalid={!!form.formState.errors.asset_type}>
-              <FieldLabel>Asset Type</FieldLabel>
-              {/* Select 不支持 register()，需要手动 setValue 以接入 react-hook-form */}
+              <FieldLabel>{t("assetType")}</FieldLabel>
               <Select
                 value={currentAssetType ?? ""}
                 onValueChange={handleAssetTypeChange}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select an asset type please" />
+                  <SelectValue placeholder={t("assetTypePlaceholder")} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="stock">Stock</SelectItem>
-                  <SelectItem value="etf">ETF</SelectItem>
-                  <SelectItem value="crypto">Crypto</SelectItem>
-                  <SelectItem value="cash">Cash</SelectItem>
+                  <SelectItem value="stock">{t("typeStock")}</SelectItem>
+                  <SelectItem value="etf">{t("typeEtf")}</SelectItem>
+                  <SelectItem value="crypto">{t("typeCrypto")}</SelectItem>
+                  <SelectItem value="cash">{t("typeCash")}</SelectItem>
                 </SelectContent>
               </Select>
               {form.formState.errors.asset_type && (
@@ -95,17 +89,15 @@ export function AssetForm({
               )}
             </Field>
 
-            {/* 2. if not selected type, show symbol field */}
             {!currentAssetType && (
               <p className="text-sm text-muted-foreground text-center py-2">
-                Please select an asset type
+                {t("selectTypeHint")}
               </p>
             )}
 
-            {/* 3. symbol : Display different input methods based on asset_type */}
             {currentAssetType && currentAssetType !== "cash" && (
               <Field data-invalid={!!form.formState.errors.symbol}>
-                <FieldLabel>Symbol</FieldLabel>
+                <FieldLabel>{t("symbol")}</FieldLabel>
 
                 <SymbolSearch
                   key={asset?.id ?? "new"}
@@ -119,12 +111,11 @@ export function AssetForm({
               </Field>
             )}
 
-            {/* 4. Full Name：只读显示，由搜索结果自动填入，Cash 类型不显示 */}
             {currentAssetType && currentAssetType !== "cash" && (
               <Field>
-                <FieldLabel>Full Name</FieldLabel>
+                <FieldLabel>{t("fullName")}</FieldLabel>
                 <p className="text-sm px-3 py-2 border rounded-md bg-muted/30 text-muted-foreground min-h-9">
-                  {fullname || "Auto-filled after selection"}
+                  {fullname || t("autoFilled")}
                 </p>
               </Field>
             )}
@@ -135,14 +126,14 @@ export function AssetForm({
                 variant="outline"
                 onClick={() => setOpen(false)}
               >
-                Cancel
+                {t("cancel")}
               </Button>
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 {form.formState.isSubmitting
-                  ? "Processing..."
+                  ? t("processing")
                   : asset
-                    ? "Save"
-                    : "Add"}
+                    ? t("save")
+                    : t("add")}
               </Button>
             </div>
           </FieldGroup>

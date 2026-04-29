@@ -1,14 +1,7 @@
 "use client";
 
-// 资产列表表格组件
-//
-// 核心交互：
-//   - 每行可展开，展开后显示该资产的历史交易记录（懒加载）
-//   - 每行右侧提供直接删除按钮和展开/收起按钮
-//
-// 状态管理策略见 hooks/use-asset-table.ts
-
 import { Fragment } from "react";
+import { useTranslations } from "next-intl";
 import {
   Table,
   TableBody,
@@ -52,6 +45,7 @@ function getBadgeVariant(type: string): "default" | "secondary" | "outline" {
 }
 
 export function AssetsTable({ assets }: Props) {
+  const t = useTranslations("pages.assets");
   const {
     expandedId,
     handleExpand,
@@ -75,13 +69,13 @@ export function AssetsTable({ assets }: Props) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Symbol</TableHead>
-              <TableHead>Full Name</TableHead>
-              <TableHead>Type</TableHead>
-              <TableHead>Holding Quantity</TableHead>
-              <TableHead>Holding Price</TableHead>
-              <TableHead>Market Price</TableHead>
-              <TableHead>return %</TableHead>
+              <TableHead>{t("table.symbol")}</TableHead>
+              <TableHead>{t("table.fullName")}</TableHead>
+              <TableHead>{t("table.type")}</TableHead>
+              <TableHead>{t("table.holdingQty")}</TableHead>
+              <TableHead>{t("table.holdingPrice")}</TableHead>
+              <TableHead>{t("table.marketPrice")}</TableHead>
+              <TableHead>{t("table.returnPct")}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -92,7 +86,7 @@ export function AssetsTable({ assets }: Props) {
                   colSpan={7}
                   className="text-center text-muted-foreground"
                 >
-                  No data
+                  {t("noData")}
                 </TableCell>
               </TableRow>
             ) : (
@@ -140,7 +134,7 @@ export function AssetsTable({ assets }: Props) {
                               ? `$${p.toFixed(2)}`
                               : "—";
                           })()
-                        : "Loading..."}
+                        : t("loading")}
                     </TableCell>
                     {/* 收益率：(市场价格 - 均价) / 均价 * 100，正值绿色，负值红色 */}
                     <TableCell>
@@ -216,22 +210,21 @@ export function AssetsTable({ assets }: Props) {
                               {loadingId === asset.id ? (
                                 // 交易记录加载中
                                 <p className="text-sm text-muted-foreground">
-                                  Loading...
+                                  {t("loading")}
                                 </p>
                               ) : transactionsMap[asset.id]?.length === 0 ? (
-                                // 暂无交易记录
                                 <p className="text-sm text-muted-foreground">
-                                  No transactions yet
+                                  {t("table.noTransactions")}
                                 </p>
                               ) : (
                                 // 交易记录列表
                                 <Table>
                                   <TableHeader>
                                     <TableRow>
-                                      <TableHead>Date</TableHead>
-                                      <TableHead>Price</TableHead>
-                                      <TableHead>Quantity</TableHead>
-                                      <TableHead>Type</TableHead>
+                                      <TableHead>{t("table.date")}</TableHead>
+                                      <TableHead>{t("table.price")}</TableHead>
+                                      <TableHead>{t("table.quantity")}</TableHead>
+                                      <TableHead>{t("table.type")}</TableHead>
                                       <TableHead />
                                     </TableRow>
                                   </TableHeader>
@@ -249,7 +242,7 @@ export function AssetsTable({ assets }: Props) {
                                                 : "secondary"
                                             }
                                           >
-                                            {tx.type === "buy" ? "Buy" : "Sell"}
+                                            {tx.type === "buy" ? t("table.buy") : t("table.sell")}
                                           </Badge>
                                         </TableCell>
                                         <TableCell className="text-right">
@@ -279,7 +272,7 @@ export function AssetsTable({ assets }: Props) {
                                 onClick={() => setTransactionOpenId(asset.id)}
                               >
                                 <Plus className="w-3 h-3" />
-                                Record another buy transaction
+                                {t("table.recordTransaction")}
                               </button>
                             </div>
                           </motion.div>
@@ -319,21 +312,20 @@ export function AssetsTable({ assets }: Props) {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Asset</AlertDialogTitle>
+            <AlertDialogTitle>{t("table.deleteAsset")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete the asset and all its transaction
-              history. This action cannot be undone.
+              {t("table.deleteAssetDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel variant="outline" size="default">
-              Cancel
+              {t("table.cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={confirmDeleteAsset}
             >
-              Delete
+              {t("table.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>
@@ -348,21 +340,20 @@ export function AssetsTable({ assets }: Props) {
       >
         <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle>Delete Transaction</AlertDialogTitle>
+            <AlertDialogTitle>{t("table.deleteTransaction")}</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete this transaction record. This action
-              cannot be undone.
+              {t("table.deleteTransactionDesc")}
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel variant="outline" size="default">
-              Cancel
+              {t("table.cancel")}
             </AlertDialogCancel>
             <AlertDialogAction
               variant="destructive"
               onClick={confirmDeleteTransaction}
             >
-              Delete
+              {t("table.delete")}
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

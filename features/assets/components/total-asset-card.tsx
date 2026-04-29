@@ -1,8 +1,6 @@
 "use client";
 
-// 这个组件用于显示总资产、今日资产、总资产收益率、今日资产收益率的卡片
-// 它接收一个资产数组作为 props，计算并显示总资产、今日资产、总资产收益率、今日资产收益率
-// MotionUI库用于实现资产卡片的动画效果
+import { useTranslations } from "next-intl";
 import { useAssetReturn } from "@/features/assets/hooks/use-total-asset-card";
 import type { Asset } from "@/types/global";
 import { Wallet } from "lucide-react";
@@ -11,6 +9,7 @@ import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 type Props = { assets: Asset[] };
 
 export function TotalAssetCard({ assets }: Props) {
+  const t = useTranslations("pages.assets");
   const {
     totalValue,
     totalReturn,
@@ -76,7 +75,7 @@ export function TotalAssetCard({ assets }: Props) {
           <Wallet className="h-4 w-4" />
         </span>
         <span className="text-sm font-semibold tracking-tight">
-          Portfolio Summary
+          {t("portfolioSummary")}
         </span>
       </div>
 
@@ -85,7 +84,7 @@ export function TotalAssetCard({ assets }: Props) {
         <div className="flex-1 flex justify-center w-full sm:w-auto">
           <div>
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-0.5">
-              Total Assets
+              {t("totalAssets")}
             </p>
             <motion.div className="text-2xl sm:text-3xl font-bold tabular-nums">
               {displayValue}
@@ -100,7 +99,7 @@ export function TotalAssetCard({ assets }: Props) {
         <div className="flex-1 flex justify-center w-full sm:w-auto">
           <div className="text-center">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-0.5">
-              Today Return
+              {t("todayReturn")}
             </p>
             <motion.div
               className={`text-lg sm:text-xl font-bold tabular-nums ${todayColor}`}
@@ -120,7 +119,7 @@ export function TotalAssetCard({ assets }: Props) {
         <div className="flex-1 flex justify-center w-full sm:w-auto">
           <div className="text-center sm:text-right">
             <p className="text-[10px] text-muted-foreground uppercase tracking-wide mb-0.5">
-              Total Return
+              {t("totalReturn")}
             </p>
             <motion.div
               className={`text-lg sm:text-xl font-bold tabular-nums ${returnColor}`}

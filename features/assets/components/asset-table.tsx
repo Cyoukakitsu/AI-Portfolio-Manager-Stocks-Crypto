@@ -76,6 +76,7 @@ export function AssetsTable({ assets }: Props) {
               <TableHead>{t("table.holdingPrice")}</TableHead>
               <TableHead>{t("table.marketPrice")}</TableHead>
               <TableHead>{t("table.returnPct")}</TableHead>
+              <TableHead />
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -83,7 +84,7 @@ export function AssetsTable({ assets }: Props) {
               // 空状态：无资产时显示占位提示
               <TableRow>
                 <TableCell
-                  colSpan={7}
+                  colSpan={8}
                   className="text-center text-muted-foreground"
                 >
                   {t("noData")}
@@ -195,7 +196,7 @@ export function AssetsTable({ assets }: Props) {
                   <AnimatePresence>
                     {expandedId === asset.id && (
                       <TableRow key={`${asset.id}-expanded`}>
-                        <TableCell colSpan={7} className="p-0">
+                        <TableCell colSpan={8} className="p-0">
                           <motion.div
                             initial={{ height: 0, opacity: 0 }}
                             animate={{ height: "auto", opacity: 1 }}
@@ -217,53 +218,73 @@ export function AssetsTable({ assets }: Props) {
                                   {t("table.noTransactions")}
                                 </p>
                               ) : (
-                                // 交易记录列表
-                                <Table>
-                                  <TableHeader>
-                                    <TableRow>
-                                      <TableHead>{t("table.date")}</TableHead>
-                                      <TableHead>{t("table.price")}</TableHead>
-                                      <TableHead>{t("table.quantity")}</TableHead>
-                                      <TableHead>{t("table.type")}</TableHead>
-                                      <TableHead />
-                                    </TableRow>
-                                  </TableHeader>
-                                  <TableBody>
-                                    {transactionsMap[asset.id]?.map((tx) => (
-                                      <TableRow key={tx.id}>
-                                        <TableCell>{tx.traded_at}</TableCell>
-                                        <TableCell>${tx.price}</TableCell>
-                                        <TableCell>{tx.quantity}</TableCell>
-                                        <TableCell>
-                                          <Badge
-                                            variant={
-                                              tx.type === "buy"
-                                                ? "default"
-                                                : "secondary"
-                                            }
-                                          >
-                                            {tx.type === "buy" ? t("table.buy") : t("table.sell")}
-                                          </Badge>
-                                        </TableCell>
-                                        <TableCell className="text-right">
-                                          <Button
-                                            variant="ghost"
-                                            size="icon"
-                                            className="text-destructive hover:text-destructive"
-                                            onClick={() =>
-                                              setDeletingTx({
-                                                id: tx.id,
-                                                assetId: asset.id,
-                                              })
-                                            }
-                                          >
-                                            <Trash2 className="w-4 h-4" />
-                                          </Button>
-                                        </TableCell>
+                                <div className="overflow-x-auto">
+                                  <Table className="table-fixed w-full">
+                                    <colgroup>
+                                      <col className="w-32" />
+                                      <col className="w-28" />
+                                      <col className="w-24" />
+                                      <col className="w-20" />
+                                      <col className="w-10" />
+                                    </colgroup>
+                                    <TableHeader>
+                                      <TableRow>
+                                        <TableHead>{t("table.date")}</TableHead>
+                                        <TableHead>
+                                          {t("table.price")}
+                                        </TableHead>
+                                        <TableHead>
+                                          {t("table.quantity")}
+                                        </TableHead>
+                                        <TableHead>{t("table.type")}</TableHead>
+                                        <TableHead />
                                       </TableRow>
-                                    ))}
-                                  </TableBody>
-                                </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                      {transactionsMap[asset.id]?.map((tx) => (
+                                        <TableRow key={tx.id}>
+                                          <TableCell className="text-sm">
+                                            {tx.traded_at}
+                                          </TableCell>
+                                          <TableCell className="text-sm">
+                                            ${tx.price}
+                                          </TableCell>
+                                          <TableCell className="text-sm">
+                                            {tx.quantity}
+                                          </TableCell>
+                                          <TableCell>
+                                            <Badge
+                                              variant={
+                                                tx.type === "buy"
+                                                  ? "default"
+                                                  : "secondary"
+                                              }
+                                            >
+                                              {tx.type === "buy"
+                                                ? t("table.buy")
+                                                : t("table.sell")}
+                                            </Badge>
+                                          </TableCell>
+                                          <TableCell className="text-right">
+                                            <Button
+                                              variant="ghost"
+                                              size="icon"
+                                              className="text-destructive hover:text-destructive"
+                                              onClick={() =>
+                                                setDeletingTx({
+                                                  id: tx.id,
+                                                  assetId: asset.id,
+                                                })
+                                              }
+                                            >
+                                              <Trash2 className="w-4 h-4" />
+                                            </Button>
+                                          </TableCell>
+                                        </TableRow>
+                                      ))}
+                                    </TableBody>
+                                  </Table>
+                                </div>
                               )}
 
                               {/* 新增交易按钮，点击后打开 TransactionForm Dialog */}

@@ -11,7 +11,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@/components/ui/input-group";
-import { CaretDownIcon, XIcon, CheckIcon } from "@phosphor-icons/react";
+import { CaretDown, X, Check } from "@phosphor-icons/react";
 
 const Combobox = ComboboxPrimitive.Root;
 
@@ -31,7 +31,7 @@ function ComboboxTrigger({
       {...props}
     >
       {children}
-      <CaretDownIcon className="text-muted-foreground size-4 pointer-events-none" />
+      <CaretDown className="text-muted-foreground size-4 pointer-events-none" />
     </ComboboxPrimitive.Trigger>
   );
 }
@@ -44,7 +44,7 @@ function ComboboxClear({ className, ...props }: ComboboxPrimitive.Clear.Props) {
       className={cn(className)}
       {...props}
     >
-      <XIcon className="pointer-events-none" />
+      <X className="pointer-events-none" />
     </ComboboxPrimitive.Clear>
   );
 }
@@ -154,7 +154,7 @@ function ComboboxItem({
           <span className="pointer-events-none absolute right-2 flex size-4 items-center justify-center" />
         }
       >
-        <CheckIcon className="pointer-events-none" />
+        <Check className="pointer-events-none" />
       </ComboboxPrimitive.ItemIndicator>
     </ComboboxPrimitive.Item>
   );
@@ -256,7 +256,7 @@ function ComboboxChip({
           className="-ml-1 opacity-50 hover:opacity-100"
           data-slot="combobox-chip-remove"
         >
-          <XIcon className="pointer-events-none" />
+          <X className="pointer-events-none" />
         </ComboboxPrimitive.ChipRemove>
       )}
     </ComboboxPrimitive.Chip>

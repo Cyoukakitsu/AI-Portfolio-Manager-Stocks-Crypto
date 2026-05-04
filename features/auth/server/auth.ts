@@ -3,10 +3,10 @@
 // Server Actions：处理注册 / 登录逻辑
 //参考https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs
 
+import { z } from "zod";
 import { signInSchema } from "@/features/auth/schemas/sign-in";
 import { signUpSchema } from "@/features/auth/schemas/sign-up";
 import { forgotPasswordSchema } from "@/features/auth/schemas/forgot-password";
-import { resetPasswordSchema } from "@/features/auth/schemas/reset-password";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -113,14 +113,11 @@ export async function resetPasswordEmail(email: unknown) {
 }
 
 export async function updatePassword(newPassword: unknown) {
-  const result = resetPasswordSchema.safeParse({
-    password: newPassword,
-    confirmPassword: newPassword,
-  });
+  const result = z.string().min(6, "Password must be at least 6 characters").safeParse(newPassword);
   if (!result.success) return { error: "Password too short" };
 
   const supabase = await createClient();
-  const { error } = await supabase.auth.updateUser({ password: result.data.password });
+  const { error } = await supabase.auth.updateUser({ password: result.data });
   if (error) return { error: "Update failed." };
   return { success: true };
 }

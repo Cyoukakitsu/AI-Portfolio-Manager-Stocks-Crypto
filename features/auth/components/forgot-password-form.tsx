@@ -39,13 +39,9 @@ const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
   });
 
   const onSubmit = async (data: ForgotPasswordFormValues) => {
-    const result = await resetPasswordEmail(data.email);
-    if (result?.error) {
-      toast.error(t("errorToast"));
-    } else {
-      toast.success(t("successToast"));
-      onBack();
-    }
+    await resetPasswordEmail(data.email);
+    toast.success(t("successToast"));
+    onBack();
   };
 
   return (

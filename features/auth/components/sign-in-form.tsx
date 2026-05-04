@@ -7,6 +7,7 @@
 //   1. 客户端：Zod 实时校验，给出即时错误提示
 //   2. 服务端 Server Action 中：二次校验，防止绕过前端直接请求
 
+import { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "motion/react";
@@ -14,6 +15,7 @@ import { useTranslations } from "next-intl";
 
 import { signInSchema, SignInFormValues } from "@/features/auth/schemas/sign-in";
 import GoogleButton from "./google-button";
+import ForgotPasswordForm from "./forgot-password-form";
 import { signIn } from "@/features/auth/server/auth";
 import { Link } from "@/i18n/navigation";
 
@@ -32,6 +34,7 @@ const fieldVariants = {
 
 const SignInForm = () => {
   const t = useTranslations("auth.signIn");
+  const [view, setView] = useState<"signIn" | "forgotPassword">("signIn");
   const {
     register,
     handleSubmit,
@@ -67,120 +70,138 @@ const SignInForm = () => {
         />
 
         <div className="px-7 py-8">
-          {/* Header */}
-          <div className="mb-8">
-            <h2 className="text-xl font-semibold text-card-foreground tracking-tight">
-              {t("title")}
-            </h2>
-            <p className="text-sm text-muted-foreground mt-1">
-              {t("subtitle")}
-            </p>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <motion.div
-              variants={{
-                hidden: { opacity: 0 },
-                show: { opacity: 1, transition: { staggerChildren: 0.08 } },
-              }}
-              initial="hidden"
-              animate="show"
-              className="space-y-5"
-            >
-              {/* Email */}
-              <motion.div variants={fieldVariants} className="space-y-1.5">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium text-foreground"
-                >
-                  {t("email")}
-                </label>
-                <Input
-                  {...register("email")}
-                  id="email"
-                  type="email"
-                  placeholder="fujimoto@example.com"
-                />
-                <AnimatePresence>
-                  {errors.email && (
-                    <motion.p
-                      key="email-error"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="text-xs text-destructive overflow-hidden"
-                    >
-                      {errors.email.message}
-                    </motion.p>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-
-              {/* Password */}
-              <motion.div variants={fieldVariants} className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <label
-                    htmlFor="password"
-                    className="block text-sm font-medium text-foreground"
-                  >
-                    {t("password")}
-                  </label>
-                  <a
-                    href="#"
-                    className="text-xs text-primary hover:text-primary/80 transition-colors cursor-pointer"
-                  >
-                    {t("forgotPassword")}
-                  </a>
-                </div>
-                <Input
-                  {...register("password")}
-                  id="password"
-                  type="password"
-                />
-                <AnimatePresence>
-                  {errors.password && (
-                    <motion.p
-                      key="password-error"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: "auto" }}
-                      exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.2 }}
-                      className="text-xs text-destructive overflow-hidden"
-                    >
-                      {errors.password.message}
-                    </motion.p>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-
-              {/* Buttons */}
-              <motion.div variants={fieldVariants} className="space-y-3 pt-1">
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full cursor-pointer"
-                >
-                  {isSubmitting ? t("signingIn") : t("submit")}
-                </Button>
-                <GoogleButton />
-              </motion.div>
-
-              {/* Footer link */}
-              <motion.p
-                variants={fieldVariants}
-                className="text-center text-sm text-muted-foreground"
+          <AnimatePresence mode="wait">
+            {view === "forgotPassword" ? (
+              <ForgotPasswordForm
+                key="forgot"
+                onBack={() => setView("signIn")}
+              />
+            ) : (
+              <motion.div
+                key="sign-in"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3, ease: "easeOut" }}
               >
-                {t("noAccount")}{" "}
-                <Link
-                  href="/sign-up"
-                  className="text-primary hover:text-primary/80 transition-colors"
-                >
-                  {t("signUp")}
-                </Link>
-              </motion.p>
-            </motion.div>
-          </form>
+                {/* Header */}
+                <div className="mb-8">
+                  <h2 className="text-xl font-semibold text-card-foreground tracking-tight">
+                    {t("title")}
+                  </h2>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {t("subtitle")}
+                  </p>
+                </div>
+
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <motion.div
+                    variants={{
+                      hidden: { opacity: 0 },
+                      show: { opacity: 1, transition: { staggerChildren: 0.08 } },
+                    }}
+                    initial="hidden"
+                    animate="show"
+                    className="space-y-5"
+                  >
+                    {/* Email */}
+                    <motion.div variants={fieldVariants} className="space-y-1.5">
+                      <label
+                        htmlFor="email"
+                        className="block text-sm font-medium text-foreground"
+                      >
+                        {t("email")}
+                      </label>
+                      <Input
+                        {...register("email")}
+                        id="email"
+                        type="email"
+                        placeholder="fujimoto@example.com"
+                      />
+                      <AnimatePresence>
+                        {errors.email && (
+                          <motion.p
+                            key="email-error"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="text-xs text-destructive overflow-hidden"
+                          >
+                            {errors.email.message}
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+
+                    {/* Password */}
+                    <motion.div variants={fieldVariants} className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <label
+                          htmlFor="password"
+                          className="block text-sm font-medium text-foreground"
+                        >
+                          {t("password")}
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => setView("forgotPassword")}
+                          className="text-xs text-primary hover:text-primary/80 transition-colors cursor-pointer"
+                        >
+                          {t("forgotPassword")}
+                        </button>
+                      </div>
+                      <Input
+                        {...register("password")}
+                        id="password"
+                        type="password"
+                      />
+                      <AnimatePresence>
+                        {errors.password && (
+                          <motion.p
+                            key="password-error"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="text-xs text-destructive overflow-hidden"
+                          >
+                            {errors.password.message}
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
+                    </motion.div>
+
+                    {/* Buttons */}
+                    <motion.div variants={fieldVariants} className="space-y-3 pt-1">
+                      <Button
+                        type="submit"
+                        disabled={isSubmitting}
+                        className="w-full cursor-pointer"
+                      >
+                        {isSubmitting ? t("signingIn") : t("submit")}
+                      </Button>
+                      <GoogleButton />
+                    </motion.div>
+
+                    {/* Footer link */}
+                    <motion.p
+                      variants={fieldVariants}
+                      className="text-center text-sm text-muted-foreground"
+                    >
+                      {t("noAccount")}{" "}
+                      <Link
+                        href="/sign-up"
+                        className="text-primary hover:text-primary/80 transition-colors"
+                      >
+                        {t("signUp")}
+                      </Link>
+                    </motion.p>
+                  </motion.div>
+                </form>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
       </div>
     </motion.div>

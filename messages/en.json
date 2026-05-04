@@ -72,6 +72,26 @@
       "hasAccount": "Already have an account?",
       "signIn": "Sign in"
     },
+    "forgotPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your registered email address",
+      "email": "Email Address",
+      "submit": "Send Reset Email",
+      "sending": "Sending…",
+      "successToast": "Email sent. Please check your inbox.",
+      "errorToast": "Failed to send email. Please try again.",
+      "backToSignIn": "Back to Sign In"
+    },
+    "resetPassword": {
+      "title": "Set New Password",
+      "subtitle": "Enter your new password",
+      "newPassword": "New Password",
+      "confirmPassword": "Confirm Password",
+      "submit": "Update Password",
+      "updating": "Updating…",
+      "successToast": "Password updated successfully.",
+      "errorToast": "Update failed. Please try again."
+    },
     "layout": {
       "headline": "Your AI-Powered",
       "headlineAccent": "Portfolio Command Center",

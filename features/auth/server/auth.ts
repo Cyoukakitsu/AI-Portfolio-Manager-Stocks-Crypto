@@ -3,8 +3,10 @@
 // Server Actions：处理注册 / 登录逻辑
 //参考https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs
 
+import { z } from "zod";
 import { signInSchema } from "@/features/auth/schemas/sign-in";
 import { signUpSchema } from "@/features/auth/schemas/sign-up";
+import { forgotPasswordSchema } from "@/features/auth/schemas/forgot-password";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -94,5 +96,28 @@ export async function changePassword(currentPassword: string, newPassword: strin
   if (error) {
     return { errorCode: "updateFailed" };
   }
+  return { success: true };
+}
+
+export async function resetPasswordEmail(email: unknown) {
+  const result = forgotPasswordSchema.safeParse({ email });
+  if (!result.success) return { error: "Invalid email" };
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(result.data.email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/ja/reset-password`,
+  });
+
+  if (error) return { error: "Failed to send reset email." };
+  return { success: true };
+}
+
+export async function updatePassword(newPassword: unknown) {
+  const result = z.string().min(6, "Password must be at least 6 characters").safeParse(newPassword);
+  if (!result.success) return { error: "Password too short" };
+
+  const supabase = await createClient();
+  const { error } = await supabase.auth.updateUser({ password: result.data });
+  if (error) return { error: "Update failed." };
   return { success: true };
 }

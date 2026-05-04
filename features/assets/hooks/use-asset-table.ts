@@ -45,6 +45,9 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
     queryFn: async () => {
       const entries = await Promise.all(
         assets.map(async (asset) => {
+          if (asset.asset_type === "cash") {
+            return [asset.symbol, { price: null, prevClose: null }];
+          }
           try {
             const res = await fetch(
               `/api/yahoofinance/quote?symbol=${asset.symbol}`,

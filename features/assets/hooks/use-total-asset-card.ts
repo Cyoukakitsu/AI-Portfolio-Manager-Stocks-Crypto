@@ -19,6 +19,9 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
     queryFn: async () => {
       const entries = await Promise.all(
         assets.map(async (asset) => {
+          if (asset.asset_type === "cash") {
+            return [asset.symbol, { price: null, prevClose: null }];
+          }
           try {
             const res = await fetch(
               `/api/yahoofinance/quote?symbol=${asset.symbol}`,
@@ -40,6 +43,7 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
 
   // 总市值
   const totalValue = assets.reduce((acc, asset) => {
+    if (asset.asset_type === "cash") return acc + asset.total_cost;
     const price = quotes[asset.symbol]?.price;
     if (price != null && price > 0) {
       return acc + price * asset.total_quantity;
@@ -64,8 +68,9 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
     return acc;
   }, 0);
 
-  // 前一日资产市值
+  // 前一日资产市值（现金价值不变，前日 = 当日 total_cost）
   const yesterdayValue = assets.reduce((acc, asset) => {
+    if (asset.asset_type === "cash") return acc + asset.total_cost;
     const prev = quotes[asset.symbol]?.prevClose;
     if (prev != null && prev > 0) return acc + prev * asset.total_quantity;
     return acc;

@@ -72,6 +72,26 @@
       "hasAccount": "すでにアカウントをお持ちの方は",
       "signIn": "サインイン"
     },
+    "forgotPassword": {
+      "title": "パスワードをリセット",
+      "subtitle": "登録済みのメールアドレスを入力してください",
+      "email": "メールアドレス",
+      "submit": "リセットメールを送信",
+      "sending": "送信中…",
+      "successToast": "メールを送信しました。受信トレイを確認してください。",
+      "errorToast": "メールの送信に失敗しました。再度お試しください。",
+      "backToSignIn": "サインインに戻る"
+    },
+    "resetPassword": {
+      "title": "新しいパスワードを設定",
+      "subtitle": "新しいパスワードを入力してください",
+      "newPassword": "新しいパスワード",
+      "confirmPassword": "パスワード（確認）",
+      "submit": "パスワードを更新",
+      "updating": "更新中…",
+      "successToast": "パスワードを更新しました。",
+      "errorToast": "更新に失敗しました。再度お試しください。"
+    },
     "layout": {
       "headline": "AIが支える",
       "headlineAccent": "ポートフォリオ管理センター",

@@ -53,6 +53,7 @@ export async function updateSession(request: NextRequest) {
     !isLocaleRoot &&
     !pathname.includes("/sign-in") &&
     !pathname.includes("/sign-up") &&
+    !pathname.includes("/reset-password") &&
     !pathname.startsWith("/auth/")
   ) {
     const url = request.nextUrl.clone();

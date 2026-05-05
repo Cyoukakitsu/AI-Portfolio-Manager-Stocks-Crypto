@@ -99,13 +99,13 @@ export async function changePassword(currentPassword: string, newPassword: strin
   return { success: true };
 }
 
-export async function resetPasswordEmail(email: unknown) {
+export async function resetPasswordEmail(email: unknown, locale: string = "ja") {
   const result = forgotPasswordSchema.safeParse({ email });
   if (!result.success) return { error: "Invalid email" };
 
   const supabase = await createClient();
   const { error } = await supabase.auth.resetPasswordForEmail(result.data.email, {
-    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/ja/reset-password`,
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback?next=/${locale}/reset-password`,
   });
 
   if (error) return { error: "Failed to send reset email." };

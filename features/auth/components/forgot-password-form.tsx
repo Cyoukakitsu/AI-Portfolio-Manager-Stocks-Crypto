@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "motion/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 
 import {
@@ -29,6 +29,7 @@ interface ForgotPasswordFormProps {
 
 const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
   const t = useTranslations("auth.forgotPassword");
+  const locale = useLocale();
   const {
     register,
     handleSubmit,
@@ -39,7 +40,7 @@ const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
   });
 
   const onSubmit = async (data: ForgotPasswordFormValues) => {
-    await resetPasswordEmail(data.email);
+    await resetPasswordEmail(data.email, locale);
     toast.success(t("successToast"));
     onBack();
   };

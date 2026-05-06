@@ -1,10 +1,8 @@
 "use client";
 
 import Script from "next/script";
-import { useWidgetColors } from "@/features/crypto/hooks/use-widget-colors";
 
 export default function CoinCompareChart() {
-  const { bg, fg } = useWidgetColors();
   return (
     <>
       <Script
@@ -19,8 +17,8 @@ export default function CoinCompareChart() {
           coin-ids="bitcoin"
           currency="usd"
           height="520"
-          background-color={bg}
-          font-color={fg}
+          background-color="#ffffff"
+          font-color="#09090b"
           positive-color="#16a34a"
           negative-color="#dc2626"
           style={{ display: "block", width: "100%" }}

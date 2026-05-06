@@ -16,7 +16,6 @@ function TopStories() {
         <a href="https://www.tradingview.com/news/top-providers/tradingview/" rel="noopener nofollow" target="_blank">
           <span class="blue-text">Top stories</span>
         </a>
-        <span class="trademark"> by TradingView</span>
       </div>
     `;
 

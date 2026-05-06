@@ -9,16 +9,7 @@ function MarketDataStocks() {
     const widgetContainer = container.current;
     if (!widgetContainer) return;
 
-    // 清空所有内容
-    widgetContainer.innerHTML = `
-      <div class="tradingview-widget-container__widget"></div>
-      <div class="tradingview-widget-copyright">
-        <a href="https://www.tradingview.com/markets/?utm_source=www.tradingview.com&utm_medium=widget_new&utm_campaign=market-quotes" rel="noopener nofollow" target="_blank">
-          <span class="blue-text">Market summary</span>
-        </a>
-        <span class="trademark"> by TradingView</span>
-      </div>
-    `;
+    widgetContainer.innerHTML = `<div class="tradingview-widget-container__widget"></div>`;
 
     const script = document.createElement("script");
     script.src =

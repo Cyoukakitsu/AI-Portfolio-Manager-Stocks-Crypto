@@ -10,18 +10,7 @@ function AdvancedChart() {
     const widgetContainer = container.current;
     if (!widgetContainer) return;
 
-    widgetContainer.innerHTML = `
-      <div class="tradingview-widget-container__widget"></div>
-      <div class="tradingview-widget-copyright">
-        <a
-          href="https://www.tradingview.com/symbols/VANTAGE-SP500/"
-          rel="noopener nofollow"
-          target="_blank"
-        >
-        <span class="blue-text">AAPL stock chart</span>
-        </a>
-        <span class="trademark"> by TradingView</span>
-      </div>`;
+    widgetContainer.innerHTML = `<div class="tradingview-widget-container__widget"></div>`;
 
     const script = document.createElement("script");
     script.src =

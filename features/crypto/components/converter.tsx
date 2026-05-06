@@ -1,10 +1,8 @@
 "use client";
 
 import Script from "next/script";
-import { useWidgetColors } from "@/features/crypto/hooks/use-widget-colors";
 
 export default function Converter() {
-  const { bg, fg } = useWidgetColors();
   return (
     <>
       <Script
@@ -18,8 +16,8 @@ export default function Converter() {
           outlined="false"
           coin-id="bitcoin"
           currency="usd"
-          background-color={bg}
-          font-color={fg}
+          background-color="#ffffff"
+          font-color="#09090b"
           positive-color="#16a34a"
           negative-color="#dc2626"
           style={{ display: "block", width: "100%" }}

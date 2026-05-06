@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 
 export default function CryptoHeatmap() {
   const container = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+  const colorTheme = resolvedTheme === "dark" ? "dark" : "light";
 
   useEffect(() => {
     const widgetContainer = container.current;
@@ -15,7 +18,6 @@ export default function CryptoHeatmap() {
         <a href="https://www.tradingview.com/heatmap/crypto/" rel="noopener nofollow" target="_blank">
           <span class="blue-text">Crypto Heatmap</span>
         </a>
-        <span class="trademark"> by TradingView</span>
       </div>`;
 
     const script = document.createElement("script");
@@ -23,29 +25,28 @@ export default function CryptoHeatmap() {
       "https://s3.tradingview.com/external-embedding/embed-widget-crypto-coins-heatmap.js";
     script.type = "text/javascript";
     script.async = true;
-    script.innerHTML = `
-      {
-        "dataSource": "Crypto",
-        "blockSize": "market_cap_calc",
-        "blockColor": "24h_close_change|5",
-        "locale": "en",
-        "symbolUrl": "",
-        "colorTheme": "light",
-        "hasTopBar": false,
-        "isDataSetEnabled": false,
-        "isZoomEnabled": true,
-        "hasSymbolTooltip": true,
-        "isMonoSize": false,
-        "width": "100%",
-        "height": "100%"
-      }`;
+    script.innerHTML = JSON.stringify({
+      dataSource: "Crypto",
+      blockSize: "market_cap_calc",
+      blockColor: "24h_close_change|5",
+      locale: "en",
+      symbolUrl: "",
+      colorTheme,
+      hasTopBar: false,
+      isDataSetEnabled: false,
+      isZoomEnabled: true,
+      hasSymbolTooltip: true,
+      isMonoSize: false,
+      width: "100%",
+      height: "100%",
+    });
 
     widgetContainer.appendChild(script);
 
     return () => {
       widgetContainer.innerHTML = "";
     };
-  }, []);
+  }, [colorTheme]);
 
   return (
     <div

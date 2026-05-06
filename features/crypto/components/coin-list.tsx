@@ -1,10 +1,8 @@
 "use client";
 
 import Script from "next/script";
-import { useWidgetColors } from "@/features/crypto/hooks/use-widget-colors";
 
 export default function CoinList() {
-  const { bg, fg } = useWidgetColors();
   return (
     <>
       <Script
@@ -18,8 +16,8 @@ export default function CoinList() {
           outlined="false"
           coin-ids="bitcoin,ethereum,solana,dogecoin,ripple,cardano,polkadot,avalanche-2,chainlink,uniswap,shiba-inu,litecoin"
           currency="usd"
-          background-color={bg}
-          font-color={fg}
+          background-color="#ffffff"
+          font-color="#09090b"
           positive-color="#16a34a"
           negative-color="#dc2626"
           style={{ display: "block", width: "100%" }}

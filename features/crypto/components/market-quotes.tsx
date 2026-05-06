@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 
 export default function MarketQuotes() {
   const container = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+  const colorTheme = resolvedTheme === "dark" ? "dark" : "light";
 
   useEffect(() => {
     const widgetContainer = container.current;
@@ -15,7 +18,7 @@ export default function MarketQuotes() {
         <a href="https://www.tradingview.com/markets/?utm_source=www.tradingview.com&utm_medium=widget_new&utm_campaign=market-quotes" rel="noopener nofollow" target="_blank">
           <span class="blue-text">Market summary</span>
         </a>
-        <span class="trademark"> by TradingView</span>
+
       </div>`;
 
     const script = document.createElement("script");
@@ -87,7 +90,7 @@ export default function MarketQuotes() {
           ],
         },
       ],
-      colorTheme: "light",
+      colorTheme,
     });
 
     widgetContainer.appendChild(script);
@@ -95,7 +98,7 @@ export default function MarketQuotes() {
     return () => {
       widgetContainer.innerHTML = "";
     };
-  }, []);
+  }, [colorTheme]);
 
   return (
     <div

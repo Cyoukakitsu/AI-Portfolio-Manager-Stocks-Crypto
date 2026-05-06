@@ -82,13 +82,13 @@ export default async function CryptoPage() {
       </div>
 
       {/* ── Row 3 — Converter + Coin List ── */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 min-w-0">
         <WidgetCard
           icon={ArrowLeftRight}
           title={t("converter")}
           badge="BTC / USD"
           accent="primary"
-          className="lg:col-span-2"
+          className="lg:col-span-1"
           contentClassName="overflow-visible"
         >
           <Converter />
@@ -99,7 +99,7 @@ export default async function CryptoPage() {
           title={t("topCoins")}
           badge="12 Assets"
           accent="primary"
-          className="lg:col-span-1"
+          className="lg:col-span-2"
           contentClassName="overflow-visible"
         >
           <CoinList />

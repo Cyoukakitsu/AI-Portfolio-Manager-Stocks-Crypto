@@ -1,9 +1,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 
 export default function MarketOverview() {
   const container = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+  const colorTheme = resolvedTheme === "dark" ? "dark" : "light";
 
   useEffect(() => {
     const widgetContainer = container.current;
@@ -15,7 +18,6 @@ export default function MarketOverview() {
         <a href="https://www.tradingview.com/markets/?utm_source=www.tradingview.com&utm_medium=widget_new&utm_campaign=market-overview" rel="noopener nofollow" target="_blank">
           <span class="blue-text">World markets</span>
         </a>
-        <span class="trademark"> by TradingView</span>
       </div>`;
 
     const script = document.createElement("script");
@@ -123,7 +125,7 @@ export default function MarketOverview() {
       scaleFontColor: "rgba(120, 123, 134, 1)",
       showSymbolLogo: true,
       symbolActiveColor: "rgba(41, 98, 255, 0.12)",
-      colorTheme: "light",
+      colorTheme,
     });
 
     widgetContainer.appendChild(script);
@@ -131,7 +133,7 @@ export default function MarketOverview() {
     return () => {
       widgetContainer.innerHTML = "";
     };
-  }, []);
+  }, [colorTheme]);
 
   return (
     <div

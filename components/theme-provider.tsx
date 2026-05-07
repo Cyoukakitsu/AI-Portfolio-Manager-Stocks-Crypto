@@ -1,3 +1,5 @@
+// Theme Provider 组件，用于管理 Next.js 的主题
+
 "use client";
 
 import * as React from "react";

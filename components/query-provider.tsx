@@ -1,3 +1,5 @@
+// React Query Provider 组件，用于管理 React Query 的状态
+
 "use client";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

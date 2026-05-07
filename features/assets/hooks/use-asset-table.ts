@@ -9,7 +9,10 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { deleteAsset } from "@/features/assets/server/assets";
-import { deleteTransaction, getTransactions } from "@/features/assets/server/transactions";
+import {
+  deleteTransaction,
+  getTransactions,
+} from "@/features/assets/server/transactions";
 import type { Asset, Transaction } from "@/types/global";
 
 type UseAssetsTableParams = {
@@ -40,7 +43,9 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
   } | null>(null);
   // 各资产的当前价格，与 use-total-asset-card 使用相同的 queryKey 共享缓存，不重复请求
   const symbolsKey = assets.map((a) => a.symbol).join(",");
-  const { data: quotesData = {} } = useQuery<Record<string, { price: number | null }>>({
+  const { data: quotesData = {} } = useQuery<
+    Record<string, { price: number | null }>
+  >({
     queryKey: ["quotes", symbolsKey],
     queryFn: async () => {
       const entries = await Promise.all(
@@ -53,7 +58,10 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
               `/api/yahoofinance/quote?symbol=${asset.symbol}`,
             );
             const data = await res.json();
-            return [asset.symbol, { price: data.price ?? null, prevClose: data.prevClose ?? null }];
+            return [
+              asset.symbol,
+              { price: data.price ?? null, prevClose: data.prevClose ?? null },
+            ];
           } catch {
             return [asset.symbol, { price: null, prevClose: null }];
           }
@@ -62,9 +70,9 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
       return Object.fromEntries(entries);
     },
     enabled: assets.length > 0,
-    staleTime: 60 * 1000,
-    gcTime: 5 * 60 * 1000,
-    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000, // 缓存 1 分钟，不会重新发起请求，直接使用缓存数据
+    gcTime: 5 * 60 * 1000, // 在内存中保留 5 分钟，超过 5 分钟的缓存数据将被清除
+    placeholderData: keepPreviousData, // 重新获取时保持旧数据，避免闪烁为空
   });
   const currentPrices: Record<string, number | null> = Object.fromEntries(
     Object.entries(quotesData).map(([symbol, q]) => [symbol, q.price]),

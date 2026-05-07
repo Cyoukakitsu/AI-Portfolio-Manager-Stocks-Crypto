@@ -1,5 +1,4 @@
-// SymbolSearch コンポーネントのロジック Hook
-// 職責：検索クエリ管理、デバウンス、Yahoo Finance 検索 API 呼び出し
+// 股票/加密货币/ETF 搜索栏组件，支持实时搜索下拉和 AI 分析提交
 
 import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
@@ -17,17 +16,19 @@ type Params = {
 
 export function useSymbolSearch({ defaultValue = "", onSelect }: Params) {
   const [query, setQuery] = useState(defaultValue);
-  // 防抖后的 query，只用于触发请求，与输入框值解耦
+  // query 是输入框绑定的值，用户每敲一个字就更新一次。
   const [debouncedQuery, setDebouncedQuery] = useState(defaultValue);
-  // 选中后跳过下一次 debounce，防止 dropdown 重新弹出
+  // debouncedQuery 是真正触发 API 请求的值，不跟输入框实时同步，而是延迟更新，避免每敲一个字就发一次请求
   const skipNextDebounce = useRef(false);
+  // 一个布尔标记。useRef 的特点是改变它不会触发重新渲染，用来做"内部信号传递"。这里用于告诉 debounce effect："下次别执行"。
 
-  // 防抖：空字符串立即清除（0ms），有内容时延迟 400ms
   useEffect(() => {
     if (skipNextDebounce.current) {
       skipNextDebounce.current = false;
       return;
     }
+
+    // 防抖：空字符串立即清除（0ms），有内容时延迟 400ms
     const delay = query.trim().length < 1 ? 0 : 400;
     const timer = setTimeout(() => setDebouncedQuery(query), delay);
     return () => clearTimeout(timer);

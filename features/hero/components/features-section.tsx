@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
-import { GLASS_CARD } from "../constants";
+
 
 const featureIds = [
   { id: "portfolio", image: "/Portfolio-Page.png" },
@@ -48,7 +48,7 @@ export function FeaturesSection() {
           {featureIds.map((f, i) => (
             <motion.div
               key={f.id}
-              className={`${GLASS_CARD} overflow-hidden`}
+              className="bg-white/40 backdrop-blur-md border border-[#c9a84c]/30 rounded-2xl overflow-hidden"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}

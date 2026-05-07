@@ -27,7 +27,10 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
               `/api/yahoofinance/quote?symbol=${asset.symbol}`,
             );
             const data = await res.json();
-            return [asset.symbol, { price: data.price ?? null, prevClose: data.prevClose ?? null }];
+            return [
+              asset.symbol,
+              { price: data.price ?? null, prevClose: data.prevClose ?? null },
+            ];
           } catch {
             return [asset.symbol, { price: null, prevClose: null }];
           }
@@ -36,8 +39,8 @@ export function useAssetReturn({ assets }: UseAssetReturnParams) {
       return Object.fromEntries(entries);
     },
     enabled: assets.length > 0,
-    staleTime: 60 * 1000,
-    gcTime: 5 * 60 * 1000,       // 数据在内存中保留 5 分钟，导航回来时直接用
+    staleTime: 60 * 1000, // 数据在内存中保留 1 分钟，避免数据过期
+    gcTime: 5 * 60 * 1000, // 数据在内存中保留 5 分钟，导航回来时直接用
     placeholderData: keepPreviousData, // 重新获取时保持旧数据，避免闪烁为空
   });
 

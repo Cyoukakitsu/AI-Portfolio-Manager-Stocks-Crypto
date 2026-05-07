@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Link } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { GLASS_CARD } from "../constants";
+
 
 const TV_SCRIPT_SRC =
   "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js";
@@ -37,7 +37,7 @@ function TvChartCard({
 
   return (
     <div
-      className={`${GLASS_CARD} overflow-hidden`}
+      className="bg-white/40 backdrop-blur-md border border-[#c9a84c]/30 rounded-2xl overflow-hidden"
       style={{ width: 220, height: 160 }}
     >
       <div

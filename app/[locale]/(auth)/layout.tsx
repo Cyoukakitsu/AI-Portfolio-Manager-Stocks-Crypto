@@ -47,7 +47,7 @@ export default async function layout({
             <Link href="/">
               <Image
                 src="/header-icon.png"
-                alt="AI Portfolio Manager"
+                alt="PortfolioX"
                 width={160}
                 height={36}
                 className="h-auto w-auto"
@@ -98,9 +98,6 @@ export default async function layout({
                 />
               ))}
             </div>
-            <p className="text-[11px] text-muted-foreground mt-2 tracking-wide uppercase">
-              {t("chartLabel")}
-            </p>
           </div>
         </div>
 
@@ -111,7 +108,7 @@ export default async function layout({
             <Link href="/">
               <Image
                 src="/header-icon.png"
-                alt="AI Portfolio Manager"
+                alt="PortfolioX"
                 width={140}
                 height={32}
                 className="h-8 w-auto"

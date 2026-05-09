@@ -47,9 +47,7 @@ export async function signUp(formatData: unknown) {
 export async function signIn(formatData: unknown) {
   const result = signInSchema.safeParse(formatData);
   if (!result.success) {
-    return {
-      error: "Validation failed",
-    };
+    return { error: "validationFailed" };
   }
 
   const supabase = await createClient();
@@ -60,11 +58,7 @@ export async function signIn(formatData: unknown) {
   });
 
   if (error) {
-    // 故意不区分"邮箱不存在"和"密码错误"，统一返回模糊提示，
-    // 防止攻击者通过不同错误信息判断账号是否存在（账号枚举攻击）
-    return {
-      error: "Invalid credentials. Please check your email and password.",
-    };
+    return { error: "invalidCredentials" };
   }
 
   redirect("/dashboard/assets");

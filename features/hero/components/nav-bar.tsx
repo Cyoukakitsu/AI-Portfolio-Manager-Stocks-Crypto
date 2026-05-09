@@ -15,21 +15,12 @@ export function NavBar() {
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-primary/30">
       <div className="px-4 h-16 flex items-center relative">
         {/* Logo */}
-        {isHeroPage ? (
-          <span
-            className="text-xl font-bold text-primary tracking-wider px-2 cursor-pointer"
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-          >
-            PortfolioX
-          </span>
-        ) : (
-          <a
-            href={`/${locale}`}
-            className="text-xl font-bold text-primary tracking-wider px-2"
-          >
-            PortfolioX
-          </a>
-        )}
+        <Link
+          href="/"
+          className="text-xl font-bold text-primary tracking-wider px-2"
+        >
+          PortfolioX
+        </Link>
 
         {/* Nav Links (desktop only) — truly centered */}
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 text-sm text-muted-foreground">

@@ -35,6 +35,7 @@ const fieldVariants = {
 const SignInForm = () => {
   const t = useTranslations("auth.signIn");
   const [view, setView] = useState<"signIn" | "forgotPassword">("signIn");
+  const [loginFailed, setLoginFailed] = useState(false);
   const {
     register,
     handleSubmit,
@@ -45,9 +46,11 @@ const SignInForm = () => {
   });
 
   const onSubmit = async (data: SignInFormValues) => {
+    setLoginFailed(false);
     const result = await signIn(data);
     if (result?.error) {
-      toast.error(result.error);
+      toast.error(t(result.error as Parameters<typeof t>[0]));
+      setLoginFailed(true);
     }
   };
 
@@ -181,6 +184,20 @@ const SignInForm = () => {
                       >
                         {isSubmitting ? t("signingIn") : t("submit")}
                       </Button>
+                      <AnimatePresence>
+                        {loginFailed && (
+                          <motion.p
+                            key="google-hint"
+                            initial={{ opacity: 0, height: 0 }}
+                            animate={{ opacity: 1, height: "auto" }}
+                            exit={{ opacity: 0, height: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className="text-xs text-muted-foreground text-center overflow-hidden"
+                          >
+                            {t("googleHint")}
+                          </motion.p>
+                        )}
+                      </AnimatePresence>
                       <GoogleButton />
                     </motion.div>
 

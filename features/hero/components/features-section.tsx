@@ -48,7 +48,7 @@ export function FeaturesSection() {
           {featureIds.map((f, i) => (
             <motion.div
               key={f.id}
-              className="bg-white/40 backdrop-blur-md border border-[#c9a84c]/30 rounded-2xl overflow-hidden"
+              className="bg-white/40 dark:bg-card backdrop-blur-md border border-[#c9a84c]/30 dark:border-border rounded-2xl overflow-hidden"
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -64,10 +64,10 @@ export function FeaturesSection() {
                 />
               </div>
               <div className="p-5">
-                <h3 className="text-base font-bold text-foreground mb-2">
+                <h3 className="text-base font-bold text-card-foreground mb-2">
                   {t(`items.${f.id}.title`)}
                 </h3>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm text-muted-foreground dark:text-foreground/70 leading-relaxed">
                   {t(`items.${f.id}.description`)}
                 </p>
               </div>

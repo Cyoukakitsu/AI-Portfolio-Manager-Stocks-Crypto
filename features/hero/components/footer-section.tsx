@@ -1,19 +1,20 @@
 import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 
 export async function FooterSection() {
   const t = await getTranslations("hero.footer");
 
   return (
-    <footer className="bg-[#f5f0e8] border-t border-[#c9a84c]/20 py-6 px-6">
-      <div className="pt-6 text-center text-xs text-stone-400">
+    <footer className="bg-background border-t border-border py-6 px-6">
+      <div className="pt-6 text-center text-xs text-muted-foreground">
         © {new Date().getFullYear()} {t("brand")} |{" "}
-        <a href="#" className="hover:text-[#c9a84c] transition-colors">
+        <Link href="/terms" className="hover:text-[#c9a84c] transition-colors">
           {t("terms")}
-        </a>{" "}
+        </Link>{" "}
         |{" "}
-        <a href="#" className="hover:text-[#c9a84c] transition-colors">
+        <Link href="/privacy" className="hover:text-[#c9a84c] transition-colors">
           {t("privacy")}
-        </a>
+        </Link>
       </div>
     </footer>
   );

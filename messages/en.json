@@ -55,7 +55,10 @@
       "signingIn": "Signing in…",
       "submit": "Sign In",
       "noAccount": "Don't have an account?",
-      "signUp": "Sign up"
+      "signUp": "Sign up",
+      "googleHint": "If you signed up with Google, please use the button below.",
+      "invalidCredentials": "Invalid email or password.",
+      "validationFailed": "Please check your input and try again."
     },
     "signUp": {
       "title": "Create your account",
@@ -96,7 +99,6 @@
       "headline": "Your AI-Powered",
       "headlineAccent": "Portfolio Command Center",
       "subtitle": "Monitor stocks, ETFs, and crypto with real-time data and AI-generated insights — all from a single dashboard.",
-      "chartLabel": "Portfolio Performance",
       "tracking": {
         "title": "Real-Time Portfolio Tracking",
         "desc": "Stocks, ETFs & crypto unified in one dashboard"
@@ -386,9 +388,93 @@
       }
     },
     "footer": {
-      "brand": "AI Portfolio Manager",
+      "brand": "PortfolioX",
       "terms": "Terms",
       "privacy": "Privacy Policy"
+    }
+  },
+  "terms": {
+    "title": "Terms of Service",
+    "lastUpdated": "Last updated: May 9, 2026",
+    "sections": {
+      "acceptance": {
+        "title": "1. Acceptance of Terms",
+        "content": "By accessing or using PortfolioX (\"the Service\"), you agree to be bound by these Terms of Service. If you do not agree to these terms, please do not use the Service. These terms constitute a legally binding agreement between you and the individual developer operating this Service."
+      },
+      "description": {
+        "title": "2. Service Description",
+        "content": "PortfolioX is a personal project that provides portfolio tracking tools for stocks and cryptocurrencies, along with AI-generated investment analysis inspired by legendary investors. The Service integrates real-time market data from third-party providers and offers AI insights for informational purposes only."
+      },
+      "accounts": {
+        "title": "3. User Accounts",
+        "content": "You may register using your email address or Google OAuth. You are responsible for maintaining the confidentiality of your account credentials and for all activities that occur under your account. You must provide accurate information during registration and promptly update it if it changes. You must be at least 18 years of age to use the Service."
+      },
+      "acceptableUse": {
+        "title": "4. Acceptable Use",
+        "content": "You agree not to misuse the Service. Prohibited activities include: attempting to gain unauthorized access to any part of the Service or its related systems; using the Service for any unlawful purpose; scraping, crawling, or otherwise extracting data in bulk; interfering with or disrupting the integrity or performance of the Service; and impersonating any person or entity."
+      },
+      "financialDisclaimer": {
+        "title": "5. Financial Disclaimer",
+        "content": "IMPORTANT: PortfolioX is a personal portfolio tracking and informational tool only. Nothing on this Service constitutes financial advice, investment advice, trading advice, or any other type of professional advice. AI-generated analyses are for entertainment and educational purposes only and do not represent the actual views or strategies of any real investor. Past performance shown does not guarantee future results. Always consult a qualified financial advisor before making any investment decisions. The developer is not a licensed financial advisor and assumes no responsibility for any investment decisions made based on information provided by this Service."
+      },
+      "thirdParty": {
+        "title": "6. Third-Party Services",
+        "content": "The Service integrates with the following third-party providers: Yahoo Finance (market data), TradingView (charting), Supabase (database and authentication), and Google (OAuth sign-in). Your use of these integrations is subject to each provider's respective terms of service and privacy policies. The developer is not responsible for the availability, accuracy, or conduct of third-party services."
+      },
+      "warranties": {
+        "title": "7. Disclaimer of Warranties",
+        "content": "THE SERVICE IS PROVIDED \"AS IS\" AND \"AS AVAILABLE\" WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED. THE DEVELOPER DOES NOT WARRANT THAT THE SERVICE WILL BE UNINTERRUPTED, ERROR-FREE, OR FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS. MARKET DATA MAY BE DELAYED AND IS NOT GUARANTEED TO BE ACCURATE."
+      },
+      "liability": {
+        "title": "8. Limitation of Liability",
+        "content": "TO THE FULLEST EXTENT PERMITTED BY APPLICABLE LAW, THE DEVELOPER SHALL NOT BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, DATA, OR INVESTMENTS, ARISING OUT OF OR IN CONNECTION WITH YOUR USE OF THE SERVICE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGES."
+      },
+      "changes": {
+        "title": "9. Changes to Terms",
+        "content": "The developer reserves the right to modify these Terms of Service at any time. Changes will be effective upon posting to the Service. Your continued use of the Service after any changes constitutes your acceptance of the new terms. It is your responsibility to review these terms periodically."
+      },
+      "contact": {
+        "title": "10. Contact",
+        "content": "If you have any questions about these Terms of Service, please contact the developer at: z261459808@gmail.com"
+      }
+    }
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "lastUpdated": "Last updated: May 9, 2026",
+    "sections": {
+      "collection": {
+        "title": "1. Information We Collect",
+        "content": "We collect information you provide directly, including: your name and email address when you register; portfolio data such as asset symbols, quantities, and transaction history that you manually enter; and authentication data when you sign in with Google OAuth. We also automatically collect basic usage information such as pages visited and features used, to improve the Service."
+      },
+      "usage": {
+        "title": "2. How We Use Information",
+        "content": "Your information is used solely to provide and improve the Service. Specifically: account information is used for authentication and identification; portfolio data is stored to display your personal portfolio across sessions; usage data is used to understand how features are being used and to fix issues. We do not sell, rent, or share your personal information with third parties for marketing purposes."
+      },
+      "thirdParty": {
+        "title": "3. Third-Party Services",
+        "content": "The Service relies on the following third parties that may process your data: Supabase (database storage and authentication — data stored on Supabase servers); Google OAuth (if you choose to sign in with Google, Google processes your sign-in credentials per Google's Privacy Policy); Yahoo Finance and TradingView (market data providers — they receive only anonymous API requests, not your personal data)."
+      },
+      "security": {
+        "title": "4. Data Security",
+        "content": "Your data is stored on Supabase's secure infrastructure, which uses industry-standard encryption at rest and in transit. Authentication tokens and passwords are never stored in plain text. However, no method of transmission over the internet or electronic storage is 100% secure, and the developer cannot guarantee absolute security."
+      },
+      "retention": {
+        "title": "5. Data Retention",
+        "content": "Your account and portfolio data are retained for as long as your account is active. You may delete your portfolio data at any time from the Settings page. To fully delete your account and all associated data, please contact the developer at z261459808@gmail.com. Data will be permanently removed within 30 days of such a request."
+      },
+      "rights": {
+        "title": "6. Your Rights",
+        "content": "You have the right to: access the personal data we hold about you; correct any inaccurate data; request deletion of your data; export your portfolio data (available via the Settings page); and withdraw consent at any time by closing your account. To exercise these rights, please contact us at z261459808@gmail.com."
+      },
+      "changes": {
+        "title": "7. Changes to This Policy",
+        "content": "This Privacy Policy may be updated periodically to reflect changes in our practices or for legal reasons. We will indicate the date of the most recent update at the top of this page. Your continued use of the Service after any changes constitutes your acceptance of the updated policy."
+      },
+      "contact": {
+        "title": "8. Contact",
+        "content": "If you have any questions or concerns about this Privacy Policy or how your data is handled, please contact the developer at: z261459808@gmail.com"
+      }
     }
   }
 }

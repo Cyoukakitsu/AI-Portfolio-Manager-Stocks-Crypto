@@ -1,4 +1,4 @@
-# AI Portfolio Manager — Stocks & Crypto
+# PortfolioX — Stocks & Crypto
 
 AIを搭載した**次世代型ポートフォリオ管理プラットフォーム**です。リアルタイムの市場データ、マルチエージェントAI分析、および自動資産トラッキングを統合しています。
 

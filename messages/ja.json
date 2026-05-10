@@ -355,15 +355,14 @@
     },
     "badge": "✦ AI実装 · 株式 · 暗号資産",
     "headlineLine1": "あなたのポートフォリオを、",
-    "headlinePrefix": "伝説が",
-    "headlineAccent": "分析する",
-    "subheadline1": "株式と暗号資産を追跡",
-    "subheadline2": "5人の伝説的投資家AIがポートフォリオを分析",
+    "headlinePrefix": "",
+    "headlineAccent": "伝説の投資家",
+    "headlineSuffix": "が分析する",
+    "subheadline1": "AIと伝説の投資家が、あなたの投資をサポート",
     "signIn": "サインイン",
     "signUp": "新規登録",
     "features": {
       "title": "主要機能",
-      "subtitle": "投資を管理・成長させるために必要なすべてを一箇所に。",
       "items": {
         "portfolio": {
           "title": "ポートフォリオ概要",

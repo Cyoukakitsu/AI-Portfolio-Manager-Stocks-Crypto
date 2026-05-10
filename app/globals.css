@@ -66,7 +66,7 @@
 
   /* ── 静音色 ── */
   --muted: oklch(0.93 0.02 70);
-  --muted-foreground: oklch(0.55 0.04 55);
+  --muted-foreground: oklch(0.40 0.04 55);
 
   /* ── 强调色 ── */
   --accent: oklch(0.88 0.06 50);
@@ -183,7 +183,7 @@
 
   /* ── 静音色 ── */
   --muted: oklch(0.96 0.005 70);
-  --muted-foreground: oklch(0.5 0.02 55);
+  --muted-foreground: oklch(0.40 0.02 55);
 
   /* ── 强调色 ── */
   --accent: oklch(0.93 0.02 65);

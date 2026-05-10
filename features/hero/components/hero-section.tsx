@@ -64,43 +64,51 @@ export function HeroSection() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0 }}
-        className="mb-6"
+        className="mb-4"
       >
         <Badge className="bg-primary/10 text-primary border border-primary/30 px-4 py-1">
           {t("badge")}
         </Badge>
       </motion.div>
 
-      <motion.h1
-        className="text-5xl md:text-6xl font-serif font-bold text-center text-foreground leading-tight mb-4"
+      <motion.div
+        className="text-6xl md:text-7xl font-bold text-primary tracking-wider mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
       >
+        PortfolioX
+      </motion.div>
+
+      <motion.h1
+        className="text-4xl md:text-5xl font-serif font-bold text-center text-foreground leading-tight mb-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+      >
         {t("headlineLine1")}
         <br />
-        {t("headlinePrefix")}{" "}
+        {t("headlinePrefix") && <>{t("headlinePrefix")} </>}
         <span className="bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
           {t("headlineAccent")}
         </span>
+        {t("headlineSuffix")}
       </motion.h1>
 
       <motion.p
         className="text-lg text-muted-foreground text-center max-w-xl mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
+        transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
       >
         {t("subheadline1")}
-        <br />
-        {t("subheadline2")}
       </motion.p>
 
       <motion.div
         className="flex gap-4 mb-10"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
+        transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
       >
         <Link
           href="/sign-in"
@@ -120,7 +128,7 @@ export function HeroSection() {
         className="flex flex-col gap-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
+        transition={{ duration: 0.5, ease: "easeOut", delay: 0.5 }}
       >
         <div className="flex flex-col sm:flex-row gap-4">
           <TvChartCard symbol="AMEX:SPY" />

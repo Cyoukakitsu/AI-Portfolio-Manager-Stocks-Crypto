@@ -360,14 +360,13 @@
     "badge": "✦ AI-Powered · Stock · Crypto",
     "headlineLine1": "Your Portfolio,",
     "headlinePrefix": "Analyzed by",
-    "headlineAccent": "Legends",
-    "subheadline1": "Track stocks & crypto.",
-    "subheadline2": "Get AI insights from 5 legendary investors.",
+    "headlineAccent": "Legendary Investors",
+    "headlineSuffix": "",
+    "subheadline1": "AI and legendary investors support your investment journey.",
     "signIn": "Sign In",
     "signUp": "Get Started",
     "features": {
       "title": "Core Features",
-      "subtitle": "Everything you need to manage and grow your investments.",
       "items": {
         "portfolio": {
           "title": "Portfolio Overview",

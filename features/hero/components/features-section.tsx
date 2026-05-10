@@ -34,16 +34,6 @@ export function FeaturesSection() {
         >
           {t("title")}
         </motion.h2>
-        <motion.p
-          className="text-muted-foreground text-center mb-14"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5, delay: 0.1 }}
-        >
-          {t("subtitle")}
-        </motion.p>
-
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
           {featureIds.map((f, i) => (
             <motion.div

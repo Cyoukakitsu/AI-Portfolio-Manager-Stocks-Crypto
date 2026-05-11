@@ -3,7 +3,7 @@
 // 股票/加密货币符号实时搜索组件
 // 逻辑层见 hooks/use-symbol-search.ts
 
-import { Search, Loader2 } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import {
   Command,
   CommandEmpty,
@@ -28,19 +28,16 @@ export function SymbolSearch({ onSelect, defaultValue = "" }: Props) {
   return (
     <div className="relative">
       <Command className="border rounded-md" shouldFilter={false}>
-        <div className="flex items-center px-3">
-          {/* 搜索中显示 loading 动画，否则显示搜索图标 */}
-          {isFetching ? (
-            <Loader2 className="w-4 h-4 mr-2 animate-spin text-muted-foreground" />
-          ) : (
-            <Search className="w-4 h-4 mr-2 text-muted-foreground" />
-          )}
+        <div className="relative">
           <CommandInput
             placeholder="Search symbol or name..."
             value={query}
             onValueChange={setQuery}
             className="border-0 focus:ring-0"
           />
+          {isFetching && (
+            <Loader2 className="absolute right-3 top-1/2 -translate-y-1/2 w-4 h-4 animate-spin text-muted-foreground" />
+          )}
         </div>
 
         {/* 只在有搜索词时才显示下拉列表 */}

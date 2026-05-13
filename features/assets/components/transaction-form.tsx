@@ -92,9 +92,7 @@ export function TransactionForm({
               render={({ field }) => (
                 <Tabs
                   value={field.value}
-                  onValueChange={(val) =>
-                    field.onChange(val as "buy" | "sell")
-                  }
+                  onValueChange={(val) => field.onChange(val as "buy" | "sell")}
                 >
                   <TabsList className="w-full">
                     <TabsTrigger value="buy" className="flex-1">
@@ -118,7 +116,7 @@ export function TransactionForm({
                     <div className="flex items-center border rounded-md h-8">
                       <button
                         type="button"
-                        className="px-3 h-full hover:bg-muted"
+                        className="px-3 h-full hover:bg-muted cursor-pointer"
                         // Math.max(1, ...) 防止数量减到 0 或负数
                         onClick={() =>
                           field.onChange(Math.max(1, Number(field.value) - 1))
@@ -145,7 +143,7 @@ export function TransactionForm({
                       />
                       <button
                         type="button"
-                        className="px-3 h-full hover:bg-muted"
+                        className="px-3 h-full hover:bg-muted cursor-pointer"
                         onClick={() => field.onChange(Number(field.value) + 1)}
                       >
                         <Plus className="w-4 h-4" />
@@ -164,7 +162,9 @@ export function TransactionForm({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="min-w-0">
                     <FieldLabel>
-                      {currentType === "buy" ? t("purchaseDate") : t("sellDate")}
+                      {currentType === "buy"
+                        ? t("purchaseDate")
+                        : t("sellDate")}
                     </FieldLabel>
                     <Popover>
                       <PopoverTrigger
@@ -215,7 +215,9 @@ export function TransactionForm({
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid} className="min-w-0">
                     <FieldLabel>
-                      {currentType === "buy" ? t("purchasePrice") : t("sellPrice")}
+                      {currentType === "buy"
+                        ? t("purchasePrice")
+                        : t("sellPrice")}
                     </FieldLabel>
                     <Input
                       type="number"

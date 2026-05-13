@@ -104,6 +104,8 @@ export function AssetsTable({ assets }: Props) {
                       ease: "easeOut" as const,
                       delay: index * 0.04,
                     }}
+                    className="cursor-pointer"
+                    onClick={() => handleExpand(asset.id)}
                   >
                     <TableCell className="font-medium">
                       {asset.symbol}
@@ -170,7 +172,10 @@ export function AssetsTable({ assets }: Props) {
                         variant="ghost"
                         size="icon"
                         className="text-destructive hover:text-destructive"
-                        onClick={() => setDeletingAssetId(asset.id)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setDeletingAssetId(asset.id);
+                        }}
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>

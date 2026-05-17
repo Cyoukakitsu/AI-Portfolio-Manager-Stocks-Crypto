@@ -61,24 +61,33 @@ export async function GET(req: NextRequest) {
           if (cached) {
             return { symbol, articles: cached.articles as NewsArticle[] };
           }
-        } catch {
+        } catch (err) {
+          console.error("[news_cache] read failed:", err);
           // Supabase read 失敗 → キャッシュミスとして扱い Tavily を呼ぶ
         }
       }
 
       // Tavily API 呼び出し
       try {
-        const res = await fetch("https://api.tavily.com/search", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            api_key: apiKey,
-            query: `${symbol} stock news today`,
-            max_results: 1,
-            search_depth: "basic",
-            include_answer: false,
-          }),
-        });
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 5000);
+        let res: Response;
+        try {
+          res = await fetch("https://api.tavily.com/search", {
+            signal: controller.signal,
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              api_key: apiKey,
+              query: `${symbol} stock news today`,
+              max_results: 1,
+              search_depth: "basic",
+              include_answer: false,
+            }),
+          });
+        } finally {
+          clearTimeout(timer);
+        }
 
         if (!res.ok) {
           return { symbol, articles: [] };
@@ -89,7 +98,13 @@ export async function GET(req: NextRequest) {
           (r: { title: string; url: string; source?: string; published_date?: string; content?: string }) => ({
             title: r.title,
             url: r.url,
-            source: r.source ?? new URL(r.url).hostname.replace("www.", ""),
+            source: r.source ?? (() => {
+              try {
+                return new URL(r.url).hostname.replace("www.", "");
+              } catch {
+                return r.url;
+              }
+            })(),
             publishedDate: r.published_date ?? "",
             content: r.content ?? "",
           })
@@ -103,7 +118,8 @@ export async function GET(req: NextRequest) {
             cached_date: todayJST,
             updated_at: new Date().toISOString(),
           });
-        } catch {
+        } catch (err) {
+          console.error("[news_cache] write failed:", err);
           // Supabase write 失敗 → 無視
         }
 

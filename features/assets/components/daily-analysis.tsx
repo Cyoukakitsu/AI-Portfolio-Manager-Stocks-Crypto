@@ -86,7 +86,7 @@ function LoadingSkeleton() {
 // ==============================
 export function DailyAnalysis({ assets }: Props) {
   const t = useTranslations("dailyAnalysis");
-  const { symbols, results, isFetching, hasNews, lastUpdated, refetch } =
+  const { symbols, results, isFetching, hasNews, lastUpdated, forceRefetch } =
     useDailyAnalysis({ assets });
 
   return (
@@ -102,7 +102,7 @@ export function DailyAnalysis({ assets }: Props) {
           size="icon"
           variant="ghost"
           className="h-6 w-6"
-          onClick={() => refetch()}
+          onClick={() => forceRefetch()}
           disabled={isFetching}
         >
           <RefreshCw className={`h-3 w-3 ${isFetching ? "animate-spin" : ""}`} />

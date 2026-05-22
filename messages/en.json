@@ -234,7 +234,7 @@
     },
     "crypto": {
       "title": "Crypto Markets",
-      "subtitle": "Real-time prices, heatmaps, charts & conversion tools",
+      "subtitle": "Real-time prices, heatmaps, charts & market overview",
       "globalData": "Global Data",
       "liveUpdates": "Live Updates",
       "top100Coins": "Top 100 Coins",
@@ -243,7 +243,9 @@
       "coinCompareChart": "Coin Compare Chart",
       "marketHeatmap": "Market Heatmap",
       "converter": "Converter",
-      "topCoins": "Top Coins"
+      "topCoins": "Top Coins",
+      "marketOverview": "Market Overview",
+      "marketQuotes": "Market Quotes"
     },
     "ai": {
       "title": "AI Analysis",
@@ -272,13 +274,22 @@
       "role": "Father of Value Investing",
       "tooltip": "Seeks businesses with durable moats to buy at fair prices and hold forever",
       "philosophy": "Seek companies with durable competitive moats at fair prices and hold them for decades. Focus on ROE, free cash flow, and management integrity, always maintaining a margin of safety.",
-      "expertise": ["Consumer Goods", "Finance", "Insurance", "Infrastructure"],
+      "expertise": [
+        "Consumer Goods",
+        "Finance",
+        "Insurance",
+        "Infrastructure"
+      ],
       "achievements": [
         "Berkshire Hathaway — ~20% annual return sustained for 50+ years",
         "Successful investments in Coca-Cola, American Express, and Apple",
         "Net worth exceeds $120B, multiple-time world's richest person"
       ],
-      "styleTags": ["Conservative", "Long-term Hold", "Value First"]
+      "styleTags": [
+        "Conservative",
+        "Long-term Hold",
+        "Value First"
+      ]
     },
     "lynch": {
       "role": "Growth Stock Hunter",
@@ -294,7 +305,11 @@
         "Best-selling author of 'One Up on Wall Street'",
         "Transformed retail investor thinking with grassroots research approach"
       ],
-      "styleTags": ["Growth-Focused", "Bottom-Up", "Individual Research"]
+      "styleTags": [
+        "Growth-Focused",
+        "Bottom-Up",
+        "Individual Research"
+      ]
     },
     "wood": {
       "role": "Queen of Disruptive Innovation",
@@ -312,7 +327,11 @@
         "Early conviction on Tesla when it traded below $20 per share",
         "Pioneer of thematic ETF investing in disruptive technology"
       ],
-      "styleTags": ["High Conviction", "Thematic", "Long Horizon"]
+      "styleTags": [
+        "High Conviction",
+        "Thematic",
+        "Long Horizon"
+      ]
     },
     "burry": {
       "role": "Contrarian Master",
@@ -329,7 +348,11 @@
         "Scion Asset Management delivered exceptional long-term returns",
         "Warned early about multiple market bubbles including tech and housing"
       ],
-      "styleTags": ["Contrarian", "Risk-Focused", "Deep Research"]
+      "styleTags": [
+        "Contrarian",
+        "Risk-Focused",
+        "Deep Research"
+      ]
     },
     "dalio": {
       "role": "Macro Cycle Hunter",
@@ -347,7 +370,11 @@
         "Pioneered the 'All Weather' portfolio strategy",
         "Author of 'Principles' — bestselling guide to decision-making and life"
       ],
-      "styleTags": ["Macro-Driven", "Systematic", "Diversified"]
+      "styleTags": [
+        "Macro-Driven",
+        "Systematic",
+        "Diversified"
+      ]
     }
   },
   "hero": {

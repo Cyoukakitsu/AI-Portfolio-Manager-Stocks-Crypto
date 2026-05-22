@@ -6,21 +6,15 @@ export default function CoinCompareChart() {
   return (
     <>
       <Script
-        src="https://widgets.coingecko.com/gecko-coin-compare-chart-widget.js"
+        src="https://widgets.coingecko.com/gecko-coin-price-chart-widget.js"
         strategy="lazyOnload"
       />
       <div className="w-full">
         {/* @ts-expect-error - CoinGecko custom elements are not in React JSX types */}
-        <gecko-coin-compare-chart-widget
+        <gecko-coin-price-chart-widget
           locale="en"
-          outlined="false"
-          coin-ids="bitcoin"
-          currency="usd"
-          height="520"
-          background-color="#ffffff"
-          font-color="#09090b"
-          positive-color="#16a34a"
-          negative-color="#dc2626"
+          outlined="true"
+          initial-currency="usd"
           style={{ display: "block", width: "100%" }}
         />
       </div>

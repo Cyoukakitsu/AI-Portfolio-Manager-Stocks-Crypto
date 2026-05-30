@@ -46,6 +46,12 @@ export function NavBar() {
           </a>
         </div>
 
+        {/* Mobile Controls */}
+        <div className="flex md:hidden items-center gap-2 ml-auto">
+          <LocaleSwitcher />
+          <ModeToggle />
+        </div>
+
         {/* Right Controls — flush right */}
         <div className="hidden md:flex items-center gap-4 ml-auto">
           <LocaleSwitcher />

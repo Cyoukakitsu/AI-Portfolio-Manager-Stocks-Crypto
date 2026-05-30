@@ -8,6 +8,7 @@ import { useState, useEffect } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 import type { SearchResult } from "@/features/assets/hooks/use-symbol-search";
 
 import { createAsset, updateAsset } from "@/features/assets/server/assets";
@@ -50,6 +51,8 @@ export function useAssetForm({
   onOpenChange,
   onSuccess,
 }: UseAssetFormParams) {
+  const t = useTranslations("pages.assets.assetForm");
+
   // ---- 1. Dialog 开关：支持"外部受控"和"内部自管理"两种模式 ----
   const [internalOpen, setInternalOpen] = useState(false);
   const open = externalOpen ?? internalOpen;
@@ -81,10 +84,10 @@ export function useAssetForm({
     try {
       if (asset) {
         await updateAsset(asset.id, data);
-        toast.success("Asset updated successfully");
+        toast.success(t("toastUpdateSuccess"));
       } else {
         await createAsset(data);
-        toast.success("Asset added successfully");
+        toast.success(t("toastAddSuccess"));
       }
 
       // 重置表单，编辑模式保留数据
@@ -93,8 +96,10 @@ export function useAssetForm({
       }
       setOpen(false);
       onSuccess?.();
-    } catch {
-      toast.error("Failed to save asset, please try again");
+    } catch (err) {
+      const isDuplicate =
+        err instanceof Error && err.message.includes("already exists");
+      toast.error(isDuplicate ? t("toastDuplicateError") : t("toastSaveError"));
     }
   }
 

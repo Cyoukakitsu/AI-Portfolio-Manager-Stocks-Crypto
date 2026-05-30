@@ -199,7 +199,11 @@
         "cancel": "Cancel",
         "processing": "Processing...",
         "save": "Save",
-        "add": "Add"
+        "add": "Add",
+        "toastAddSuccess": "Asset added successfully",
+        "toastUpdateSuccess": "Asset updated successfully",
+        "toastSaveError": "Failed to save asset, please try again",
+        "toastDuplicateError": "This asset already exists and cannot be added again"
       },
       "transactionForm": {
         "titleBuy": "Record Buy Transaction",
@@ -389,7 +393,8 @@
     "headlinePrefix": "Analyzed by",
     "headlineAccent": "Legendary Investors",
     "headlineSuffix": "",
-    "subheadline1": "AI and legendary investors support your investment journey.",
+    "subheadline1a": "AI and legendary investors",
+    "subheadline1b": "support your investment journey.",
     "signIn": "Sign In",
     "signUp": "Get Started",
     "features": {

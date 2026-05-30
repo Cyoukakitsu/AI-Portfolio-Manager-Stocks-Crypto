@@ -25,7 +25,13 @@ export async function GET(req: NextRequest) {
     }));
 
     return NextResponse.json(results);
-  } catch {
+  } catch (err) {
+    const isValidationError =
+      err instanceof Error && err.message.includes("Failed validation");
+    if (isValidationError) {
+      console.warn("[yahoofinance/search] Validation warning:", err.message);
+      return NextResponse.json([]);
+    }
     return NextResponse.json(
       { error: "An error occurred while fetching data." },
       { status: 500 },

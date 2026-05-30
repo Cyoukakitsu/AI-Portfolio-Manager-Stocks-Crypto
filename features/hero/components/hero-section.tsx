@@ -81,7 +81,7 @@ export function HeroSection() {
       </motion.div>
 
       <motion.h1
-        className="text-4xl md:text-5xl font-serif font-bold text-center text-foreground leading-tight mb-4"
+        className="text-2xl md:text-5xl font-serif font-bold text-center text-foreground leading-tight mb-4"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
@@ -101,7 +101,9 @@ export function HeroSection() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
       >
-        {t("subheadline1")}
+        {t("subheadline1a")}
+        <br />
+        {t("subheadline1b")}
       </motion.p>
 
       <motion.div

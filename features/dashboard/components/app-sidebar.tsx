@@ -37,7 +37,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     {
       title: t("stocks"),
       icon: TrendingUp,
-      items: [{ title: t("marketOverview"), url: "/dashboard/stocks" }],
+      items: [
+        { title: t("marketOverview"), url: "/dashboard/stocks" },
+        { title: t("quantInstitutions"), url: "/dashboard/stocks/quant" },
+      ],
     },
     {
       title: t("crypto"),

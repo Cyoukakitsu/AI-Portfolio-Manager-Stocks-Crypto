@@ -21,7 +21,7 @@
 
 - [ ] Hero Page 重设计（brainstorming 完成，方向 B+C，待实现）
 - [ ] Stocks：行情图表与价格展示细化
-- [ ] AI：智能分析模块（Tavily + DeepSeek / Groq）
+- [x] AI 分析页 SSE 流式推送（Task 2，2026-06-15 完成）
 
 ## 已知问题
 

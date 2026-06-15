@@ -9,15 +9,19 @@
 ```
 用户输入股票代码
       ↓
-  并行调用 2 个 AgentPersona
+  并行调用 2 个 AgentPersona（SSE 流式推送）
   （从 buffett/lynch/wood/burry/dalio 中选取）
-      ↓
+  ↙                        ↘
+Agent1                   Agent2   ← 同时执行，谁先完成谁先推 SSE 事件
+  ↓                        ↓
   每个 Agent 自主调用工具：
     getStockPrice(symbol)   ← yahoo-finance2
     getNews(symbol)         ← Tavily 搜索
     getFinancials(symbol)   ← yahoo-finance2 财报数据
       ↓
-  Coordinator 汇总 → 最终 verdict + buyRange
+  两个 Agent 都完成后
+      ↓
+  Coordinator 汇总 → 最终 verdict + buyRange → SSE 推送
 ```
 
 ## 对外接口
@@ -41,7 +45,7 @@
 
 ### UI 组件
 
-`<AnalysisShell>` / `<AgentSelector>` / `<AgentCard>` / `<CoordinatorCard>` / `<ProgressSteps>` / `<SearchBar>`
+`<AnalysisShell>` / `<AgentSelector>` / `<AgentCard>` / `<CoordinatorCard>` / `<SearchBar>`
 
 ## 依赖关系
 
@@ -53,5 +57,6 @@ ai
 
 ## 注意事项
 
-- LLM 调用使用 `generateText + maxSteps`，非流式（源码注释确认）
+- API 路由使用 SSE (`ReadableStream`) 推送结果；两个 Agent 并行执行，各自完成后即推送事件，Coordinator 在两者都完成后启动
+- LLM 内部仍用 `generateText + stopWhen`（非逐 token 流式），SSE 流式体现在卡片级别的推送粒度
 - Agent 提示词集中在 `lib/prompts.ts`，修改需同步测试所有 persona

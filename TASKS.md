@@ -4,66 +4,61 @@
 
 ---
 
-## Task 1：Hero Page 重设计
+## Task 2：AI 分析页 SSE 流式推送
 
-**目标**：按方向 B+C（Gemini UI 风格）实现落地页视觉重设计。
+**目标**：将 `/api/ai-analysis` 从阻塞式 JSON 改为 SSE 流，Agent 结果逐张滑入，删除 `ProgressSteps` 假进度条。
+
+**背景**
+当前双 Agent 模式需等待全部完成（约 15 秒）才一次性渲染。改为 SSE 后，两个 Agent 仍然并行执行，哪个先完成哪张卡片先滑入，总耗时不变但第一张卡约 10 秒即可出现。设计文档：`docs/superpowers/specs/2026-06-15-ai-analysis-sse-streaming-design.md`
 
 **范围文件**
-- `features/hero/components/`
-- `app/` 中对应的 hero 路由页面
+- `app/api/ai-analysis/route.ts` — 改为 SSE ReadableStream，顺序执行 Agent，逐步 push 事件
+- `features/ai/components/analysis-shell.tsx` — 替换 useMutation 为手动 SSE fetch reader，删除 ProgressSteps 相关代码
+- `features/ai/components/progress-steps.tsx` — **整个文件删除**
+
+**SSE 事件协议**
+```
+event: agent1_done / agent2_done  →  AgentResult JSON（并行执行，谁先完成谁先推）
+event: coordinator_done           →  CoordinatorResult JSON（两个 agent 都完成后才启动）
+event: error                      →  { message: string }
+```
 
 **验收标准**
-- [ ] `pnpm build` 通过，无类型错误
-- [ ] 导航栏、首屏、功能介绍、页脚四个区块均已实现
-- [ ] 响应式布局：移动端 / 桌面端均正常显示
-- [ ] 中/英/日三语翻译键已在 `messages/` 中补全
+- [x] `pnpm build` 通过，无类型错误
+- [x] 选 1 个 Agent：约 10 秒后卡片带 fade-in 动画出现
+- [x] 选 2 个 Agent：第一张卡片先出现，第二张随后滑入，最后 Coordinator 卡片出现
+- [x] `ProgressSteps` 组件已删除，`runFakeProgress` 逻辑已删除
+- [x] 用户中途关闭页面 / 重新分析可正确中止上一次请求（AbortController）
+- [x] 分析失败时 `toast.error` 正常弹出
+
+**✅ 完成于 2026-06-15**
 
 ---
 
-## Task 2：AI 智能分析模块
+## Task 3：Portfolio AI Summary リビルド
 
-**目标**：实现多角色 AI 投资分析流程——用户输入股票代码，2 个 Agent 并行分析，Coordinator 综合输出买卖建议。
+**目标**：输出格式结构化、流式实时渲染、注入实时价格数据、修复语言问题
 
-**范围文件**
-- `features/ai/`
-- `app/api/` 中对应的 AI Route Handler
+**完成内容**
+- 服务端并行 fetch Yahoo Finance 实时价格，计算现值和盈亏%注入 prompt
+- 安装 `remark-gfm`，修复 Markdown 表格渲染
+- 修复流式渲染：有 token 即时显示，不等 loading 结束
+- 重设计 prompt：持仓快照表 / 风险评分 / 三大风险 / 行动建议
+- Dialog 放大至 `max-w-3xl / max-h-[80vh]`
+- 修复 locale 注入：英文 prompt 标题 + CRITICAL 语言指令
 
-**验收标准**
-- [ ] `pnpm build` 通过，无类型错误
-- [ ] 输入股票代码后，至少两个 AgentPersona 能返回 `AgentResult`
-- [ ] Coordinator 能输出 `CoordinatorResult`（含 verdict 和 buyRange）
-- [ ] 分析结果正确写入 Supabase，刷新后可恢复
-- [ ] 流式响应正常（进度步骤实时显示）
-
----
-
-## Task 3：Dashboard 总览图表完善
-
-**目标**：完善总资产概览页，整合股票与加密货币持仓，展示总资产折线图与资产分布饼图。
-
-**范围文件**
-- `features/dashboard/components/`
-- `features/assets/components/portfolio-candlestick-chart.tsx`
-- `app/` 中对应的 dashboard 路由页面
-
-**验收标准**
-- [ ] `pnpm build` 通过，无类型错误
-- [ ] 总资产金额（多币种合计）正确显示
-- [ ] 资产分布图表能区分股票与加密货币
-- [ ] 数据加载中和空状态均有合适的 UI 反馈
+**✅ 完成于 2026-06-19**
 
 ---
 
-## Task 4：Stocks 行情图表细化
+## Task 4：架构重构 — 类型依赖方向修正
 
-**目标**：完善股票行情页，支持搜索个股、查看 K 线图与头条新闻联动。
+**目标**：消除 feature 层从 route 文件 import 类型的反向依赖
 
-**范围文件**
-- `features/stocks/components/`
-- `app/` 中对应的 stocks 路由页面
+**完成内容**
+- 新建 `features/assets/types/index.ts`，统一 `Asset`・`Transaction`・`NewsArticle`・`SymbolNews`
+- 删除 `types/global.d.ts` 和 `types/` 目录
+- 更新 15 个文件的 import 路径
 
-**验收标准**
-- [ ] `pnpm build` 通过，无类型错误
-- [ ] 搜索框能按股票代码跳转对应 K 线图
-- [ ] 头条新闻与当前查看的股票联动
-- [ ] TradingView Widget 组件卸载时无内存泄漏（DevTools 验证）
+**✅ 完成于 2026-06-19**
+

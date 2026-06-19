@@ -4,7 +4,7 @@ import { useTranslations } from "next-intl";
 import { TrendingUp } from "lucide-react";
 import { motion } from "motion/react";
 import { Button } from "@/components/ui/button";
-import type { Asset, Transaction } from "@/types/global";
+import type { Asset, Transaction } from "@/features/assets/types";
 import {
   usePortfolioCandlestickChart,
   RANGES,

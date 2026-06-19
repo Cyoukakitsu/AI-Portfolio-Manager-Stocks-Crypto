@@ -1,7 +1,7 @@
 //这个hooks用于计算总资产、今日资产、总资产收益率、今日资产收益率
 //它接收一个资产数组作为参数，返回一个对象，包含总资产、今日资产、总资产收益率、今日资产收益率的属性
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { Asset } from "@/types/global";
+import { Asset } from "@/features/assets/types";
 
 type QuoteData = { price: number | null; prevClose: number | null };
 type QuotesMap = Record<string, QuoteData>;

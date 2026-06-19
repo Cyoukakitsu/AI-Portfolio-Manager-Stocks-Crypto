@@ -6,7 +6,7 @@
 //   - 所有写操作先 Zod 校验，再由服务端注入 user_id
 //   - 所有读/写/删操作同时过滤 user_id，防止 IDOR 越权
 
-import type { Transaction } from "@/types/global";
+import type { Transaction } from "@/features/assets/types";
 import { revalidatePath } from "next/cache";
 import {
   transactionSchema,

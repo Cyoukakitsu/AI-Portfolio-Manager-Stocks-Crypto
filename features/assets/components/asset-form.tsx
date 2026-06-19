@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/field";
 
 import { SymbolSearch } from "./symbol-search";
-import type { Asset } from "@/types/global";
+import type { Asset } from "@/features/assets/types";
 import { useAssetForm } from "@/features/assets/hooks/use-asset-form";
 
 // trigger 可选：支持"由外部 open 状态控制"和"由内置触发按钮控制"两种模式

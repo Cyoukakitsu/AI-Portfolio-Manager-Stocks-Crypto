@@ -13,7 +13,7 @@ import {
   deleteTransaction,
   getTransactions,
 } from "@/features/assets/server/transactions";
-import type { Asset, Transaction } from "@/types/global";
+import type { Asset, Transaction } from "@/features/assets/types";
 
 type UseAssetsTableParams = {
   assets: Asset[];

@@ -13,7 +13,7 @@ import {
   ISeriesApi,
   ColorType,
 } from "lightweight-charts";
-import type { Asset, Transaction } from "@/types/global";
+import type { Asset, Transaction } from "@/features/assets/types";
 import { getFromDate, type Range } from "@/features/assets/lib/date-utils";
 import { computePortfolioOHLC } from "@/features/assets/lib/portfolio-ohlc";
 

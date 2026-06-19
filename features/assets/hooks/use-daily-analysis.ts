@@ -3,8 +3,8 @@
 
 import { useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
-import type { Asset } from "@/types/global";
-import type { SymbolNews } from "@/app/api/assets/news/route";
+import type { Asset } from "@/features/assets/types";
+import type { SymbolNews } from "@/features/assets/types";
 
 type Params = { assets: Asset[] };
 

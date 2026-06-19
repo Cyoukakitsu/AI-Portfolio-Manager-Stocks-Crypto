@@ -3,8 +3,8 @@
 // 每日新闻分析组件
 // 逻辑层见 hooks/use-daily-analysis.ts
 
-import type { Asset } from "@/types/global";
-import type { NewsArticle } from "@/app/api/assets/news/route";
+import type { Asset } from "@/features/assets/types";
+import type { NewsArticle } from "@/features/assets/types";
 import { RefreshCw, ExternalLink, Newspaper } from "lucide-react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";

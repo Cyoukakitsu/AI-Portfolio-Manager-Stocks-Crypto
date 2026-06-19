@@ -24,7 +24,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { TransactionForm } from "@/features/assets/components/transaction-form";
-import type { Asset } from "@/types/global";
+import type { Asset } from "@/features/assets/types";
 import { useAssetsTable } from "@/features/assets/hooks/use-asset-table";
 import { motion, AnimatePresence } from "motion/react";
 

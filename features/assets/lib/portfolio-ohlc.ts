@@ -1,7 +1,7 @@
 // 组合 OHLC 计算
 // 将原始 OHLCV 历史数据 + 持仓变化记录 → 每日组合净值的 OHLC 数据点
 
-import type { Asset, Transaction } from "@/types/global";
+import type { Asset, Transaction } from "@/features/assets/types";
 
 export type OHLCPoint = {
   time: string; // "YYYY-MM-DD"

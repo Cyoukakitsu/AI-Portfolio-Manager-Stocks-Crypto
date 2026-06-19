@@ -39,7 +39,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       icon: TrendingUp,
       items: [
         { title: t("marketOverview"), url: "/dashboard/stocks" },
-        { title: t("quantInstitutions"), url: "/dashboard/stocks/quant" },
       ],
     },
     {
@@ -67,8 +66,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <TrendingUp className="h-4 w-4" />
           </div>
           <div className="flex flex-col leading-none">
-            <span className="font-semibold text-sm">AI Portfolio</span>
-            <span className="text-xs text-muted-foreground">Manager</span>
+            <span className="font-semibold text-sm">PortfolioX</span>
           </div>
         </motion.div>
         <SearchForm />

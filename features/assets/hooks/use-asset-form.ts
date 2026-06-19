@@ -13,7 +13,7 @@ import type { SearchResult } from "@/features/assets/hooks/use-symbol-search";
 
 import { createAsset, updateAsset } from "@/features/assets/server/assets";
 import { assetSchema, type AssetFormData } from "@/features/assets/schemas/asset";
-import type { Asset } from "@/types/global";
+import type { Asset } from "@/features/assets/types";
 
 // ---------- 类型定义 ----------
 

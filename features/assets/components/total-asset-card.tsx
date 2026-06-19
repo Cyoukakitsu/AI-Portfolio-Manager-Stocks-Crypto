@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useAssetReturn } from "@/features/assets/hooks/use-total-asset-card";
-import type { Asset } from "@/types/global";
+import type { Asset } from "@/features/assets/types";
 import { Wallet } from "lucide-react";
 import { motion, useMotionValue, useSpring, useTransform } from "motion/react";
 

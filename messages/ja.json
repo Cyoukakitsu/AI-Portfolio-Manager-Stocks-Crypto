@@ -43,8 +43,7 @@
     "marketOverview": "マーケット概況",
     "crypto": "暗号資産",
     "aiAnalysis": "AI分析",
-    "multiAgentAnalysis": "AI 投資家",
-    "quantInstitutions": "クオンツ機関"
+    "multiAgentAnalysis": "AI 投資家"
   },
   "auth": {
     "signIn": {
@@ -223,9 +222,6 @@
         "toastSuccess": "取引を追加しました",
         "toastError": "取引の追加に失敗しました。もう一度お試しください"
       }
-    },
-    "quant": {
-      "underDevelopment": "現在開発中です"
     },
     "stocks": {
       "title": "株式マーケット",

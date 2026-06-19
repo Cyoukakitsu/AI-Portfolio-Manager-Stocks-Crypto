@@ -1,18 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
-export interface NewsArticle {
-  title: string;
-  url: string;
-  source: string;
-  publishedDate: string;
-  content: string;
-}
-
-export interface SymbolNews {
-  symbol: string;
-  articles: NewsArticle[];
-}
+import type { NewsArticle, SymbolNews } from "@/features/assets/types";
+export type { NewsArticle, SymbolNews };
 
 function getJSTDateString(): string {
   const now = new Date();

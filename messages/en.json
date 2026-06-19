@@ -43,8 +43,7 @@
     "marketOverview": "Market Overview",
     "crypto": "Crypto",
     "aiAnalysis": "AI Analysis",
-    "multiAgentAnalysis": "AI Investors",
-    "quantInstitutions": "Quant Institutions"
+    "multiAgentAnalysis": "AI Investors"
   },
   "auth": {
     "signIn": {
@@ -223,9 +222,6 @@
         "toastSuccess": "Transaction added",
         "toastError": "Failed to add transaction, please try again"
       }
-    },
-    "quant": {
-      "underDevelopment": "Currently under development"
     },
     "stocks": {
       "title": "Stock Market",

@@ -4,6 +4,35 @@
 
 ---
 
+## 2026-06-19
+
+**量化投資機構機能の削除**
+- `app/[locale]/dashboard/stocks/quant/page.tsx` 削除
+- サイドバーの `quantInstitutions` エントリを削除
+- `messages/en.json`・`messages/ja.json` の関連 i18n キーを削除
+
+**UI ブランディング更新**
+- サイドバー左上のロゴテキストを「AI Portfolio / Manager」→「PortfolioX」に変更
+
+**Portfolio AI Summary リビルド**
+- `/api/assets/ai-summary`：Yahoo Finance で各持ち高の現在価格・含み損益をサーバーサイドで取得しプロンプトに注入
+- `remark-gfm` を導入し、Markdown テーブルを正しく HTML テーブルとして描画
+- ストリーミングレンダリング修正：最初のトークン到着後すぐに Markdown が流れ込むよう変更（loading 終了まで待たない）
+- プロンプト再設計：持ち高スナップショット表・リスクスコア・三大リスク・アクションアイテムの4構成
+- Dialog を `max-w-3xl / max-h-[80vh]` に拡大
+- ロケール注入を `CRITICAL:` 強調 + 英語ヘッダーに統一し、日本語ユーザーへの中国語出力バグを修正
+
+**アーキテクチャリファクタリング（候補 4）**
+- `features/assets/types/index.ts` を新設：`Asset`・`Transaction`・`NewsArticle`・`SymbolNews` を一元管理
+- `types/global.d.ts`・`types/` ディレクトリを削除（空になったため）
+- 依存方向の修正：feature 層が route ファイルから型を import していた逆転依存を解消（15 ファイル更新）
+
+**Harness 更新**
+- `GOTCHAS.md`：react-markdown GFM・allSettled 型推論・prompt 言語バグを追記
+- `DEVLOG.md`・`progress.md`・`TASKS.md` を更新
+
+---
+
 ## 2026-06-15
 
 **AI 分析页 SSE 流式推送（Task 2）**

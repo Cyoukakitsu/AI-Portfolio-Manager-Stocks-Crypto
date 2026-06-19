@@ -33,3 +33,32 @@ event: error                      →  { message: string }
 
 **✅ 完成于 2026-06-15**
 
+---
+
+## Task 3：Portfolio AI Summary リビルド
+
+**目标**：输出格式结构化、流式实时渲染、注入实时价格数据、修复语言问题
+
+**完成内容**
+- 服务端并行 fetch Yahoo Finance 实时价格，计算现值和盈亏%注入 prompt
+- 安装 `remark-gfm`，修复 Markdown 表格渲染
+- 修复流式渲染：有 token 即时显示，不等 loading 结束
+- 重设计 prompt：持仓快照表 / 风险评分 / 三大风险 / 行动建议
+- Dialog 放大至 `max-w-3xl / max-h-[80vh]`
+- 修复 locale 注入：英文 prompt 标题 + CRITICAL 语言指令
+
+**✅ 完成于 2026-06-19**
+
+---
+
+## Task 4：架构重构 — 类型依赖方向修正
+
+**目标**：消除 feature 层从 route 文件 import 类型的反向依赖
+
+**完成内容**
+- 新建 `features/assets/types/index.ts`，统一 `Asset`・`Transaction`・`NewsArticle`・`SymbolNews`
+- 删除 `types/global.d.ts` 和 `types/` 目录
+- 更新 15 个文件的 import 路径
+
+**✅ 完成于 2026-06-19**
+

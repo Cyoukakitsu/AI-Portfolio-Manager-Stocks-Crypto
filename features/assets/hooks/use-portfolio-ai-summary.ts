@@ -3,7 +3,7 @@
 
 import { useRef, useState } from "react";
 import { useLocale } from "next-intl";
-import type { Asset } from "@/types/global";
+import type { Asset } from "@/features/assets/types";
 
 type Params = {
   assets: Asset[];

@@ -3,7 +3,7 @@
 // 智能资产分析助手
 // 逻辑层见 hooks/use-portfolio-ai-summary.ts
 
-import type { Asset } from "@/types/global";
+import type { Asset } from "@/features/assets/types";
 import { useTranslations } from "next-intl";
 import { Bot, Sparkles } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -15,6 +15,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { usePortfolioAISummary } from "@/features/assets/hooks/use-portfolio-ai-summary";
 
 type Props = { assets: Asset[] };
@@ -52,7 +53,7 @@ export function PortfolioAISummary({ assets }: Props) {
       </div>
 
       {/* 分析结果弹窗 */}
-      <DialogContent className="w-[95vw] max-w-2xl">
+      <DialogContent className="w-[95vw] max-w-3xl max-h-[80vh] flex flex-col">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-base">
             <Bot className="h-4 w-4 text-primary" />
@@ -60,15 +61,15 @@ export function PortfolioAISummary({ assets }: Props) {
           </DialogTitle>
         </DialogHeader>
 
-        {/* 加载中：骨架屏动画；加载完成：渲染 Markdown */}
-        <div className="min-h-50 max-h-[60vh] overflow-y-auto pr-1">
-          {loading ? (
+        {/* 流式渲染：有 text 立即显示，loading 时仅在 text 为空才显示占位 */}
+        <div className="flex-1 min-h-0 overflow-y-auto pr-1">
+          {text ? (
+            <div className="prose prose-sm dark:prose-invert max-w-none text-[13px] leading-relaxed">
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{text}</ReactMarkdown>
+            </div>
+          ) : loading ? (
             <div className="flex items-center justify-center h-full min-h-50 text-sm text-muted-foreground">
               {t("analyzing")}
-            </div>
-          ) : text ? (
-            <div className="prose prose-sm dark:prose-invert max-w-none text-[13px] leading-relaxed">
-              <ReactMarkdown>{text}</ReactMarkdown>
             </div>
           ) : null}
         </div>

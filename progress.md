@@ -2,9 +2,9 @@
 
 ## 当前状态
 
-- 最新 commit：1d3cab6 (fix: yahoo-finance2 升级・移动端 UX 改善・重复资产错误文案修正)
+- 最新 commit：feat/add-agent-harness 分支（待 PR 合并）
 - 测试状态：CI 通过（GitHub Actions vitest 自动运行）
-- Lint：通过
+- Lint：通过（1 个已知 warning，use-portfolio-candlestick-chart.ts useMemo）
 - Build：通过
 
 ## 已完成
@@ -16,6 +16,9 @@
 - [x] GitHub Actions vitest CI 自动化
 - [x] Harness 初始化（CLAUDE.md / CONSTRAINTS.md / feature_list.json / progress.md / init.sh / session-handoff.md）
 - [x] 各功能模块 ARCHITECTURE.md（7 个）
+- [x] AI 分析页 SSE 流式推送（2026-06-15）
+- [x] Portfolio AI Summary リビルド：実時間価格注入・ストリーミング修正・プロンプト再設計（2026-06-19）
+- [x] アーキテクチャリファクタ：型依存方向修正・`features/assets/types/index.ts` 統合（2026-06-19）
 
 ## 进行中
 

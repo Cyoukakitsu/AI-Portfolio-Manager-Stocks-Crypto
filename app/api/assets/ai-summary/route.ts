@@ -1,6 +1,8 @@
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { tavilySearch } from "@tavily/ai-sdk";
 import { streamText, stepCountIs } from "ai";
+import YahooFinance from "yahoo-finance2";
+const yf = new YahooFinance();
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -9,9 +11,49 @@ const openrouter = createOpenRouter({
 export async function POST(req: Request) {
   const { assets, locale } = await req.json();
 
-  const holdings = (assets as { fullname: string; symbol: string; total_quantity: number; total_cost: number }[])
-    .map((a) => `${a.fullname} (${a.symbol}), qty: ${a.total_quantity}, cost: $${a.total_cost.toFixed(2)}`)
+  const rawAssets = assets as {
+    fullname: string;
+    symbol: string;
+    total_quantity: number;
+    total_cost: number;
+  }[];
+
+  // 并行获取所有持仓的实时价格
+  const enriched = await Promise.all(
+    rawAssets.map(async (a) => {
+      let currentPrice: number | null = null;
+      try {
+        const q = await yf.quote(a.symbol);
+        currentPrice = q.regularMarketPrice ?? null;
+      } catch {
+        // 价格获取失败时保持 null
+      }
+      const currentValue =
+        currentPrice !== null ? currentPrice * a.total_quantity : null;
+      const pnlPct =
+        currentValue !== null && a.total_cost > 0
+          ? ((currentValue - a.total_cost) / a.total_cost) * 100
+          : null;
+      return { ...a, currentPrice, currentValue, pnlPct };
+    })
+  );
+
+  const holdingsText = enriched
+    .map((a) => {
+      const price =
+        a.currentPrice !== null ? `$${a.currentPrice.toFixed(2)}` : "N/A";
+      const value =
+        a.currentValue !== null ? `$${a.currentValue.toFixed(2)}` : "N/A";
+      const pnl =
+        a.pnlPct !== null
+          ? `${a.pnlPct >= 0 ? "+" : ""}${a.pnlPct.toFixed(1)}%`
+          : "N/A";
+      return `${a.fullname} (${a.symbol}): qty=${a.total_quantity}, cost=$${a.total_cost.toFixed(2)}, current_price=${price}, current_value=${value}, pnl=${pnl}`;
+    })
     .join("\n");
+
+  // 按总成本排序找最大持仓，用于新闻搜索
+  const largest = [...enriched].sort((a, b) => b.total_cost - a.total_cost)[0];
 
   const result = streamText({
     model: openrouter("openrouter/free"),
@@ -19,35 +61,36 @@ export async function POST(req: Request) {
       tavilySearch: tavilySearch({ maxResults: 2 }),
     },
     stopWhen: stepCountIs(4),
-    system: `You are a senior portfolio analyst with expertise in equities, ETFs, and crypto assets.
-Your job: deliver a concise, data-driven portfolio review — no filler, no generic advice.
+    system: `You are a senior portfolio analyst. Deliver a structured, data-driven portfolio review — no filler, no generic advice.
 
-Always respond in the language matching locale "${locale}".
+CRITICAL: You MUST write your ENTIRE response in the language for locale "${locale}". For example: "ja" = Japanese, "en" = English, "zh" = Chinese. Every word, label, and sentence must be in that language.
 
-Output format (use these exact markdown headers, in order):
+Output exactly these four sections in order (translate section titles to the locale language):
 
-## Portfolio Snapshot
-One sentence on overall positioning: concentration, sector mix, or asset class balance.
+## 📊 HOLDINGS SNAPSHOT
+A GFM markdown table. Columns (translate headers to locale language): Symbol | Qty | Cost | Current Value | P&L%
+Use the real-time data provided. If price is N/A, show N/A.
 
-## What's Working
-- 2–3 bullets on strongest holdings or tailwinds (cite recent news if found)
+## 🎯 RISK SCORES (1–10)
+Three one-line bullets (translate labels to locale language):
+- Concentration Risk: X/10 — [reason citing largest position]
+- Sector Risk: X/10 — [reason citing sector concentration]
+- Macro Risk: X/10 — [reason citing current macro conditions]
 
-## Key Risks
-- 2–3 bullets on concentration risk, macro headwinds, or company-specific concerns
+## ⚠️ TOP 3 RISKS
+Three numbered risks. Name the specific holding(s) and quantify potential impact. Reference news if relevant.
 
-## Action Items
-- 1–2 concrete, prioritized actions the investor should consider this week`,
+## ✅ ACTION ITEMS
+2–3 concrete, prioritized actions. Name specific positions and suggest % adjustments. No generic advice.`,
     prompt: `Analyze this portfolio:
-${holdings}
 
-Step 1 — Search: Use tavilySearch to find the latest news (past 48h) for the largest position by total cost. Focus on earnings, analyst rating changes, or major catalysts.
+${holdingsText}
 
-Step 2 — Analyze: Using the search results and your knowledge, evaluate:
-- Concentration & diversification (sector, asset class)
-- Fundamental strength of top holdings (revenue trend, competitive moat)
-- Risk factors (macro, regulatory, valuation)
+Step 1 — Search: Use tavilySearch to find the latest news (past 48h) for ${largest.fullname} (${largest.symbol}), the largest position by cost. Focus on earnings, analyst rating changes, or major catalysts.
 
-Step 3 — Recommend: Give specific, prioritized action items based on current market context. Avoid generic advice like "diversify" — be precise about which positions and why.`,
+Step 2 — Analyze: Using the search results and the real-time P&L data above, evaluate concentration, sector exposure, fundamental strength, and macro risk factors.
+
+Step 3 — Output: Fill in all four sections exactly as specified in your instructions.`,
   });
 
   return result.toTextStreamResponse();

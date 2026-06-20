@@ -51,6 +51,20 @@ event: error                      →  { message: string }
 
 ---
 
+## Task 5：lib 层重构 — 外部服务统一封装
+
+**目标**：消除各路由/feature 中重复实例化外部服务的问题，统一注入机制
+
+**完成内容**
+- `lib/yahoo-finance.ts`：YahooFinance 单例，6 处 `new YahooFinance()` 统一替换
+- `lib/lang-instruction.ts`：`buildLangInstruction(locale)` 统一 locale 注入，消除 `locale === "ja"` 硬判断
+- `lib/news-fetcher.ts`：Tavily fetch 统一封装（超时 + 错误处理），`getNews.ts` / `news/route.ts` 两头对齐
+- `lib/ARCHITECTURE.md`：新建共享层架构文档
+
+**✅ 完成于 2026-06-20**
+
+---
+
 ## Task 4：架构重构 — 类型依赖方向修正
 
 **目标**：消除 feature 层从 route 文件 import 类型的反向依赖

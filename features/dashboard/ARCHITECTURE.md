@@ -13,7 +13,7 @@
 | `<AppSidebar>` | 主导航侧边栏，包含各功能模块入口 |
 | `<DashboardBreadcrumb>` | 当前页面路径面包屑 |
 | `<HeaderControls>` | Header 右侧控件组（搜索、主题、语言、用户） |
-| `<LocaleSwitcher>` | 国际化语言切换器（中/英/日） |
+| `<LocaleSwitcher>` | 国际化语言切换器（英/日） |
 | `<ModeToggle>` | 深色 / 浅色 / 系统主题切换 |
 | `<SettingsModal>` | 全局设置弹窗（API Key 等配置项） |
 | `<UserAvatar>` | 用户头像（显示邮箱首字母） |

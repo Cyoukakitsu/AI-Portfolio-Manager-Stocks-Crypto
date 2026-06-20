@@ -34,5 +34,6 @@ pnpm install
 | `init.sh`            | 验证入口            | 开始前和声称完成前各跑一次 |
 | `CONSTRAINTS.md`     | 完整硬约束清单      | 开始编码前确认无违规        |
 | `features/*/ARCHITECTURE.md` | 各模块职责、接口与依赖 | 修改某个 feature 前阅读对应文件 |
+| `lib/ARCHITECTURE.md`        | 共享工具层职责与使用约定 | 新增或修改 `lib/` 下文件前阅读 |
 | `GOTCHAS.md`         | 踩坑记录与注意事项  | 开始新功能开发前浏览一遍       |
 | `DEVLOG.md`          | 每日开发日志        | 会话结束时追加当天内容         |

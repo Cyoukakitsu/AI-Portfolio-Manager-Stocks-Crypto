@@ -1,8 +1,8 @@
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { tavilySearch } from "@tavily/ai-sdk";
 import { streamText, stepCountIs } from "ai";
-import YahooFinance from "yahoo-finance2";
-const yf = new YahooFinance();
+import yf from "@/lib/yahoo-finance";
+import { buildLangInstruction } from "@/lib/lang-instruction";
 
 const openrouter = createOpenRouter({
   apiKey: process.env.OPENROUTER_API_KEY,
@@ -61,18 +61,16 @@ export async function POST(req: Request) {
       tavilySearch: tavilySearch({ maxResults: 2 }),
     },
     stopWhen: stepCountIs(4),
-    system: `You are a senior portfolio analyst. Deliver a structured, data-driven portfolio review — no filler, no generic advice.
+    system: `You are a senior portfolio analyst. Deliver a structured, data-driven portfolio review — no filler, no generic advice.${buildLangInstruction(locale)}
 
-CRITICAL: You MUST write your ENTIRE response in the language for locale "${locale}". For example: "ja" = Japanese, "en" = English, "zh" = Chinese. Every word, label, and sentence must be in that language.
-
-Output exactly these four sections in order (translate section titles to the locale language):
+Output exactly these four sections in order (translate section titles to the output language):
 
 ## 📊 HOLDINGS SNAPSHOT
-A GFM markdown table. Columns (translate headers to locale language): Symbol | Qty | Cost | Current Value | P&L%
+A GFM markdown table. Columns (translate headers to output language): Symbol | Qty | Cost | Current Value | P&L%
 Use the real-time data provided. If price is N/A, show N/A.
 
 ## 🎯 RISK SCORES (1–10)
-Three one-line bullets (translate labels to locale language):
+Three one-line bullets (translate labels to output language):
 - Concentration Risk: X/10 — [reason citing largest position]
 - Sector Risk: X/10 — [reason citing sector concentration]
 - Macro Risk: X/10 — [reason citing current macro conditions]

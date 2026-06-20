@@ -19,6 +19,9 @@
 - [x] AI 分析页 SSE 流式推送（2026-06-15）
 - [x] Portfolio AI Summary リビルド：実時間価格注入・ストリーミング修正・プロンプト再設計（2026-06-19）
 - [x] アーキテクチャリファクタ：型依存方向修正・`features/assets/types/index.ts` 統合（2026-06-19）
+- [x] lib/yahoo-finance.ts 単例化：6 箇所の `new YahooFinance()` を統一（2026-06-20）
+- [x] lib/lang-instruction.ts 導入：locale 注入を `buildLangInstruction()` に統一（2026-06-20）
+- [x] lib/news-fetcher.ts 導入：Tavily fetch 二重実装を統一、タイムアウト・エラー処理を一元化（2026-06-20）
 
 ## 进行中
 

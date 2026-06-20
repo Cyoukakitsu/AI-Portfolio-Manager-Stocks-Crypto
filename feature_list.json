@@ -51,10 +51,10 @@
     {
       "id": "feat-ai",
       "name": "AI（智能分析）",
-      "description": "AI 辅助投资分析：Tavily 搜索、DeepSeek/Groq 模型集成",
+      "description": "AI 辅助投资分析：多角色大师并行分析、SSE 流式推送、DeepSeek 模型集成",
       "dependencies": ["feat-assets"],
       "status": "in-progress",
-      "evidence": "features/ai 含 components/lib/types；@ai-sdk 相关包已安装"
+      "evidence": "features/ai 含 components/lib/types；SSE 流式推送已完成；lib/yahoo-finance、lib/news-fetcher、lib/lang-instruction 统一封装已完成"
     }
   ]
 }

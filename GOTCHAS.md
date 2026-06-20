@@ -53,6 +53,42 @@
 
 ---
 
+## [2026-06-20] Tavily fetch 两头实现行为不一致
+
+**场景**：`getNews.ts`（AI tool）和 `news/route.ts` 各自直接 fetch Tavily API
+
+**现象**：`getNews.ts` 无超时保护、缺 key 静默返回 `[]`；`news/route.ts` 有 5s AbortController、缺 key 抛 500。修一处，另一处仍是旧行为
+
+**根因**：同一个 HTTP 操作复制了两份，参数和错误处理策略各自演化
+
+**注意**：统一通过 `lib/news-fetcher.ts` 的 `fetchNews(query, { maxResults, timeoutMs })` 调用，超时和 key 检查只在一处维护
+
+---
+
+## [2026-06-20] YahooFinance 多处实例化导致连接资源浪费
+
+**场景**：yahoo-finance2 被多个 API route 和 AI 工具函数各自 import 并 `new YahooFinance()`
+
+**现象**：每个模块独立持有实例，cookie jar / crumb 缓存无法复用，请求数翻倍
+
+**根因**：yahoo-finance2 在每个 `new YahooFinance()` 时会各自维护独立的 cookie jar 和 crumb，同一进程多实例等于重复握手
+
+**注意**：统一通过 `lib/yahoo-finance.ts` 导出单例，所有路由和工具函数 `import yf from "@/lib/yahoo-finance"` 即可，禁止再各自 new
+
+---
+
+## [2026-06-20] locale 注入机制在两条 AI 路由中分叉
+
+**场景**：`ai-analysis/route.ts` 和 `assets/ai-summary/route.ts` 都需要向 LLM 注入语言指令
+
+**现象**：两条路由各自实现：一个硬判 `locale === "ja"`（英文不注入），另一个直接把 locale 字符串拼进 prompt
+
+**根因**：没有共享的语言指令构建函数，新增语言需要同时改多处，且两种风格的指令措辞不一致
+
+**注意**：统一使用 `lib/lang-instruction.ts` 的 `buildLangInstruction(locale)`，新增语言只改 `LOCALE_NAMES` 映射表
+
+---
+
 ## [2026-06-15] 并行 Agent 改顺序执行导致总耗时翻倍
 
 **场景**：为 AI 分析页实现 SSE 流式推送（Task 2），需要逐步推送每个 Agent 的结果

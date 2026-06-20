@@ -33,8 +33,8 @@
 │   ├── hero/         — 公开落地页
 │   └── ai/           — AI 多角色投资分析
 ├── components/       — 跨功能通用 UI 组件
-├── lib/              — 通用工具函数
-├── messages/         — i18n 翻译文件（中/英/日）
+├── lib/              — 跨 feature 共享工具与外部服务封装（yahoo-finance、Tavily、i18n 指令等）
+├── messages/         — i18n 翻译文件（英/日）
 └── docs/specs/       — 功能规格与设计文档
 ```
 

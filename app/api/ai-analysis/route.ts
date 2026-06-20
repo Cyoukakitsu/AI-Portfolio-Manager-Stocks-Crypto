@@ -1,6 +1,7 @@
 import { deepseek } from "@ai-sdk/deepseek";
 import { generateText, stepCountIs } from "ai";
-import YahooFinance from "yahoo-finance2";
+import yf from "@/lib/yahoo-finance";
+import { buildLangInstruction } from "@/lib/lang-instruction";
 import { AgentPersona } from "@/features/ai/types";
 
 import { getStockPrice } from "@/features/ai/lib/getStockPrice";
@@ -27,10 +28,7 @@ export async function POST(request: Request) {
   }: { symbol: string; personas: AgentPersona[]; locale?: string } =
     await request.json();
 
-  const langInstruction =
-    locale === "ja"
-      ? "\n\nIMPORTANT: Write all text content (points, summary) in Japanese. Numbers and proper nouns (stock symbols, company names) remain in their original form."
-      : "";
+  const langInstruction = buildLangInstruction(locale);
 
   if (!symbol || !personas || personas.length < 1 || personas.length > 2) {
     return Response.json(
@@ -54,8 +52,6 @@ export async function POST(request: Request) {
             sseEvent("agent1_done", parseAgent(result.text, personas[0]))
           );
         } else {
-          const yf = new YahooFinance({ suppressNotices: ["yahooSurvey"] });
-
           const [result1, result2, quote] = await Promise.all([
             generateText({
               model: deepseek("deepseek-v4-flash"),

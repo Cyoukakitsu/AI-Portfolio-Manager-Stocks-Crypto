@@ -27,9 +27,16 @@
 
 ---
 
+## 外部服务
+
+**禁止**在 API route 或 feature 中直接 `new YahooFinance()` 或直接 `fetch("https://api.tavily.com/search", ...)`。
+**必须**通过 `lib/yahoo-finance`（单例）和 `lib/news-fetcher`（统一封装）访问外部服务。
+
+---
+
 ## 国际化（i18n）
 
-**禁止**在组件中硬编码用户可见的中文/英文/日文字符串。
+**禁止**在组件中硬编码用户可见的英文/日文字符串。
 **必须**在 `messages/` 目录下添加对应翻译键后再使用 `useTranslations()` 引用。
 
 ---

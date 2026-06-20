@@ -4,6 +4,29 @@
 
 ---
 
+## 2026-06-20
+
+**lib 层重构 — 外部服务统一封装（Task 5）**
+- `lib/yahoo-finance.ts` 新建：YahooFinance 单例（含 `suppressNotices`），6 处 `new YahooFinance()` 全部替换
+- `lib/lang-instruction.ts` 新建：`buildLangInstruction(locale)` 统一 locale → 语言指令转换，消除 `ai-analysis` 中 `locale === "ja"` 硬判断和 `ai-summary` 中内嵌 locale 字符串两头分叉
+- `lib/news-fetcher.ts` 新建：Tavily `fetchNews(query, { maxResults, timeoutMs })` 统一封装，`getNews.ts`（无超时）和 `news/route.ts`（有 AbortController）行为对齐
+
+**Harness 全量更新**
+- `lib/ARCHITECTURE.md` 新建：共享层职责、文件一览、使用约定
+- `CLAUDE.md`：专题文档表新增 `lib/ARCHITECTURE.md` 条目
+- `CONSTRAINTS.md`：i18n 约束改"英文/日文"（删除中文）；新增外部服务约束（禁止绕过 `lib/` 直接访问）
+- `INIT_CONTRACT.md`：`lib/` 描述更新；`messages/` 改"英/日"
+- `GOTCHAS.md`：新增 YahooFinance 多实例、locale 机制分叉、Tavily 两头实现三条踩坑记录
+- `features/ai/ARCHITECTURE.md`：工具依赖、依赖关系、注意事项同步更新
+- `features/assets/ARCHITECTURE.md`：依赖关系同步更新
+- `features/stocks/ARCHITECTURE.md`：依赖改为 `lib/yahoo-finance`
+- `features/dashboard/ARCHITECTURE.md`：LocaleSwitcher 改"英/日"
+- `feature_list.json`：`feat-ai` 描述和 evidence 更新
+- `TASKS.md`：补录 Task 5 完成记录
+- `progress.md`：追加三项完成条目
+
+---
+
 ## 2026-06-19
 
 **量化投資機構機能の削除**

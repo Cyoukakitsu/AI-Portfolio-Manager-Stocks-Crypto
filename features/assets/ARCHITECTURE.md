@@ -49,7 +49,8 @@ calculateAssetHoldings(transactions): { total_quantity, total_cost, avg_price }
 
 ```
 assets
-├── 外部：Supabase（DB）、Zod、yahoo-finance2（价格查询）、@tanstack/react-query（hooks 数据管理）
+├── 外部：Supabase（DB）、Zod、@tanstack/react-query（hooks 数据管理）
+├── 共享：lib/yahoo-finance（YahooFinance 单例，价格查询）、lib/lang-instruction（AI Summary locale 指令）
 └── 内部：features/auth（getAuthSession）
 ```
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import { fetchNews } from "@/lib/news-fetcher";
 
 import type { NewsArticle, SymbolNews } from "@/features/assets/types";
 export type { NewsArticle, SymbolNews };
@@ -59,45 +60,9 @@ export async function GET(req: NextRequest) {
 
       // Tavily API 呼び出し
       try {
-        const controller = new AbortController();
-        const timer = setTimeout(() => controller.abort(), 5000);
-        let res: Response;
-        try {
-          res = await fetch("https://api.tavily.com/search", {
-            signal: controller.signal,
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              api_key: apiKey,
-              query: `${symbol} stock news today`,
-              max_results: 1,
-              search_depth: "basic",
-              include_answer: false,
-            }),
-          });
-        } finally {
-          clearTimeout(timer);
-        }
-
-        if (!res.ok) {
-          return { symbol, articles: [] };
-        }
-
-        const data = await res.json();
-        const articles: NewsArticle[] = (data.results ?? []).map(
-          (r: { title: string; url: string; source?: string; published_date?: string; content?: string }) => ({
-            title: r.title,
-            url: r.url,
-            source: r.source ?? (() => {
-              try {
-                return new URL(r.url).hostname.replace("www.", "");
-              } catch {
-                return r.url;
-              }
-            })(),
-            publishedDate: r.published_date ?? "",
-            content: r.content ?? "",
-          })
+        const articles: NewsArticle[] = await fetchNews(
+          `${symbol} stock news today`,
+          { maxResults: 1, timeoutMs: 5000 },
         );
 
         // キャッシュへ書き込み（失敗してもクライアントへはそのまま返す）

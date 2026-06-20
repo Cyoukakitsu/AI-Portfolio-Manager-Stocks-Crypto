@@ -20,7 +20,8 @@
 
 ```
 stocks
-├── 外部：TradingView Widget（嵌入式 iframe）、yahoo-finance2（价格数据）
+├── 外部：TradingView Widget（嵌入式 iframe）
+├── 共享：lib/yahoo-finance（价格数据）
 └── 内部：无（独立展示模块，不依赖其他 feature）
 ```
 

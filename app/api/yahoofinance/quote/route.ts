@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import YahooFinance from "yahoo-finance2";
-
-const yf = new YahooFinance();
+import yf from "@/lib/yahoo-finance";
 
 export async function GET(req: NextRequest) {
   const symbol = req.nextUrl.searchParams.get("symbol");

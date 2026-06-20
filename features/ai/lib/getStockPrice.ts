@@ -2,10 +2,8 @@
 //参考：https://ai-sdk.dev/docs/reference/ai-sdk-core/tool
 
 import { tool } from "ai";
-import YahooFinance from "yahoo-finance2";
+import yf from "@/lib/yahoo-finance";
 import { z } from "zod";
-
-const yf = new YahooFinance();
 
 export const getStockPrice = tool({
   // AI 工具描述

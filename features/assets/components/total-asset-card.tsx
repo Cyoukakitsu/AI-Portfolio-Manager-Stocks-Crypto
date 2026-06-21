@@ -1,5 +1,6 @@
 "use client";
 
+// 总资产与今日盈亏摘要卡片
 import { useTranslations } from "next-intl";
 import { useAssetReturn } from "@/features/assets/hooks/use-total-asset-card";
 import type { Asset } from "@/features/assets/types";

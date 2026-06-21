@@ -1,5 +1,6 @@
 "use client";
 
+// TradingView 股票市场数据 Widget 封装
 import { useEffect, useRef } from "react";
 
 function MarketDataStocks() {

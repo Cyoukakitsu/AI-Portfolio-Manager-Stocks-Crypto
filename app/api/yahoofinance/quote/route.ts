@@ -1,3 +1,4 @@
+// GET /api/yahoofinance/quote — 返回指定 symbol 的实时报价
 import { NextRequest, NextResponse } from "next/server";
 import yf from "@/lib/yahoo-finance";
 

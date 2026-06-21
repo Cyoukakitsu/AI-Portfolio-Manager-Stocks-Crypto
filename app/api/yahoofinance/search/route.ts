@@ -1,3 +1,4 @@
+// GET /api/yahoofinance/search — 搜索股票 / ETF / 加密货币 symbol
 import { NextRequest, NextResponse } from "next/server";
 import yf from "@/lib/yahoo-finance";
 

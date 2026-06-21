@@ -1,5 +1,6 @@
 "use client";
 
+// TradingView 加密货币市值热力图 Widget 封装
 import { useEffect, useRef } from "react";
 import { useTheme } from "next-themes";
 

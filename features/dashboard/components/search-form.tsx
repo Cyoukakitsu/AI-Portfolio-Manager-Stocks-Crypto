@@ -1,3 +1,4 @@
+// 侧边栏搜索框（当前为展示用占位）
 import { Label } from "@/components/ui/label";
 import { SidebarGroup, SidebarGroupContent } from "@/components/ui/sidebar";
 

@@ -1,5 +1,6 @@
 "use client";
 
+// 单个 AI 分析师的分析结果卡片
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";

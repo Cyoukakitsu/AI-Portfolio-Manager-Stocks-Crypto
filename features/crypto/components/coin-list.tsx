@@ -1,5 +1,6 @@
 "use client";
 
+// TradingView 加密货币列表 Widget 封装
 import Script from "next/script";
 
 export default function CoinList() {

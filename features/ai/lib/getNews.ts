@@ -1,3 +1,4 @@
+// AI 工具函数——让 AI 模型能够主动查询指定 symbol 的新闻
 import { tool } from "ai";
 import { z } from "zod";
 import { fetchNews } from "@/lib/news-fetcher";

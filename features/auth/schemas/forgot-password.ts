@@ -1,3 +1,4 @@
+// 忘记密码表单的 Zod 校验 Schema
 import { z } from "zod";
 
 export const forgotPasswordSchema = z.object({

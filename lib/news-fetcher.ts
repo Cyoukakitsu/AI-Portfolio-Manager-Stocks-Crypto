@@ -1,3 +1,4 @@
+// Tavily 新闻搜索统一封装，暴露 fetchNews()，内置超时和 API key 检查
 export interface NewsArticle {
   title: string;
   url: string;

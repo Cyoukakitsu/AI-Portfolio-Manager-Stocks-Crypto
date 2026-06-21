@@ -1,5 +1,6 @@
 "use client";
 
+// 持仓列表表格，含展开行查看交易记录
 import { Fragment } from "react";
 import { useTranslations } from "next-intl";
 import {

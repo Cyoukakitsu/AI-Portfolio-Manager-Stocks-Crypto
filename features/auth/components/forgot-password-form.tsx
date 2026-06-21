@@ -1,5 +1,6 @@
 "use client";
 
+// 忘记密码表单——发送重置邮件
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { motion, AnimatePresence } from "motion/react";

@@ -1,3 +1,4 @@
+// POST /api/assets/ai-summary — 补全持仓实时价格后，调用 OpenRouter 流式生成投资组合分析报告
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { tavilySearch } from "@tavily/ai-sdk";
 import { streamText, stepCountIs } from "ai";

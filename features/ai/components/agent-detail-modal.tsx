@@ -1,5 +1,6 @@
 "use client";
 
+// 展示分析师详细分析内容的弹窗
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { AgentPersona } from "@/features/ai/types";

@@ -1,5 +1,6 @@
 "use client";
 
+// 协调者综合两位分析师观点后的最终结论卡片
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";

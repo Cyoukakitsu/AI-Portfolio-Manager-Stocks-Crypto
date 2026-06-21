@@ -1,5 +1,6 @@
 "use client";
 
+// 落地页功能特性展示区块
 import Image from "next/image";
 import { motion } from "motion/react";
 import { useTranslations } from "next-intl";

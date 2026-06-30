@@ -1,5 +1,6 @@
 "use client";
 
+// TradingView 市场头条新闻 Widget 封装
 import { useEffect, useRef } from "react";
 
 function TopStories() {

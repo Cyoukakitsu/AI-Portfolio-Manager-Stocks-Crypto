@@ -1,3 +1,4 @@
+// GET /api/yahoofinance/history — 返回指定 symbol 的历史 OHLCV 数据
 import { NextRequest, NextResponse } from "next/server";
 import yf from "@/lib/yahoo-finance";
 

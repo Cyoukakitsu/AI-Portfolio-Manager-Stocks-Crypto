@@ -1,5 +1,6 @@
 "use client";
 
+// Auth 页面（登录/注册/重置密码）的公共布局容器
 import { motion } from "motion/react";
 
 const AuthLayoutWrapper = ({ children }: { children: React.ReactNode }) => {

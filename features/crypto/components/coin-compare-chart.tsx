@@ -1,5 +1,6 @@
 "use client";
 
+// TradingView 加密货币对比走势图 Widget 封装
 import Script from "next/script";
 
 export default function CoinCompareChart() {

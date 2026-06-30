@@ -1,3 +1,4 @@
+// Header 右侧工具栏——主题、语言切换、用户头像
 import { ModeToggle } from "@/features/dashboard/components/mode-toggle";
 import { LocaleSwitcher } from "@/features/dashboard/components/locale-switcher";
 import { UserAvatar } from "@/features/dashboard/components/user-avatar";

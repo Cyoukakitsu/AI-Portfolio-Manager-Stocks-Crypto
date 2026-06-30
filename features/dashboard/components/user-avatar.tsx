@@ -1,5 +1,6 @@
 "use client";
 
+// Header 用户头像 + 下拉菜单（退出登录等）
 import { useState } from "react";
 import { Settings, LogOut } from "lucide-react";
 import { useTranslations } from "next-intl";

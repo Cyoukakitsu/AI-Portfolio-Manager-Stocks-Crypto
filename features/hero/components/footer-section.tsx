@@ -1,3 +1,4 @@
+// 落地页底部 Footer
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 

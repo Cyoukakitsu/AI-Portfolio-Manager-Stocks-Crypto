@@ -1,5 +1,6 @@
 "use client";
 
+// 投资组合历史净值 K 线图
 import { useTranslations } from "next-intl";
 import { TrendingUp } from "lucide-react";
 import { motion } from "motion/react";

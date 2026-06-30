@@ -51,6 +51,15 @@
     "yahoo-finance2": "^3.15.2",
     "zod": "^4.3.6"
   },
+  "pnpm": {
+    "allowedBuiltDependencies": [
+      "@parcel/watcher",
+      "@swc/core",
+      "msw",
+      "sharp",
+      "unrs-resolver"
+    ]
+  },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",

@@ -1,5 +1,6 @@
 "use client";
 
+// TradingView 股票滚动行情栏 Widget 封装
 import { useEffect, useRef } from "react";
 
 function TickerTape() {

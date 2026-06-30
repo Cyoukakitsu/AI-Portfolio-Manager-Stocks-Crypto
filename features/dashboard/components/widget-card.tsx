@@ -1,3 +1,4 @@
+// Dashboard 通用 Widget 卡片容器
 import React from "react";
 import { Badge } from "@/components/ui/badge";
 

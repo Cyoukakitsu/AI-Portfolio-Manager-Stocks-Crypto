@@ -1,5 +1,6 @@
 "use client";
 
+// AI 分析流程的整体容器——含步骤状态和结果区域
 import { useRef, useState } from "react";
 import { useLocale, useTranslations } from "next-intl";
 

@@ -1,3 +1,4 @@
+// GET /api/assets/news — 按 symbol 拉取今日新闻，Supabase JST 日期缓存，最多 10 个 symbol
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { fetchNews } from "@/lib/news-fetcher";

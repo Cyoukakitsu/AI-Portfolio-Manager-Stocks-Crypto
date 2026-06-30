@@ -1,5 +1,6 @@
 "use server";
 
+// Server Action 辅助函数——session 读取、用户信息获取等共用逻辑
 import { createClient } from "@/lib/supabase/server";
 
 /**

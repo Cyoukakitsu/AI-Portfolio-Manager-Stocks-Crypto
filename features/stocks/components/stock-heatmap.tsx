@@ -1,5 +1,6 @@
 "use client";
 
+// TradingView 股票市场热力图 Widget 封装
 import { useEffect, useRef } from "react";
 
 function TradingViewWidget() {

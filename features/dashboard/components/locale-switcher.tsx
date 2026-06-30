@@ -1,5 +1,6 @@
 "use client";
 
+// 国际化语言切换器（ja / en）
 import { useLocale } from "next-intl";
 import { useRouter, usePathname } from "@/i18n/navigation";
 import { motion, AnimatePresence } from "motion/react";

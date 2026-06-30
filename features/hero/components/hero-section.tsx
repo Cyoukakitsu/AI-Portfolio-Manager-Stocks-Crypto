@@ -1,5 +1,6 @@
 "use client";
 
+// 落地页主视觉 Hero 区块与 CTA
 import { useEffect } from "react";
 import { motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";

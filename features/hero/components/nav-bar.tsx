@@ -1,5 +1,6 @@
 "use client";
 
+// 落地页顶部导航栏
 import { Link, usePathname } from "@/i18n/navigation";
 import { LocaleSwitcher } from "@/features/dashboard/components/locale-switcher";
 import { ModeToggle } from "@/features/dashboard/components/mode-toggle";

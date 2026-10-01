@@ -45,7 +45,7 @@ export function usePortfolioAISummary({ assets, fetchErrorMessage }: Params) {
       const res = await fetch("/api/assets/ai-summary", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ assets, locale }),
+        body: JSON.stringify({ locale }),
         signal: ctrl.signal,
       });
       if (!res.ok || !res.body) throw new Error("fetch failed");

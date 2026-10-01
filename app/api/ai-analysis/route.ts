@@ -1,4 +1,5 @@
 // POST /api/ai-analysis — 运行 1-2 个 AI 分析师 agent，SSE 流式返回分析结果与 coordinator 综合结论
+import { rejectIfUnauthenticated } from "@/lib/api-auth";
 import { deepseek } from "@ai-sdk/deepseek";
 import { generateText, stepCountIs } from "ai";
 import yf from "@/lib/yahoo-finance";
@@ -22,6 +23,9 @@ function sseEvent(event: string, data: unknown): Uint8Array {
 }
 
 export async function POST(request: Request) {
+  const denied = await rejectIfUnauthenticated();
+  if (denied) return denied;
+
   const {
     symbol,
     personas,

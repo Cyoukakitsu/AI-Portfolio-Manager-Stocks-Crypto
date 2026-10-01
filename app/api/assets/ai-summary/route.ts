@@ -1,8 +1,11 @@
 // POST /api/assets/ai-summary — 补全持仓实时价格后，调用 OpenRouter 流式生成投资组合分析报告
+import { rejectIfUnauthenticated } from "@/lib/api-auth";
 import { createOpenRouter } from "@openrouter/ai-sdk-provider";
 import { tavilySearch } from "@tavily/ai-sdk";
 import { streamText, stepCountIs } from "ai";
 import yf from "@/lib/yahoo-finance";
+import type { Asset } from "@/features/assets/types";
+import { getAssets } from "@/features/assets/server/assets";
 import { buildLangInstruction } from "@/lib/lang-instruction";
 
 const openrouter = createOpenRouter({
@@ -10,14 +13,16 @@ const openrouter = createOpenRouter({
 });
 
 export async function POST(req: Request) {
-  const { assets, locale } = await req.json();
+  const denied = await rejectIfUnauthenticated();
+  if (denied) return denied;
 
-  const rawAssets = assets as {
-    fullname: string;
-    symbol: string;
-    total_quantity: number;
-    total_cost: number;
-  }[];
+  const { locale } = await req.json();
+
+  // 持仓只从服务端按 user_id 读取，不信任客户端传入
+  const rawAssets: Asset[] = await getAssets();
+  if (rawAssets.length === 0) {
+    return Response.json({ error: "No holdings" }, { status: 400 });
+  }
 
   // 并行获取所有持仓的实时价格
   const enriched = await Promise.all(

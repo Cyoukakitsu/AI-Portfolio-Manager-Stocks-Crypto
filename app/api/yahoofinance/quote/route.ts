@@ -1,8 +1,12 @@
 // GET /api/yahoofinance/quote — 返回指定 symbol 的实时报价
+import { rejectIfUnauthenticated } from "@/lib/api-auth";
 import { NextRequest, NextResponse } from "next/server";
 import yf from "@/lib/yahoo-finance";
 
 export async function GET(req: NextRequest) {
+  const denied = await rejectIfUnauthenticated();
+  if (denied) return denied;
+
   const symbol = req.nextUrl.searchParams.get("symbol");
 
   if (!symbol || symbol.trim() === "") {

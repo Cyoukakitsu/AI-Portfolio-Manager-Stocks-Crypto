@@ -1,4 +1,5 @@
 // GET /api/assets/news — 按 symbol 拉取今日新闻，Supabase JST 日期缓存，最多 10 个 symbol
+import { rejectIfUnauthenticated } from "@/lib/api-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { fetchNews } from "@/lib/news-fetcher";
@@ -13,6 +14,9 @@ function getJSTDateString(): string {
 }
 
 export async function GET(req: NextRequest) {
+  const denied = await rejectIfUnauthenticated();
+  if (denied) return denied;
+
   const { searchParams } = new URL(req.url);
   const symbolsParam = searchParams.get("symbols");
   const force = searchParams.get("force") === "true";

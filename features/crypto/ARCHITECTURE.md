@@ -10,12 +10,10 @@
 
 | 组件 | 说明 |
 |---|---|
-| `<CoinList>` | 主流币种列表（价格、涨跌幅） |
 | `<CryptoHeatmap>` | 市值热力图 |
 | `<MarketOverview>` | 市场概览（总市值、BTC 占比等） |
 | `<MarketQuotes>` | 实时报价列表 |
 | `<CoinCompareChart>` | 多币种价格走势对比 |
-| `<Converter>` | 法币 ↔ 加密货币换算 |
 | `<MarqueeTicker>` | 滚动行情 Ticker 条 |
 
 ## 依赖关系

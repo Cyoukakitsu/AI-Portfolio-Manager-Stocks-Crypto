@@ -43,7 +43,9 @@ next-env.d.ts
 
 # local dev
 .claude/
-docs/
+docs/*
+!docs/adr/
+!docs/research/
 
 .agents/
 .superpowers/

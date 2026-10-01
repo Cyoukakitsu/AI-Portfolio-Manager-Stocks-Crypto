@@ -1,78 +1,85 @@
-# 任务分解
+# 任务清单
 
-每次只做一个任务。完成验收标准后更新 `progress.md` 和 `feature_list.json`，再选下一个任务。
+唯一的任务事实来源。一次只做一个任务；完成条件见文末"完成条件"。
+计划是活的：新想法先进 Inbox，不打断当前任务；每完成一项，过一遍 Inbox 并更新下方汇总。
 
----
+## 剩余未完成
 
-## Task 2：AI 分析页 SSE 流式推送
+Phase 0：0.2 · 0.3 · 0.4 · 0.5
+Phase 1：1.1 · 1.2 · 1.3 · 1.4
+Phase 2：2.1 · 2.2 · 2.3
+Phase 3：3.1 · 3.2
+Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
-**目标**：将 `/api/ai-analysis` 从阻塞式 JSON 改为 SSE 流，Agent 结果逐张滑入，删除 `ProgressSteps` 假进度条。
+## 已确定的约定（来自 2026-10-01 重构访谈）
 
-**背景**
-当前双 Agent 模式需等待全部完成（约 15 秒）才一次性渲染。改为 SSE 后，两个 Agent 仍然并行执行，哪个先完成哪张卡片先滑入，总耗时不变但第一张卡约 10 秒即可出现。设计文档：`docs/superpowers/specs/2026-06-15-ai-analysis-sse-streaming-design.md`
+- 目标：全面重构，顺序为 代码清理 → AI 层 → 命名与可读性 → UI/UX 重设计；Hero 页最后做，并入全站重设计，原 B+C 方案作废
+- 本轮重构不改变路由、功能和操作流程；UI 视觉与布局可大改
+- 测试：Playwright E2E（`page.route` mock 外部接口）为主，保留现有 vitest 纯函数测试；E2E 并入 `init.sh`
+- 防御性代码：只在信任边界（请求体、外部 API、LLM 输出）校验；不可达的防御一律删除；AI 失败显式报错，不再伪造"持有 50 分"
+- AI：统一 DeepSeek（见 `docs/adr/0001-unify-on-deepseek.md`）；用 zod 结构化输出取代"提示词描述 JSON + 正则"；提示词只保留角色、方法论、语言
+- 数据访问：SSE 和 AI 用 route handler，其余读写走 server actions，并修正 `CLAUDE.md` 约束措辞
+- 术语以 `CONTEXT.md` 为准；文件名全部 kebab-case；代码注释统一中文，只写"为什么"
+- 所有删除操作先出清单，经确认再执行
 
-**范围文件**
-- `app/api/ai-analysis/route.ts` — 改为 SSE ReadableStream，顺序执行 Agent，逐步 push 事件
-- `features/ai/components/analysis-shell.tsx` — 替换 useMutation 为手动 SSE fetch reader，删除 ProgressSteps 相关代码
-- `features/ai/components/progress-steps.tsx` — **整个文件删除**
+## Phase 0：安全网与 harness
 
-**SSE 事件协议**
-```
-event: agent1_done / agent2_done  →  AgentResult JSON（并行执行，谁先完成谁先推）
-event: coordinator_done           →  CoordinatorResult JSON（两个 agent 都完成后才启动）
-event: error                      →  { message: string }
-```
+- [x] **0.1** 清理残留 worktree；合并 `progress.md` / `feature_list.json` / `DEVLOG.md` / `INIT_CONTRACT.md` 后删除；精简 `CLAUDE.md`；调研文档存入 `docs/research/`（2026-10-01）
+- [ ] **0.2** Playwright E2E 基线（登录、新增资产与交易、AI 分析页出结果、切换语言与主题），接口 mock，加入 `init.sh`
+- [ ] **0.3** knip 死代码、死导出、死依赖清单（只出清单，确认后再删）
+- [ ] **0.4** `finish-task` skill + `scripts/check-harness.sh` + Stop hook（源码改了但本文件未更新则拦截；Inbox 积压则提醒）
+- [ ] **0.5** `/api/*` 补身份校验（未登录返回 401）；`ai-summary` 改为服务端按 `user_id` 读持仓，不再信任客户端传入的 assets。有意的行为变化，经用户确认（2026-10-01）
 
-**验收标准**
-- [x] `pnpm build` 通过，无类型错误
-- [x] 选 1 个 Agent：约 10 秒后卡片带 fade-in 动画出现
-- [x] 选 2 个 Agent：第一张卡片先出现，第二张随后滑入，最后 Coordinator 卡片出现
-- [x] `ProgressSteps` 组件已删除，`runFakeProgress` 逻辑已删除
-- [x] 用户中途关闭页面 / 重新分析可正确中止上一次请求（AbortController）
-- [x] 分析失败时 `toast.error` 正常弹出
+## Phase 1：代码清理
 
-**✅ 完成于 2026-06-15**
+- [ ] **1.1** 按 0.3 清单删除死代码与依赖
+- [ ] **1.2** 删除不可达的防御代码（逐项列表确认）
+- [ ] **1.3** 去重：`ai-analysis` route 的 3 份 `generateText`、重复表单逻辑、`yahoofinance` 路由（先给目录结构方案再改）
+- [ ] **1.4** 数据访问统一：移除 `/api/yahoofinance/*` 薄转发，改 server actions；更新 `CLAUDE.md` 与 `CONSTRAINTS.md`
 
----
+## Phase 2：AI 层
 
-## Task 3：Portfolio AI Summary リビルド
+- [ ] **2.1** `lib/ai.ts` 集中模型配置；全部统一 DeepSeek；删除 openrouter、groq 依赖
+- [ ] **2.2** 结构化输出（zod）；失败显示"分析失败，重试"，不伪造结果
+- [ ] **2.3** Persona 提示词数据化 + 单模板，精简；用真实 DeepSeek 实测稳定性，不稳则退回"短提示词 + 一次校验重试"
 
-**目标**：输出格式结构化、流式实时渲染、注入实时价格数据、修复语言问题
+## Phase 3：命名与可读性
 
-**完成内容**
-- 服务端并行 fetch Yahoo Finance 实时价格，计算现值和盈亏%注入 prompt
-- 安装 `remark-gfm`，修复 Markdown 表格渲染
-- 修复流式渲染：有 token 即时显示，不等 loading 结束
-- 重设计 prompt：持仓快照表 / 风险评分 / 三大风险 / 行动建议
-- Dialog 放大至 `max-w-3xl / max-h-[80vh]`
-- 修复 locale 注入：英文 prompt 标题 + CRITICAL 语言指令
+- [ ] **3.1** 按 `CONTEXT.md` 改名（`AgentResult`→`PersonaAnalysis`、`Coordinator`→`CommitteeVerdict` 等）；文件名 kebab-case；注释统一中文
+- [ ] **3.2** 拆分过长组件和函数（如 `asset-table.tsx` 390 行）
 
-**✅ 完成于 2026-06-19**
+## Phase 4：UI/UX 重设计
 
----
+- [ ] **4.1** 确定设计方向（用户看完参考站点后选定）；设计 token 与组件基线
+- [ ] **4.2** Dashboard 与 AI 分析页方案，经用户确认
+- [ ] **4.3** 其余页面铺开
+- [ ] **4.4** Hero 页最后做
 
-## Task 5：lib 层重构 — 外部服务统一封装
+## Inbox
 
-**目标**：消除各路由/feature 中重复实例化外部服务的问题，统一注入机制
+开发中产生的新想法写在这里，格式：`- YYYY-MM-DD 想法（来源任务）`。每个任务完成时处理：并入某阶段 / 延后 / 丢弃。
 
-**完成内容**
-- `lib/yahoo-finance.ts`：YahooFinance 单例，6 处 `new YahooFinance()` 统一替换
-- `lib/lang-instruction.ts`：`buildLangInstruction(locale)` 统一 locale 注入，消除 `locale === "ja"` 硬判断
-- `lib/news-fetcher.ts`：Tavily fetch 统一封装（超时 + 错误处理），`getNews.ts` / `news/route.ts` 两头对齐
-- `lib/ARCHITECTURE.md`：新建共享层架构文档
+- 2026-10-01 调研文档 `docs/research/refactor-ideas.md` 还提出：Supabase schema/RLS 不在仓库内、报价 N 次请求可批量化、分析结果不持久化、`ai/ARCHITECTURE.md` 与代码不符等，待逐条决定是否纳入（来源：任务 0.1）
+- 2026-10-01 `CONSTRAINTS.md` 的"禁止 vitest mock 外部 API"与 0.2 的 Playwright mock 方案冲突，"一个 session 不得改多个 features 子目录"与重构范围冲突，需在 0.2 / 0.4 修订（来源：任务 0.1）
+- 2026-10-01 已知 lint warning：`use-portfolio-candlestick-chart.ts` 的 `useMemo`（来源：旧 progress.md）
 
-**✅ 完成于 2026-06-20**
+## 变更记录
 
----
+计划有变动时记一行：`YYYY-MM-DD 改了什么：原因`。
 
-## Task 4：架构重构 — 类型依赖方向修正
+- 2026-10-01 新增 0.5（API 鉴权）：读调研文档发现 `/api/*` 无鉴权，属安全与成本风险，排在 Phase 1 之前
+- 2026-10-01 新建本清单，取代旧 Task 2–5 的叙述式记录：重构访谈达成共识
 
-**目标**：消除 feature 层从 route 文件 import 类型的反向依赖
+## 完成条件（每个任务）
 
-**完成内容**
-- 新建 `features/assets/types/index.ts`，统一 `Asset`・`Transaction`・`NewsArticle`・`SymbolNews`
-- 删除 `types/global.d.ts` 和 `types/` 目录
-- 更新 15 个文件的 import 路径
+1. `./init.sh` 全过（build、lint、test，E2E 就绪后含 E2E）
+2. 勾选对应任务并标注完成日期，更新"剩余未完成"
+3. 检查相关 `ARCHITECTURE.md`、`CONTEXT.md`、`CLAUDE.md` 是否需要同步
+4. 处理 Inbox，必要时写变更记录
 
-**✅ 完成于 2026-06-19**
+## 历史（重构前已完成）
 
+- [x] AI 分析页 SSE 流式推送（2026-06-15）
+- [x] Portfolio AI Summary 重建：实时价格注入、流式渲染、提示词重设计（2026-06-19）
+- [x] 类型依赖方向修正，统一 `features/assets/types/index.ts`（2026-06-19）
+- [x] lib 层统一外部服务：`yahoo-finance.ts` 单例、`lang-instruction.ts`、`news-fetcher.ts`（2026-06-20）

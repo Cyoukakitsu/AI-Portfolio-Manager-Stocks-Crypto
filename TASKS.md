@@ -66,12 +66,15 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 - 2026-10-01 E2E 里的主题用例依赖现有主题名（Dark），Phase 4 重设计主题时需同步更新（来源：任务 0.2a）
 - 2026-10-01 `sign-up-form` / `forgot-password-form` 把服务端英文错误文案直接 toast，未走 i18n（来源：任务 1.2 补扫）
 - 2026-10-01 `app/auth/callback/route.ts` 的失败重定向写死 `/ja/sign-in`，应按 locale 跳转（来源：任务 1.2 补扫）
+- 2026-10-01 `search-bar.tsx` 的 placeholder / "No results found" / "Loading..." / "Analyze" 硬编码英文，违反 i18n 约束（来源：code-review）
+- 2026-10-01 `lib/api-auth.ts` 自建 Supabase client，与 CONSTRAINTS“只能通过 getAuthSession()”冲突；`getAuthSession` 未登录抛异常且 lib 不能依赖 features，需决定改约束开例外还是改实现（来源：code-review，用户决定先保持现状）
 - 2026-10-01 已知 lint warning：`use-portfolio-candlestick-chart.ts` 的 `useMemo`（来源：旧 progress.md）
 
 ## 变更记录
 
 计划有变动时记一行：`YYYY-MM-DD 改了什么：原因`。
 
+- 2026-10-01 1.3 去重附带行为变化：ai 搜索栏防抖 500ms→400ms，并取消“已选中”状态（选中后 query 即为该代码）；报价/历史/搜索失败时统一按 `res.ok` 处理
 - 2026-10-01 1.2 清单中的 A3（`?? null`）撤销：quote 路由出错时返回 `{error}` 无 `price`，该写法可达
 - 2026-10-01 0.2 拆为 0.2a / 0.2b：服务端直连 Supabase，`page.route` 拦不到登录与资产 CRUD，登录后的流程需要先定 Supabase 测试方案，用户决定留到明天
 - 2026-10-01 新增 0.5（API 鉴权）：读调研文档发现 `/api/*` 无鉴权，属安全与成本风险，排在 Phase 1 之前

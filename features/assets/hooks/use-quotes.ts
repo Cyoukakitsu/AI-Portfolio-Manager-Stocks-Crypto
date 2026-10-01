@@ -1,6 +1,6 @@
 // 各资产的实时报价，total-asset-card 与 asset-table 共用同一份缓存
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
-import { fetchQuote, type QuoteData } from "@/lib/market-api";
+import { EMPTY_QUOTE, fetchQuote, type QuoteData } from "@/lib/market-api";
 import type { Asset } from "@/features/assets/types";
 
 export type QuotesMap = Record<string, QuoteData>;
@@ -16,7 +16,7 @@ export function useQuotes(assets: Asset[]) {
           asset.symbol,
           // 现金没有行情
           asset.asset_type === "cash"
-            ? { price: null, prevClose: null }
+            ? EMPTY_QUOTE
             : await fetchQuote(asset.symbol),
         ]),
       );

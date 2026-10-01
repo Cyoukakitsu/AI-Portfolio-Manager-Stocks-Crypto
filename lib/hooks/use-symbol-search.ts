@@ -38,7 +38,8 @@ export function useSymbolSearch({ defaultValue = "", onSelect }: Params = {}) {
   });
 
   function handleSelect(result: SearchResult) {
-    skipNextDebounce.current = true;
+    // 输入值本就等于该代码时 query 不变、effect 不会触发，此时设标志会残留到下一次输入
+    skipNextDebounce.current = result.symbol !== query;
     setQuery(result.symbol);
     setDebouncedQuery(""); // 立即关闭下拉
     onSelect?.(result);

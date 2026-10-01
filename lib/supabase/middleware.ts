@@ -45,7 +45,7 @@ export async function updateSession(request: NextRequest) {
 
   // 未登录 且 访问的不是公开页面 → 重定向到登录页
   const pathname = request.nextUrl.pathname;
-  const locale = pathname.split("/")[1] || "ja";
+  const locale = pathname.split("/")[1];
   // ロケールルートパス（/ja, /ja/, /en, /en/）はheroページなので公開
   const isLocaleRoot = /^\/[a-z]{2}\/?$/.test(pathname);
   if (

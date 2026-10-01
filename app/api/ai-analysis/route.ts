@@ -1,18 +1,15 @@
 // POST /api/ai-analysis — 运行 1-2 个 AI 分析师 agent，SSE 流式返回分析结果与 coordinator 综合结论
+import { rejectIfUnauthenticated } from "@/lib/api-auth";
 import { deepseek } from "@ai-sdk/deepseek";
-import { generateText, stepCountIs } from "ai";
+import { generateText } from "ai";
 import yf from "@/lib/yahoo-finance";
 import { buildLangInstruction } from "@/lib/lang-instruction";
 import { AgentPersona } from "@/features/ai/types";
 
-import { getStockPrice } from "@/features/ai/lib/getStockPrice";
-import { getFinancials } from "@/features/ai/lib/getFinancials";
-import { getNews } from "@/features/ai/lib/getNews";
+import { runPersona } from "@/features/ai/server/run-persona";
 import { cleanJSON, parseAgent } from "@/features/ai/lib/parse-agent";
 import {
-  ANALYSIS_PROMPT,
   COORDINATOR_PROMPT,
-  PERSONA_PROMPTS,
 } from "@/features/ai/lib/prompts";
 
 function sseEvent(event: string, data: unknown): Uint8Array {
@@ -22,6 +19,9 @@ function sseEvent(event: string, data: unknown): Uint8Array {
 }
 
 export async function POST(request: Request) {
+  const denied = await rejectIfUnauthenticated();
+  if (denied) return denied;
+
   const {
     symbol,
     personas,
@@ -41,51 +41,25 @@ export async function POST(request: Request) {
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        if (personas.length === 1) {
-          const result = await generateText({
-            model: deepseek("deepseek-v4-flash"),
-            tools: { getStockPrice, getFinancials, getNews },
-            stopWhen: stepCountIs(5),
-            system: `${PERSONA_PROMPTS[personas[0]]}${langInstruction}`,
-            prompt: ANALYSIS_PROMPT(symbol),
+        // 每个 persona 一完成就立即推送，不等另一个
+        const analyze = (persona: AgentPersona, event: string) =>
+          runPersona(persona, symbol, langInstruction).then((text) => {
+            const result = parseAgent(text, persona);
+            controller.enqueue(sseEvent(event, result));
+            return result;
           });
-          controller.enqueue(
-            sseEvent("agent1_done", parseAgent(result.text, personas[0]))
-          );
+
+        if (personas.length === 1) {
+          await analyze(personas[0], "agent1_done");
         } else {
           const [result1, result2, quote] = await Promise.all([
-            generateText({
-              model: deepseek("deepseek-v4-flash"),
-              tools: { getStockPrice, getFinancials, getNews },
-              stopWhen: stepCountIs(5),
-              system: `${PERSONA_PROMPTS[personas[0]]}${langInstruction}`,
-              prompt: ANALYSIS_PROMPT(symbol),
-            }).then((r) => {
-              controller.enqueue(
-                sseEvent("agent1_done", parseAgent(r.text, personas[0]))
-              );
-              return r;
-            }),
-            generateText({
-              model: deepseek("deepseek-v4-flash"),
-              tools: { getStockPrice, getFinancials, getNews },
-              stopWhen: stepCountIs(5),
-              system: `${PERSONA_PROMPTS[personas[1]]}${langInstruction}`,
-              prompt: ANALYSIS_PROMPT(symbol),
-            }).then((r) => {
-              controller.enqueue(
-                sseEvent("agent2_done", parseAgent(r.text, personas[1]))
-              );
-              return r;
-            }),
+            analyze(personas[0], "agent1_done"),
+            analyze(personas[1], "agent2_done"),
             yf.quote(symbol).catch(() => null),
           ]);
 
           const currentPrice = quote?.regularMarketPrice ?? 0;
-          const agentResults = [
-            parseAgent(result1.text, personas[0]),
-            parseAgent(result2.text, personas[1]),
-          ];
+          const agentResults = [result1, result2];
 
           const coordinatorResult = await generateText({
             model: deepseek("deepseek-v4-flash"),

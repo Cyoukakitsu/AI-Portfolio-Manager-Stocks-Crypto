@@ -1,7 +1,7 @@
 "use client";
 
 // 股票/加密货币符号实时搜索组件
-// 逻辑层见 hooks/use-symbol-search.ts
+// 逻辑层见 lib/hooks/use-symbol-search.ts
 
 import { Loader2 } from "lucide-react";
 import {
@@ -12,7 +12,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import { useSymbolSearch, type SearchResult } from "@/features/assets/hooks/use-symbol-search";
+import { useSymbolSearch, type SearchResult } from "@/lib/hooks/use-symbol-search";
 
 type Props = {
   // 选中结果后将数据回传给父组件（asset-form.tsx）

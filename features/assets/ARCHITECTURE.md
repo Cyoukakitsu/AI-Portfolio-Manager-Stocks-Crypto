@@ -28,6 +28,10 @@
 | `updateTransaction(id, data)` | 修改已有交易记录 |
 | `deleteTransaction(id)` | 删除单条交易记录 |
 
+### 行情 hook（`hooks/use-quotes.ts`）
+
+`useQuotes(assets)`：各资产实时报价，`use-total-asset-card` 与 `use-asset-table` 共用同一份缓存。底层请求统一走 `lib/market-api.ts`；代码搜索 hook 在 `lib/hooks/use-symbol-search.ts`。
+
 ### 核心计算（`lib/calculations.ts`）
 
 ```ts

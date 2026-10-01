@@ -4,7 +4,7 @@
 // 职责：行展开、交易记录缓存、当前价格拉取、删除确认状态管理
 
 import { useState } from "react";
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuotes } from "@/features/assets/hooks/use-quotes";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
@@ -41,39 +41,7 @@ export function useAssetsTable({ assets }: UseAssetsTableParams) {
     id: string;
     assetId: string;
   } | null>(null);
-  // 各资产的当前价格，与 use-total-asset-card 使用相同的 queryKey 共享缓存，不重复请求
-  const symbolsKey = assets.map((a) => a.symbol).join(",");
-  const { data: quotesData = {} } = useQuery<
-    Record<string, { price: number | null }>
-  >({
-    queryKey: ["quotes", symbolsKey],
-    queryFn: async () => {
-      const entries = await Promise.all(
-        assets.map(async (asset) => {
-          if (asset.asset_type === "cash") {
-            return [asset.symbol, { price: null, prevClose: null }];
-          }
-          try {
-            const res = await fetch(
-              `/api/yahoofinance/quote?symbol=${asset.symbol}`,
-            );
-            const data = await res.json();
-            return [
-              asset.symbol,
-              { price: data.price ?? null, prevClose: data.prevClose ?? null },
-            ];
-          } catch {
-            return [asset.symbol, { price: null, prevClose: null }];
-          }
-        }),
-      );
-      return Object.fromEntries(entries);
-    },
-    enabled: assets.length > 0,
-    staleTime: 60 * 1000, // 缓存 1 分钟，不会重新发起请求，直接使用缓存数据
-    gcTime: 5 * 60 * 1000, // 在内存中保留 5 分钟，超过 5 分钟的缓存数据将被清除
-    placeholderData: keepPreviousData, // 重新获取时保持旧数据，避免闪烁为空
-  });
+  const quotesData = useQuotes(assets);
   const currentPrices: Record<string, number | null> = Object.fromEntries(
     Object.entries(quotesData).map(([symbol, q]) => [symbol, q.price]),
   );

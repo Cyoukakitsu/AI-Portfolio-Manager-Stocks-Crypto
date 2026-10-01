@@ -1,8 +1,12 @@
 // GET /api/yahoofinance/search — 搜索股票 / ETF / 加密货币 symbol
+import { rejectIfUnauthenticated } from "@/lib/api-auth";
 import { NextRequest, NextResponse } from "next/server";
 import yf from "@/lib/yahoo-finance";
 
 export async function GET(req: NextRequest) {
+  const denied = await rejectIfUnauthenticated();
+  if (denied) return denied;
+
   const query = req.nextUrl.searchParams.get("q");
 
   if (!query || query.trim() === "") {

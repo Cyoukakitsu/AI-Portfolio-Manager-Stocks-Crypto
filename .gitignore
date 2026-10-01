@@ -42,8 +42,15 @@ yarn-error.log*
 next-env.d.ts
 
 # local dev
-.claude/
-docs/
+.claude/worktrees/
+.claude/settings.local.json
+docs/*
+!docs/adr/
+!docs/research/
 
 .agents/
 .superpowers/
+
+# playwright
+/test-results/
+/playwright-report/

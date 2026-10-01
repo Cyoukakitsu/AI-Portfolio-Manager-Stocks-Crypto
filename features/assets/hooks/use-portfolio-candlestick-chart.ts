@@ -4,6 +4,7 @@
 // 職責：range/view 状態管理、データ取得、OHLC 計算、chart 描画
 
 import { useEffect, useRef, useState } from "react";
+import { fetchHistory } from "@/lib/market-api";
 import { useQuery } from "@tanstack/react-query";
 import {
   createChart,
@@ -42,10 +43,7 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
     queryFn: async () => {
       const from = getFromDate(range);
       const to = new Date().toISOString().split("T")[0];
-      const res = await fetch(
-        `/api/yahoofinance/history?symbols=${symbolsKey}&from=${from}&to=${to}`,
-      );
-      return res.json();
+      return fetchHistory(symbolsKey, from, to);
     },
     enabled: tradableAssets.length > 0 && allTransactions.length > 0,
     staleTime: 5 * 60 * 1000,

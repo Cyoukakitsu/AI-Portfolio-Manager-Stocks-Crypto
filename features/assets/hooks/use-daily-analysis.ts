@@ -19,8 +19,8 @@ export function useDailyAnalysis({ assets }: Params) {
       forceRef.current = false; // 使用後にリセット
       const url = `/api/assets/news?symbols=${encodeURIComponent(symbols.join(","))}${force ? "&force=true" : ""}`;
       const res = await fetch(url);
-      const json = await res.json();
-      return json.results ?? [];
+      if (!res.ok) throw new Error("news fetch failed");
+      return (await res.json()).results;
     },
     enabled: symbols.length > 0,
     staleTime: 5 * 60 * 1000,

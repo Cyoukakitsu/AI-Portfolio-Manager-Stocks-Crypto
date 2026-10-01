@@ -1,4 +1,5 @@
 // GET /api/assets/news — 按 symbol 拉取今日新闻，Supabase JST 日期缓存，最多 10 个 symbol
+import { rejectIfUnauthenticated } from "@/lib/api-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { fetchNews } from "@/lib/news-fetcher";
@@ -13,6 +14,9 @@ function getJSTDateString(): string {
 }
 
 export async function GET(req: NextRequest) {
+  const denied = await rejectIfUnauthenticated();
+  if (denied) return denied;
+
   const { searchParams } = new URL(req.url);
   const symbolsParam = searchParams.get("symbols");
   const force = searchParams.get("force") === "true";
@@ -42,47 +46,35 @@ export async function GET(req: NextRequest) {
     symbols.map(async (symbol): Promise<SymbolNews> => {
       // キャッシュ確認（force=true の場合はスキップ）
       if (!force) {
-        try {
-          const { data: cached } = await supabase
-            .from("news_cache")
-            .select("articles")
-            .eq("symbol", symbol)
-            .eq("cached_date", todayJST)
-            .maybeSingle();
-
-          if (cached) {
-            return { symbol, articles: cached.articles as NewsArticle[] };
-          }
-        } catch (err) {
-          console.error("[news_cache] read failed:", err);
-          // Supabase read 失敗 → キャッシュミスとして扱い Tavily を呼ぶ
+        // supabase-js 不抛异常，失败体现在 error 里；读失败按缓存未命中处理
+        const { data: cached, error } = await supabase
+          .from("news_cache")
+          .select("articles")
+          .eq("symbol", symbol)
+          .eq("cached_date", todayJST)
+          .maybeSingle();
+        if (error) console.error("[news_cache] read failed:", error);
+        if (cached) {
+          return { symbol, articles: cached.articles as NewsArticle[] };
         }
       }
 
-      // Tavily API 呼び出し
-      try {
-        const articles: NewsArticle[] = await fetchNews(
-          `${symbol} stock news today`,
-          { maxResults: 1, timeoutMs: 5000 },
-        );
+      // fetchNews 内部已处理超时与失败，失败时返回空数组
+      const articles: NewsArticle[] = await fetchNews(
+        `${symbol} stock news today`,
+        { maxResults: 1, timeoutMs: 5000 },
+      );
 
-        // キャッシュへ書き込み（失敗してもクライアントへはそのまま返す）
-        try {
-          await supabase.from("news_cache").upsert({
-            symbol,
-            articles,
-            cached_date: todayJST,
-            updated_at: new Date().toISOString(),
-          });
-        } catch (err) {
-          console.error("[news_cache] write failed:", err);
-          // Supabase write 失敗 → 無視
-        }
+      // 写缓存失败不影响返回
+      const { error } = await supabase.from("news_cache").upsert({
+        symbol,
+        articles,
+        cached_date: todayJST,
+        updated_at: new Date().toISOString(),
+      });
+      if (error) console.error("[news_cache] write failed:", error);
 
-        return { symbol, articles };
-      } catch {
-        return { symbol, articles: [] };
-      }
+      return { symbol, articles };
     })
   );
 

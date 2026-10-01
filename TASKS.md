@@ -34,7 +34,7 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 ## Phase 1：代码清理
 
 - [x] **1.1** 按 0.3 清单删除死代码与依赖（删 34 个文件、8 个依赖；保留 groq、eslint-plugin-react-hooks、ui 未用导出、updateTransaction；2026-10-01）
-- [x] **1.2** 删除不可达的防御代码（逐项列表确认）（已执行 A1、A2、B1–B3；components/auth/dashboard/hero 未补扫；2026-10-01）
+- [x] **1.2** 删除不可达的防御代码（逐项列表确认）（已执行 A1、A2、B1–B3；已补扫并执行 A4–A10、B4、B5；2026-10-01）
 - [ ] **1.3** 去重：`ai-analysis` route 的 3 份 `generateText`、重复表单逻辑、`yahoofinance` 路由（先给目录结构方案再改）
 - [ ] **1.4** 数据访问统一：移除 `/api/yahoofinance/*` 薄转发，改 server actions；更新 `CLAUDE.md` 与 `CONSTRAINTS.md`
 
@@ -64,6 +64,8 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 - 2026-10-01 【已处理：0.2 补了 Playwright 例外，0.4 放宽了跨目录约束】`CONSTRAINTS.md` 的"禁止 vitest mock 外部 API"与 0.2 的 Playwright mock 方案冲突，"一个 session 不得改多个 features 子目录"与重构范围冲突，需在 0.2 / 0.4 修订（来源：任务 0.1）
 - 2026-10-01 CI（`.github/workflows/test.yml`）目前只跑 vitest，尚未跑 E2E；0.2b 完成后一并加入（来源：任务 0.2a）
 - 2026-10-01 E2E 里的主题用例依赖现有主题名（Dark），Phase 4 重设计主题时需同步更新（来源：任务 0.2a）
+- 2026-10-01 `sign-up-form` / `forgot-password-form` 把服务端英文错误文案直接 toast，未走 i18n（来源：任务 1.2 补扫）
+- 2026-10-01 `app/auth/callback/route.ts` 的失败重定向写死 `/ja/sign-in`，应按 locale 跳转（来源：任务 1.2 补扫）
 - 2026-10-01 已知 lint warning：`use-portfolio-candlestick-chart.ts` 的 `useMemo`（来源：旧 progress.md）
 
 ## 变更记录

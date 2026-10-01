@@ -45,8 +45,8 @@ export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
       const res = await fetch(
         `/api/yahoofinance/search?q=${encodeURIComponent(debouncedQuery)}`,
       );
-      const data = await res.json();
-      return Array.isArray(data) ? data : [];
+      if (!res.ok) throw new Error("search failed");
+      return res.json();
     },
     enabled: debouncedQuery.trim().length >= 1 && !selectedSymbol,
     staleTime: 5 * 60 * 1000, // 5 分钟内不重复请求（TanStack配置）

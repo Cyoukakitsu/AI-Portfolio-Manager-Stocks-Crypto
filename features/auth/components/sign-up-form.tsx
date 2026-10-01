@@ -45,9 +45,7 @@ const SignUpForm = () => {
   const onSubmit = async (data: SignUpFormValues) => {
     const result = await signUp(data);
     if (result.error) {
-      toast.error(
-        typeof result.error === "string" ? result.error : "Validation failed",
-      );
+      toast.error(result.error);
     } else {
       router.push("/sign-in");
     }

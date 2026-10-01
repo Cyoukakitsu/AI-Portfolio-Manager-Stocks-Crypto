@@ -93,7 +93,7 @@ export async function changePassword(currentPassword: string, newPassword: strin
   return { success: true };
 }
 
-export async function resetPasswordEmail(email: unknown, locale: string = "ja") {
+export async function resetPasswordEmail(email: unknown, locale: string) {
   const result = forgotPasswordSchema.safeParse({ email });
   if (!result.success) return { error: "Invalid email" };
 
@@ -107,7 +107,7 @@ export async function resetPasswordEmail(email: unknown, locale: string = "ja") 
 }
 
 export async function updatePassword(newPassword: unknown) {
-  const result = z.string().min(6, "Password must be at least 6 characters").safeParse(newPassword);
+  const result = z.string().min(6).safeParse(newPassword);
   if (!result.success) return { error: "Password too short" };
 
   const supabase = await createClient();

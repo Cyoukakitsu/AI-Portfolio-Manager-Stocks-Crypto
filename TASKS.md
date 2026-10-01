@@ -6,7 +6,7 @@
 ## 剩余未完成
 
 Phase 0：0.2b
-Phase 1：1.2 · 1.3 · 1.4
+Phase 1：1.3 · 1.4
 Phase 2：2.1 · 2.2 · 2.3
 Phase 3：3.1 · 3.2
 Phase 4：4.1 · 4.2 · 4.3 · 4.4
@@ -34,7 +34,7 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 ## Phase 1：代码清理
 
 - [x] **1.1** 按 0.3 清单删除死代码与依赖（删 34 个文件、8 个依赖；保留 groq、eslint-plugin-react-hooks、ui 未用导出、updateTransaction；2026-10-01）
-- [ ] **1.2** 删除不可达的防御代码（逐项列表确认）
+- [x] **1.2** 删除不可达的防御代码（逐项列表确认）（已执行 A1、A2、B1–B3；components/auth/dashboard/hero 未补扫；2026-10-01）
 - [ ] **1.3** 去重：`ai-analysis` route 的 3 份 `generateText`、重复表单逻辑、`yahoofinance` 路由（先给目录结构方案再改）
 - [ ] **1.4** 数据访问统一：移除 `/api/yahoofinance/*` 薄转发，改 server actions；更新 `CLAUDE.md` 与 `CONSTRAINTS.md`
 
@@ -67,6 +67,8 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 - 2026-10-01 已知 lint warning：`use-portfolio-candlestick-chart.ts` 的 `useMemo`（来源：旧 progress.md）
 
 ## 变更记录
+
+- 2026-10-01 1.2 清单中的 A3（`?? null`）撤销：quote 路由出错时返回 `{error}` 无 `price`，该写法可达
 
 计划有变动时记一行：`YYYY-MM-DD 改了什么：原因`。
 

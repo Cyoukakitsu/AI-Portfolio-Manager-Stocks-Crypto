@@ -40,9 +40,8 @@ export function useSymbolSearch({ defaultValue = "", onSelect }: Params) {
       const res = await fetch(
         `/api/yahoofinance/search?q=${encodeURIComponent(debouncedQuery)}`,
       );
-      const data = await res.json();
-      // 容错处理：API 异常时返回的可能不是数组
-      return Array.isArray(data) ? data : [];
+      if (!res.ok) throw new Error("search failed");
+      return res.json();
     },
     enabled: debouncedQuery.trim().length >= 1,
     staleTime: 5 * 60 * 1000,

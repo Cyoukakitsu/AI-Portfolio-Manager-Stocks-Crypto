@@ -20,22 +20,18 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Quote not found" }, { status: 404 });
     }
 
-    const price = (quote.regularMarketPrice ??
+    const price =
+      quote.regularMarketPrice ??
       quote.postMarketPrice ??
       quote.preMarketPrice ??
-      null) as number | null;
-    const prevClose = (quote.regularMarketPreviousClose ?? null) as
-      | number
-      | null;
+      null;
+    const prevClose = quote.regularMarketPreviousClose ?? null;
 
     return NextResponse.json({ price, prevClose });
   } catch (err) {
     console.error(`[API] Error fetching quote for ${symbol}:`, err);
     return NextResponse.json(
-      {
-        error: "Failed to fetch quote",
-        details: err instanceof Error ? err.message : String(err),
-      },
+      { error: "Failed to fetch quote" },
       { status: 500 },
     );
   }

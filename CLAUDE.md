@@ -12,7 +12,7 @@ pnpm install
 ./init.sh        # 依次执行 build → lint → test，全部通过才算环境正常
 ```
 
-常用命令：`pnpm dev` 启动开发服务器，`pnpm test` 跑测试，`./init.sh` 完整验证。
+常用命令：`pnpm dev` 启动开发服务器，`pnpm test` 跑单元测试，`pnpm test:e2e` 跑 Playwright E2E，`./init.sh` 完整验证。
 
 目录：`app/` 路由；`features/` 按功能垂直拆分（auth / assets / stocks / crypto / dashboard / hero / ai）；`components/` 跨功能 UI；`lib/` 共享工具与外部服务封装；`messages/` i18n 文案。
 

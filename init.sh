@@ -10,7 +10,10 @@ echo "=== pnpm lint ==="
 pnpm lint
 
 echo "=== pnpm test ==="
-pnpm test
+pnpm test --run
+
+echo "=== pnpm test:e2e ==="
+pnpm test:e2e
 
 echo "=== 验证完成 ==="
 echo ""

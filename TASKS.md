@@ -5,7 +5,7 @@
 
 ## 剩余未完成
 
-Phase 0：0.2 · 0.3 · 0.4 · 0.5
+Phase 0：0.2b · 0.3 · 0.4 · 0.5
 Phase 1：1.1 · 1.2 · 1.3 · 1.4
 Phase 2：2.1 · 2.2 · 2.3
 Phase 3：3.1 · 3.2
@@ -25,7 +25,8 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 ## Phase 0：安全网与 harness
 
 - [x] **0.1** 清理残留 worktree；合并 `progress.md` / `feature_list.json` / `DEVLOG.md` / `INIT_CONTRACT.md` 后删除；精简 `CLAUDE.md`；调研文档存入 `docs/research/`（2026-10-01）
-- [ ] **0.2** Playwright E2E 基线（登录、新增资产与交易、AI 分析页出结果、切换语言与主题），接口 mock，加入 `init.sh`
+- [x] **0.2a** Playwright E2E 基线：公开页面（根路径语言重定向、未登录跳转、语言/主题切换、登录表单校验、条款与隐私页），已加入 `init.sh`（2026-10-01）
+- [ ] **0.2b** 登录后的 E2E（登录、新增资产与交易、AI 分析页出结果）：需先定 Supabase 测试方案（独立测试项目 / 本地 Supabase），AI 与行情接口用 `page.route` mock。用户决定留到下一个工作日
 - [ ] **0.3** knip 死代码、死导出、死依赖清单（只出清单，确认后再删）
 - [ ] **0.4** `finish-task` skill + `scripts/check-harness.sh` + Stop hook（源码改了但本文件未更新则拦截；Inbox 积压则提醒）
 - [ ] **0.5** `/api/*` 补身份校验（未登录返回 401）；`ai-summary` 改为服务端按 `user_id` 读持仓，不再信任客户端传入的 assets。有意的行为变化，经用户确认（2026-10-01）
@@ -61,12 +62,15 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
 - 2026-10-01 调研文档 `docs/research/refactor-ideas.md` 还提出：Supabase schema/RLS 不在仓库内、报价 N 次请求可批量化、分析结果不持久化、`ai/ARCHITECTURE.md` 与代码不符等，待逐条决定是否纳入（来源：任务 0.1）
 - 2026-10-01 `CONSTRAINTS.md` 的"禁止 vitest mock 外部 API"与 0.2 的 Playwright mock 方案冲突，"一个 session 不得改多个 features 子目录"与重构范围冲突，需在 0.2 / 0.4 修订（来源：任务 0.1）
+- 2026-10-01 CI（`.github/workflows/test.yml`）目前只跑 vitest，尚未跑 E2E；0.2b 完成后一并加入（来源：任务 0.2a）
+- 2026-10-01 E2E 里的主题用例依赖现有主题名（Dark），Phase 4 重设计主题时需同步更新（来源：任务 0.2a）
 - 2026-10-01 已知 lint warning：`use-portfolio-candlestick-chart.ts` 的 `useMemo`（来源：旧 progress.md）
 
 ## 变更记录
 
 计划有变动时记一行：`YYYY-MM-DD 改了什么：原因`。
 
+- 2026-10-01 0.2 拆为 0.2a / 0.2b：服务端直连 Supabase，`page.route` 拦不到登录与资产 CRUD，登录后的流程需要先定 Supabase 测试方案，用户决定留到明天
 - 2026-10-01 新增 0.5（API 鉴权）：读调研文档发现 `/api/*` 无鉴权，属安全与成本风险，排在 Phase 1 之前
 - 2026-10-01 新建本清单，取代旧 Task 2–5 的叙述式记录：重构访谈达成共识
 

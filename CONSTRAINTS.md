@@ -62,6 +62,7 @@
 ## 测试
 
 **禁止**使用 vitest mock 伪造数据库或外部 API 响应。
+**例外**：Playwright E2E 可以用 `page.route` 拦截浏览器发出的 `/api/*` 请求（如 AI、行情），服务端对 Supabase 的访问不 mock。
 **必须**使用真实集成测试或手动验证，记录验证证据到 `TASKS.md` 对应任务下。
 
 ---

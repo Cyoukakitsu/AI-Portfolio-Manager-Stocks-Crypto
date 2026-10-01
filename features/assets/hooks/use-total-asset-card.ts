@@ -1,48 +1,14 @@
 //这个hooks用于计算总资产、今日资产、总资产收益率、今日资产收益率
 //它接收一个资产数组作为参数，返回一个对象，包含总资产、今日资产、总资产收益率、今日资产收益率的属性
-import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useQuotes } from "@/features/assets/hooks/use-quotes";
 import { Asset } from "@/features/assets/types";
-
-type QuoteData = { price: number | null; prevClose: number | null };
-type QuotesMap = Record<string, QuoteData>;
 
 type UseAssetReturnParams = {
   assets: Asset[];
 };
 
 export function useAssetReturn({ assets }: UseAssetReturnParams) {
-  const symbolsKey = assets.map((a) => a.symbol).join(",");
-
-  // 与 use-asset-table 使用相同的 queryKey，两个组件共享同一份缓存，不重复请求
-  const { data: quotes = {} } = useQuery<QuotesMap>({
-    queryKey: ["quotes", symbolsKey],
-    queryFn: async () => {
-      const entries = await Promise.all(
-        assets.map(async (asset) => {
-          if (asset.asset_type === "cash") {
-            return [asset.symbol, { price: null, prevClose: null }];
-          }
-          try {
-            const res = await fetch(
-              `/api/yahoofinance/quote?symbol=${asset.symbol}`,
-            );
-            const data = await res.json();
-            return [
-              asset.symbol,
-              { price: data.price ?? null, prevClose: data.prevClose ?? null },
-            ];
-          } catch {
-            return [asset.symbol, { price: null, prevClose: null }];
-          }
-        }),
-      );
-      return Object.fromEntries(entries);
-    },
-    enabled: assets.length > 0,
-    staleTime: 60 * 1000, // 数据在内存中保留 1 分钟，避免数据过期
-    gcTime: 5 * 60 * 1000, // 数据在内存中保留 5 分钟，导航回来时直接用
-    placeholderData: keepPreviousData, // 重新获取时保持旧数据，避免闪烁为空
-  });
+  const quotes = useQuotes(assets);
 
   // 总市值
   const totalValue = assets.reduce((acc, asset) => {

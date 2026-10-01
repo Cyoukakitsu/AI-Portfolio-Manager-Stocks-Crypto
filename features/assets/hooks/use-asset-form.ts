@@ -9,7 +9,7 @@ import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { useTranslations } from "next-intl";
-import type { SearchResult } from "@/features/assets/hooks/use-symbol-search";
+import type { SearchResult } from "@/lib/hooks/use-symbol-search";
 
 import { createAsset, updateAsset } from "@/features/assets/server/assets";
 import { assetSchema, type AssetFormData } from "@/features/assets/schemas/asset";

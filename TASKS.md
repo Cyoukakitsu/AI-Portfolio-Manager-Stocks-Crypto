@@ -6,7 +6,7 @@
 ## 剩余未完成
 
 Phase 0：0.2b
-Phase 2：2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 2.6
+Phase 2：2.2 · 2.3 · 2.4 · 2.5 · 2.6
 Phase 3：3.1 · 3.2
 Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
@@ -39,7 +39,7 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
 ## Phase 2：AI 层
 
-- [ ] **2.1** `lib/ai.ts` 集中模型配置；全部统一 DeepSeek；删除 openrouter、groq 依赖
+- [x] **2.1** `lib/ai.ts` 集中模型配置；全部统一 DeepSeek；删除 openrouter、groq 依赖（Portfolio Summary 由 `openrouter/free` 改为 DeepSeek，输出会变；2026-10-08）
 - [ ] **2.2** 结构化输出（zod）；失败显示"分析失败，重试"，不伪造结果
 - [ ] **2.3** Persona 提示词数据化 + 单模板，精简；用真实 DeepSeek 实测稳定性，不稳则退回"短提示词 + 一次校验重试"
 - [ ] **2.4** `/api/ai-analysis` 客户端断开即中止：`request.signal` 传入 `runPersona` 与 Coordinator 的 `generateText`（`abortSignal`），并加 `timeout: { totalMs, stepMs }`；顺带确认流被取消后 `enqueue` / `close` 不抛错。无行为变化，只省 token（来源：对照 dg-piagent 的 F04 / E11）

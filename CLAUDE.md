@@ -3,7 +3,7 @@
 ## 项目概览
 
 **PortfolioX** — 面向个人投资者的 AI 驱动股票与加密货币投资组合管理平台。
-技术栈：Next.js 16 + Supabase（Auth + DB）+ AI SDK（DeepSeek / OpenRouter / Tavily）。
+技术栈：Next.js 16 + Supabase（Auth + DB）+ AI SDK（DeepSeek / Tavily）。
 
 ## 首次运行
 

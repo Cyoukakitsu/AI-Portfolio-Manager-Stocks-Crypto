@@ -43,7 +43,7 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
     queryFn: async () => {
       const from = getFromDate(range);
       const to = new Date().toISOString().split("T")[0];
-      return fetchHistory(symbolsKey, from, to);
+      return fetchHistory(tradableAssets.map((a) => a.symbol), from, to);
     },
     enabled: tradableAssets.length > 0 && allTransactions.length > 0,
     staleTime: 5 * 60 * 1000,

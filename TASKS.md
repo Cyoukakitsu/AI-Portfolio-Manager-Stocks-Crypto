@@ -6,8 +6,7 @@
 ## 剩余未完成
 
 Phase 0：0.2b
-Phase 1：1.4
-Phase 2：2.1 · 2.2 · 2.3
+Phase 2：2.1 · 2.2 · 2.3 · 2.4 · 2.5 · 2.6
 Phase 3：3.1 · 3.2
 Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
@@ -36,13 +35,16 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 - [x] **1.1** 按 0.3 清单删除死代码与依赖（删 34 个文件、8 个依赖；保留 groq、eslint-plugin-react-hooks、ui 未用导出、updateTransaction；2026-10-01）
 - [x] **1.2** 删除不可达的防御代码（逐项列表确认）（已执行 A1、A2、B1–B3；已补扫并执行 A4–A10、B4、B5；2026-10-01）
 - [x] **1.3** 去重：`ai-analysis` route 的 3 份 `generateText`、重复表单逻辑、`yahoofinance` 路由（先给目录结构方案再改）（D1–D4 已做：`runPersona`、`useQuotes`、`lib/hooks/use-symbol-search`、`lib/market-api`；表单 D5 经确认不做；2026-10-01）
-- [ ] **1.4** 数据访问统一：移除 `/api/yahoofinance/*` 薄转发，改 server actions；更新 `CLAUDE.md` 与 `CONSTRAINTS.md`
+- [x] **1.4** 数据访问统一：移除 `/api/yahoofinance/*` 薄转发，改 server actions（`lib/market-actions.ts`，报价改批量）；更新 `CLAUDE.md` 与 `CONSTRAINTS.md`（2026-10-08）
 
 ## Phase 2：AI 层
 
 - [ ] **2.1** `lib/ai.ts` 集中模型配置；全部统一 DeepSeek；删除 openrouter、groq 依赖
 - [ ] **2.2** 结构化输出（zod）；失败显示"分析失败，重试"，不伪造结果
 - [ ] **2.3** Persona 提示词数据化 + 单模板，精简；用真实 DeepSeek 实测稳定性，不稳则退回"短提示词 + 一次校验重试"
+- [ ] **2.4** `/api/ai-analysis` 客户端断开即中止：`request.signal` 传入 `runPersona` 与 Coordinator 的 `generateText`（`abortSignal`），并加 `timeout: { totalMs, stepMs }`；顺带确认流被取消后 `enqueue` / `close` 不抛错。无行为变化，只省 token（来源：对照 dg-piagent 的 F04 / E11）
+- [ ] **2.5** 并行 Agent 失败隔离：`Promise.all` 改 `allSettled`，单个 persona 失败时推 `agent*_error`，成功的结果照常展示；只剩一个结果时是否仍出 Coordinator 结论需用户决定。同时让 `getNews` 失败返回 `{ error }`，不再与"无新闻"混为 `[]`。**行为变化，动手前先与用户确认**，并与 2.2 的"失败显式报错"一起设计
+- [ ] **2.6** 工具进度推送：`generateText` 的 `onStepFinish` 推 SSE `status` 事件（如"正在查新闻"），前端 `analysis-shell` 展示，不换 `streamText`。**行为变化（UI 新增进度提示），与 Phase 4 的分析页方案可能冲突，建议放在 4.2 之后或一起做**
 
 ## Phase 3：命名与可读性
 
@@ -74,6 +76,8 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
 计划有变动时记一行：`YYYY-MM-DD 改了什么：原因`。
 
+- 2026-10-08 1.4 行为变化：报价由“每 symbol 一次请求”改为一次批量 server action（Next 串行执行 action，逐个调用会排队）；`getQuotes` 单个 symbol 失败仍按无报价处理；已删 `/api/yahoofinance/*` 及其 E2E 401 用例（server action 自带身份校验）
+- 2026-10-07 新增 2.4 / 2.5 / 2.6：对照 pi-agent 的 dg-piagent skill 与现有 `ai-analysis` 路由，得出中止与超时、并行失败隔离、工具进度推送三项改进；用户决定留作次日工作
 - 2026-10-01 1.3 去重附带行为变化：ai 搜索栏防抖 500ms→400ms，并取消“已选中”状态（选中后 query 即为该代码）；报价/历史/搜索失败时统一按 `res.ok` 处理
 - 2026-10-01 1.2 清单中的 A3（`?? null`）撤销：quote 路由出错时返回 `{error}` 无 `price`，该写法可达
 - 2026-10-01 0.2 拆为 0.2a / 0.2b：服务端直连 Supabase，`page.route` 拦不到登录与资产 CRUD，登录后的流程需要先定 Supabase 测试方案，用户决定留到明天

@@ -5,9 +5,6 @@ const routes: [string, string][] = [
   ["POST", "/api/ai-analysis"],
   ["POST", "/api/assets/ai-summary"],
   ["GET", "/api/assets/news?symbols=AAPL"],
-  ["GET", "/api/yahoofinance/quote?symbol=AAPL"],
-  ["GET", "/api/yahoofinance/history?symbol=AAPL"],
-  ["GET", "/api/yahoofinance/search?q=apple"],
 ];
 
 for (const [method, url] of routes) {

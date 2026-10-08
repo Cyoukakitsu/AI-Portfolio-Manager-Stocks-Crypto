@@ -1,16 +1,12 @@
-// POST /api/assets/ai-summary — 补全持仓实时价格后，调用 OpenRouter 流式生成投资组合分析报告
+// POST /api/assets/ai-summary — 补全持仓实时价格后，调用 DeepSeek 流式生成投资组合分析报告
 import { rejectIfUnauthenticated } from "@/lib/api-auth";
-import { createOpenRouter } from "@openrouter/ai-sdk-provider";
+import { model } from "@/lib/ai";
 import { tavilySearch } from "@tavily/ai-sdk";
 import { streamText, stepCountIs } from "ai";
 import yf from "@/lib/yahoo-finance";
 import type { Asset } from "@/features/assets/types";
 import { getAssets } from "@/features/assets/server/assets";
 import { buildLangInstruction } from "@/lib/lang-instruction";
-
-const openrouter = createOpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
-});
 
 export async function POST(req: Request) {
   const denied = await rejectIfUnauthenticated();
@@ -62,7 +58,7 @@ export async function POST(req: Request) {
   const largest = [...enriched].sort((a, b) => b.total_cost - a.total_cost)[0];
 
   const result = streamText({
-    model: openrouter("openrouter/free"),
+    model,
     tools: {
       tavilySearch: tavilySearch({ maxResults: 2 }),
     },

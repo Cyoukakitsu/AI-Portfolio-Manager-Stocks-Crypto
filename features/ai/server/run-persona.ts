@@ -1,5 +1,5 @@
 // 让单个分析师 persona 带着工具对 symbol 做一次分析，返回模型原始文本
-import { deepseek } from "@ai-sdk/deepseek";
+import { model } from "@/lib/ai";
 import { generateText, stepCountIs } from "ai";
 import { getStockPrice } from "@/features/ai/lib/getStockPrice";
 import { getFinancials } from "@/features/ai/lib/getFinancials";
@@ -13,7 +13,7 @@ export async function runPersona(
   langInstruction: string,
 ) {
   const { text } = await generateText({
-    model: deepseek("deepseek-v4-flash"),
+    model,
     tools: { getStockPrice, getFinancials, getNews },
     stopWhen: stepCountIs(5),
     system: `${PERSONA_PROMPTS[persona]}${langInstruction}`,

@@ -29,7 +29,7 @@
 
 ## 外部服务
 
-**禁止**在 API route 或 feature 中直接 `new YahooFinance()` 或直接 `fetch("https://api.tavily.com/search", ...)`。
+**禁止**在 API route、server action 或 feature 中直接 `new YahooFinance()` 或直接 `fetch("https://api.tavily.com/search", ...)`。
 **必须**通过 `lib/yahoo-finance`（单例）和 `lib/news-fetcher`（统一封装）访问外部服务。
 
 ---

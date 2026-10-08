@@ -17,7 +17,7 @@ AIを搭載した**次世代型ポートフォリオ管理プラットフォー�
 <img width="1139" height="1004" alt="截屏2026-04-04 13 10 29" src="https://github.com/user-attachments/assets/b19ae1e2-cac8-4d5a-ae61-da19159fe315" />
 
 - **資産概要**：総資産、総損益、および収益率の推移をリアルタイムで追跡します。
-- **持株 AI サマリー**：**OpenRouter (free tier)** を呼び出し、現在のポートフォリオをワンクリックで分析。潜在的なリスクを特定し、資産配分のアドバイスを提供します。
+- **持株 AI サマリー**：**DeepSeek** を呼び出し、現在のポートフォリオをワンクリックで分析。潜在的なリスクを特定し、資産配分のアドバイスを提供します。
 - **デイリー・ダイナミック分析**：保有している株式や暗号資産に関する最新ニュースを自動的に集約し、市場の動向を即座に把握できます。
 - **ビジュアルチャート**：インタラクティブなK線グラフ、資産配分レーダーチャート、および収益トレンドチャートを搭載。
 
@@ -43,7 +43,7 @@ AIを搭載した**次世代型ポートフォリオ管理プラットフォー�
 - **フロントエンド**: [Next.js 16+](https://nextjs.org/) (App Router), React 19, TypeScript
 - **スタイリング**: [Tailwind CSS v4](https://tailwindcss.com/), [shadcn/ui](https://ui.shadcn.com/)
 - **バックエンド/DB**: [Supabase](https://supabase.com/) (PostgreSQL + Server Actions)
-- **AI エンジン**: [Vercel AI SDK](https://sdk.vercel.ai/), [DeepSeek](https://www.deepseek.com/) (`deepseek-v4-flash`), [OpenRouter](https://openrouter.ai/) (free tier)
+- **AI エンジン**: [Vercel AI SDK](https://sdk.vercel.ai/), [DeepSeek](https://www.deepseek.com/) (`deepseek-v4-flash`)
 - **検索拡張生成 (RAG)**: [Tavily API](https://tavily.com/)
 - **データソース**: Yahoo Finance, TradingView Widgets
 - **状態管理**: TanStack Query (React Query)
@@ -91,7 +91,6 @@ ai-portfolio-manager-stocks-crypto/
 ```env
 NEXT_PUBLIC_SUPABASE_URL=あなたのSupabaseプロジェクトURL
 NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=あなたのSupabase Publishable Key
-OPENROUTER_API_KEY=OpenRouterキー
 DEEPSEEK_API_KEY=DeepSeekキー
 TAVILY_API_KEY=Tavily検索キー
 ```

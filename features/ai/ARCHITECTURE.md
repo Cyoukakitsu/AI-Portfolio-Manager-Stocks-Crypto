@@ -55,7 +55,7 @@ Agent1                   Agent2   ← 同时执行，谁先完成谁先推 SSE �
 
 ```
 ai
-├── 外部：Vercel AI SDK、DeepSeek / Groq（LLM）、Tavily、yahoo-finance2
+├── 外部：Vercel AI SDK、DeepSeek（LLM，配置见 `lib/ai.ts`）、Tavily、yahoo-finance2
 ├── 共享：lib/yahoo-finance（YahooFinance 单例）、lib/lang-instruction（locale 语言指令）、lib/news-fetcher（Tavily 统一封装）
 └── 内部：features/auth（身份验证）
 ```

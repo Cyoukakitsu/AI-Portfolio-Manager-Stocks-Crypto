@@ -3,7 +3,7 @@
 ## 项目概览
 
 **PortfolioX** — 面向个人投资者的 AI 驱动股票与加密货币投资组合管理平台。
-技术栈：Next.js 16 + Supabase（Auth + DB）+ AI SDK（DeepSeek / OpenRouter / Tavily）。
+技术栈：Next.js 16 + Supabase（Auth + DB）+ AI SDK（DeepSeek / Tavily）。
 
 ## 首次运行
 
@@ -20,7 +20,7 @@ pnpm install
 
 1. **一次只做一个任务** — 从 `TASKS.md` 选一个任务，完成条件全部满足后再选下一个；新想法记入其 Inbox，不打断当前任务
 2. **完成前必须跑 `./init.sh`** — 三项全过才能声称完成，不允许跳过
-3. **不在客户端暴露密钥** — Supabase service key、AI API key 只在 server actions 中使用
+3. **不在客户端暴露密钥** — Supabase service key、AI API key 只在服务端（server actions / route handler）中使用；数据读写默认走 server actions，仅 SSE 与 AI 流式接口用 route handler
 4. **范围外文件不动** — 当前任务以外的文件，未经确认不得修改
 
 完整约束（安全、Git、测试、i18n、数据完整性）见 [`CONSTRAINTS.md`](CONSTRAINTS.md)。

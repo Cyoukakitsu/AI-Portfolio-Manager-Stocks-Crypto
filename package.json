@@ -12,10 +12,8 @@
   },
   "dependencies": {
     "@ai-sdk/deepseek": "^2.0.26",
-    "@ai-sdk/groq": "^3.0.29",
     "@base-ui/react": "^1.1.0",
     "@hookform/resolvers": "^5.2.2",
-    "@openrouter/ai-sdk-provider": "^2.2.3",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
     "@tanstack/react-query": "^5.96.2",

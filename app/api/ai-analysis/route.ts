@@ -40,11 +40,15 @@ export async function POST(request: Request) {
 
   const stream = new ReadableStream({
     async start(controller) {
+      // 客户端断开后流已取消，再 enqueue / close 会抛错，统一在此跳过
+      const send = (event: string, data: unknown) => {
+        if (!request.signal.aborted) controller.enqueue(sseEvent(event, data));
+      };
       try {
         // 每个 persona 一完成就立即推送，不等另一个
         const analyze = (persona: AgentPersona, event: string) =>
-          runPersona(persona, symbol, langInstruction).then((result) => {
-            controller.enqueue(sseEvent(event, result));
+          runPersona(persona, symbol, langInstruction, request.signal).then((result) => {
+            send(event, result);
             return result;
           });
 
@@ -62,6 +66,8 @@ export async function POST(request: Request) {
 
           const { output: coordinator } = await generateText({
             model,
+            abortSignal: request.signal,
+            timeout: 30_000,
             output: Output.object({ schema: coordinatorOutputSchema }),
             providerOptions: noThinking,
             system: `${COORDINATOR_PROMPT}${langInstruction}`,
@@ -73,13 +79,13 @@ export async function POST(request: Request) {
       Synthesize these two perspectives and give your final recommendation for ${symbol}.`,
           });
 
-          controller.enqueue(sseEvent("coordinator_done", coordinator));
+          send("coordinator_done", coordinator);
         }
       } catch (err) {
-        console.error("[ai-analysis] Error:", err);
-        controller.enqueue(sseEvent("error", {}));
+        if (!request.signal.aborted) console.error("[ai-analysis] Error:", err);
+        send("error", {});
       } finally {
-        controller.close();
+        if (!request.signal.aborted) controller.close();
       }
     },
   });

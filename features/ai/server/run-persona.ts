@@ -12,12 +12,15 @@ export async function runPersona(
   persona: AgentPersona,
   symbol: string,
   langInstruction: string,
+  abortSignal: AbortSignal,
 ): Promise<AgentResult> {
   const { output } = await generateText({
     model,
     tools: { getStockPrice, getFinancials, getNews },
     output: Output.object({ schema: personaOutputSchema }),
     stopWhen: stepCountIs(5),
+    abortSignal,
+    timeout: { totalMs: 90_000, stepMs: 30_000 },
     system: `${PERSONA_PROMPTS[persona]}${langInstruction}`,
     prompt: ANALYSIS_PROMPT(symbol),
   });

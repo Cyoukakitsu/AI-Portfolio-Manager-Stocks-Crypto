@@ -37,7 +37,7 @@ Agent1                   Agent2   ← 同时执行，谁先完成谁先推 SSE �
 
 ### 分析执行（`server/run-persona.ts`）
 
-`runPersona(persona, symbol, langInstruction)`：带工具调用一次 persona 分析，返回模型原始文本。`/api/ai-analysis` 路由只负责鉴权、校验与 SSE 推送。
+`runPersona(persona, symbol, langInstruction, abortSignal)`：带工具调用一次 persona 分析，返回模型原始文本。`/api/ai-analysis` 路由只负责鉴权、校验与 SSE 推送。
 
 ### AI 工具（`lib/`）
 

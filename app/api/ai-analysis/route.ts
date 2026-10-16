@@ -1,13 +1,13 @@
 // POST /api/ai-analysis — 运行 1-2 个 AI 分析师 agent，SSE 流式返回分析结果与 coordinator 综合结论
 import { rejectIfUnauthenticated } from "@/lib/api-auth";
 import { model, noThinking } from "@/lib/ai";
-import { generateText } from "ai";
+import { generateText, Output } from "ai";
 import yf from "@/lib/yahoo-finance";
 import { buildLangInstruction } from "@/lib/lang-instruction";
 import { AgentPersona } from "@/features/ai/types";
 
 import { runPersona } from "@/features/ai/server/run-persona";
-import { cleanJSON, parseAgent } from "@/features/ai/lib/parse-agent";
+import { coordinatorOutputSchema } from "@/features/ai/lib/schemas";
 import {
   COORDINATOR_PROMPT,
 } from "@/features/ai/lib/prompts";
@@ -43,8 +43,7 @@ export async function POST(request: Request) {
       try {
         // 每个 persona 一完成就立即推送，不等另一个
         const analyze = (persona: AgentPersona, event: string) =>
-          runPersona(persona, symbol, langInstruction).then((text) => {
-            const result = parseAgent(text, persona);
+          runPersona(persona, symbol, langInstruction).then((result) => {
             controller.enqueue(sseEvent(event, result));
             return result;
           });
@@ -61,8 +60,9 @@ export async function POST(request: Request) {
           const currentPrice = quote?.regularMarketPrice ?? 0;
           const agentResults = [result1, result2];
 
-          const coordinatorResult = await generateText({
+          const { output: coordinator } = await generateText({
             model,
+            output: Output.object({ schema: coordinatorOutputSchema }),
             providerOptions: noThinking,
             system: `${COORDINATOR_PROMPT}${langInstruction}`,
             prompt: `
@@ -73,24 +73,11 @@ export async function POST(request: Request) {
       Synthesize these two perspectives and give your final recommendation for ${symbol}.`,
           });
 
-          let coordinator;
-          try {
-            coordinator = JSON.parse(cleanJSON(coordinatorResult.text));
-          } catch {
-            coordinator = {
-              verdict: "hold",
-              score: 50,
-              summary: coordinatorResult.text,
-              buyRange: { low: 0, high: 0 },
-            };
-          }
-
           controller.enqueue(sseEvent("coordinator_done", coordinator));
         }
       } catch (err) {
-        const message = err instanceof Error ? err.message : String(err);
-        console.error("[ai-analysis] Error:", message, err);
-        controller.enqueue(sseEvent("error", { message }));
+        console.error("[ai-analysis] Error:", err);
+        controller.enqueue(sseEvent("error", {}));
       } finally {
         controller.close();
       }

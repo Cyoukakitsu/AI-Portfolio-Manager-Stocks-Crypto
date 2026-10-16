@@ -6,7 +6,7 @@
 ## 剩余未完成
 
 Phase 0：0.2b
-Phase 2：2.2 · 2.3 · 2.4 · 2.5 · 2.6
+Phase 2：2.3 · 2.4 · 2.5 · 2.6
 Phase 3：3.1 · 3.2
 Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
@@ -40,7 +40,7 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 ## Phase 2：AI 层
 
 - [x] **2.1** `lib/ai.ts` 集中模型配置；全部统一 DeepSeek；删除 openrouter、groq 依赖（Portfolio Summary 由 `openrouter/free` 改为 DeepSeek，输出会变；2026-10-08）
-- [ ] **2.2** 结构化输出（zod）；失败显示"分析失败，重试"，不伪造结果
+- [x] **2.2** 结构化输出（zod）：`features/ai/lib/schemas.ts` + `Output.object`；删 `parse-agent.ts` 与"持有 50 分"兜底；失败推 `error` 事件，前端 toast"分析失败，请重试"（ai-summary 是流式纯文本，不涉及；未用真实 DeepSeek 实测，留给 2.3；2026-10-16）
 - [ ] **2.3** Persona 提示词数据化 + 单模板，精简；用真实 DeepSeek 实测稳定性，不稳则退回"短提示词 + 一次校验重试"
 - [ ] **2.4** `/api/ai-analysis` 客户端断开即中止：`request.signal` 传入 `runPersona` 与 Coordinator 的 `generateText`（`abortSignal`），并加 `timeout: { totalMs, stepMs }`；顺带确认流被取消后 `enqueue` / `close` 不抛错。无行为变化，只省 token（来源：对照 dg-piagent 的 F04 / E11）
 - [ ] **2.5** 并行 Agent 失败隔离：`Promise.all` 改 `allSettled`，单个 persona 失败时推 `agent*_error`，成功的结果照常展示；只剩一个结果时是否仍出 Coordinator 结论需用户决定。同时让 `getNews` 失败返回 `{ error }`，不再与"无新闻"混为 `[]`。**行为变化，动手前先与用户确认**，并与 2.2 的"失败显式报错"一起设计
@@ -75,6 +75,8 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 ## 变更记录
 
 计划有变动时记一行：`YYYY-MM-DD 改了什么：原因`。
+
+- 2026-10-16 2.2 行为变化：LLM 输出不合格（含 buyRange 为 0）时不再展示伪造的"持有 50 分"，改为整体报错；`error` 事件不再带服务端原始消息，统一显示 i18n 文案
 
 - 2026-10-08 1.4 行为变化：报价由“每 symbol 一次请求”改为一次批量 server action（Next 串行执行 action，逐个调用会排队）；`getQuotes` 单个 symbol 失败仍按无报价处理；已删 `/api/yahoofinance/*` 及其 E2E 401 用例（server action 自带身份校验）
 - 2026-10-07 新增 2.4 / 2.5 / 2.6：对照 pi-agent 的 dg-piagent skill 与现有 `ai-analysis` 路由，得出中止与超时、并行失败隔离、工具进度推送三项改进；用户决定留作次日工作

@@ -64,6 +64,6 @@ ai
 
 - API 路由使用 SSE (`ReadableStream`) 推送结果；两个 Agent 并行执行，各自完成后即推送事件，Coordinator 在两者都完成后启动
 - LLM 内部仍用 `generateText + stopWhen`（非逐 token 流式），SSE 流式体现在卡片级别的推送粒度
-- Agent 提示词集中在 `lib/prompts.ts`，修改需同步测试所有 persona
+- LLM 输出由 `lib/schemas.ts`（zod）校验，不合格时抛错、SSE 推 `error` 事件，不伪造结果；Agent 提示词集中在 `lib/prompts.ts`，修改需同步测试所有 persona
 - locale 语言指令统一由 `lib/lang-instruction.ts` 的 `buildLangInstruction(locale)` 生成，新增语言只需修改该文件的 `LOCALE_NAMES`
 - yahoo-finance2 通过 `lib/yahoo-finance.ts` 单例访问，禁止在各路由中各自 `new YahooFinance()`

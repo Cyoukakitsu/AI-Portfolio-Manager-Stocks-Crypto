@@ -7,7 +7,7 @@
 
 Phase 0：0.2b
 Phase 2：2.3 · 2.5 · 2.6
-Phase 3：3.1 · 3.2
+Phase 3：3.2
 Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
 ## 已确定的约定（来自 2026-10-01 重构访谈）
@@ -48,7 +48,7 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
 ## Phase 3：命名与可读性
 
-- [ ] **3.1** 按 `CONTEXT.md` 改名（`AgentResult`→`PersonaAnalysis`、`Coordinator`→`CommitteeVerdict` 等）；文件名 kebab-case；注释统一中文
+- [x] **3.1** 按 `CONTEXT.md` 改名（`AgentPersona`→`Persona`、`AgentResult`→`PersonaAnalysis`、`Coordinator*`→`CommitteeVerdict*`、`PortfolioAISummary`→`PortfolioSummary`，组件与文件同步；SSE 事件改 `persona1_done` / `persona2_done` / `committee_done`）；文件名 kebab-case；注释统一中文（2026-10-16；`/api/assets/ai-summary` 路径不动，i18n 展示文案 "Coordinator" 留给 Phase 4）
 - [ ] **3.2** 拆分过长组件和函数（如 `asset-table.tsx` 390 行）
 
 ## Phase 4：UI/UX 重设计
@@ -75,6 +75,8 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 ## 变更记录
 
 计划有变动时记一行：`YYYY-MM-DD 改了什么：原因`。
+
+- 2026-10-16 3.1 内部改名：SSE 事件名与 i18n key（`coordinatorName`/`coordinatorRole`→`committeeName`/`committeeRole`）随改，展示文案不变
 
 - 2026-10-16 2.2 行为变化：LLM 输出不合格（含 buyRange 为 0）时不再展示伪造的"持有 50 分"，改为整体报错；`error` 事件不再带服务端原始消息，统一显示 i18n 文案
 

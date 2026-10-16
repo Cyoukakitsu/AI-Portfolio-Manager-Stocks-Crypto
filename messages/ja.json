@@ -259,8 +259,8 @@
       "buyRange": "買入レンジ",
       "targetPriceRange": "目標価格帯",
       "combinedRangeNote": "両アナリストの買入レンジの統合",
-      "coordinatorName": "コーディネーター",
-      "coordinatorRole": "最終判定"
+      "committeeName": "コーディネーター",
+      "committeeRole": "最終判定"
     }
   },
   "aiAnalyst": {

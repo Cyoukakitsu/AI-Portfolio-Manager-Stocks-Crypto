@@ -1,8 +1,8 @@
-import type { AgentPersona, Verdict } from "@/features/ai/types";
+import type { Persona, Verdict } from "@/features/ai/types";
 
 /** 各分析師の展示信息 */
 export const PERSONA_META: Record<
-  AgentPersona,
+  Persona,
   { name: string; emoji: string; role: string; avatarUrl: string; gradientClass: string }
 > = {
   buffett: {

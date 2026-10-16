@@ -27,7 +27,7 @@ export async function createClient() {
               cookieStore.set(name, value, options);
             });
           } catch {
-            //ignore error
+            // 忽略错误：Server Component 中无法写 cookie，由 middleware 刷新会话
           }
         },
       },

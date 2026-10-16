@@ -42,7 +42,7 @@ export default async function Stocks() {
           </p>
         </div>
 
-        {/* stat chips */}
+        {/* 统计标签 */}
         <div className="flex flex-wrap gap-2">
           <StatChip icon={Globe} label={t("globalData")} accent="primary" />
           <StatChip icon={Zap} label={t("liveUpdates")} accent="primary" />

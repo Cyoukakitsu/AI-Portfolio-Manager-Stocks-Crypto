@@ -5,14 +5,14 @@ const buyRange = z.object({ low: z.number().positive(), high: z.number().positiv
 const verdict = z.enum(["buy", "hold", "sell"]);
 const score = z.number().int().min(0).max(100);
 
-export const personaOutputSchema = z.object({
+export const personaAnalysisSchema = z.object({
   points: z.array(z.string()).length(3),
   score,
   verdict,
   buyRange,
 });
 
-export const coordinatorOutputSchema = z.object({
+export const committeeVerdictSchema = z.object({
   verdict,
   score,
   summary: z.string(),

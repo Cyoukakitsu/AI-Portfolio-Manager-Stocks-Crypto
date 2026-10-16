@@ -260,8 +260,8 @@
       "buyRange": "Buy Range",
       "targetPriceRange": "Target Price Range",
       "combinedRangeNote": "Combined buy range from both analysts",
-      "coordinatorName": "Coordinator",
-      "coordinatorRole": "Final Verdict"
+      "committeeName": "Coordinator",
+      "committeeRole": "Final Verdict"
     }
   },
   "aiAnalyst": {

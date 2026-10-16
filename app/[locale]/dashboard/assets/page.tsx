@@ -7,7 +7,7 @@ import { AssetForm } from "@/features/assets/components/asset-form";
 import { TotalAssetCard } from "@/features/assets/components/total-asset-card";
 import { PortfolioCandlestickChart } from "@/features/assets/components/portfolio-candlestick-chart";
 import { DailyAnalysis } from "@/features/assets/components/daily-analysis";
-import { PortfolioAISummary } from "@/features/assets/components/portfolio-ai-summary";
+import { PortfolioSummary } from "@/features/assets/components/portfolio-summary";
 import { WidgetCard } from "@/features/dashboard/components/widget-card";
 
 import { LayoutDashboard, Database, Newspaper, Bot } from "lucide-react";
@@ -44,7 +44,7 @@ export default async function Assets() {
         </div>
         <div className="sm:col-span-1">
         <WidgetCard icon={Bot} title={t("aiSummaryWidget")} accent="primary">
-          <PortfolioAISummary assets={list} />
+          <PortfolioSummary assets={list} />
         </WidgetCard>
         </div>
       </div>

@@ -1,4 +1,4 @@
-// PortfolioAISummary コンポーネントのロジック Hook
+// PortfolioSummary 组件的逻辑 Hook
 // 職責：弾窓開閉、ストリーミングリクエスト管理、AbortController による中断
 
 import { useRef, useState } from "react";
@@ -10,7 +10,7 @@ type Params = {
   fetchErrorMessage: string; // t("fetchError") の値をコンポーネント側から渡す
 };
 
-export function usePortfolioAISummary({ assets, fetchErrorMessage }: Params) {
+export function usePortfolioSummary({ assets, fetchErrorMessage }: Params) {
   const locale = useLocale();
   const [open, setOpen] = useState(false);
   // 流式累积的 AI 文本

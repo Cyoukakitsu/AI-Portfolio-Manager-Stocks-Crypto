@@ -4,12 +4,12 @@
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { AgentResult } from "@/features/ai/types";
+import { PersonaAnalysis } from "@/features/ai/types";
 import { PERSONA_META, VERDICT_STYLE } from "@/features/ai/lib/constants";
 
-type AgentCardProps = AgentResult;
+type PersonaCardProps = PersonaAnalysis;
 
-export function AgentCard({ persona, score, verdict, points, buyRange }: AgentCardProps) {
+export function PersonaCard({ persona, score, verdict, points, buyRange }: PersonaCardProps) {
   const t = useTranslations("pages.ai");
   const tAnalyst = useTranslations("aiAnalyst");
   const tVerdict = useTranslations("verdict");

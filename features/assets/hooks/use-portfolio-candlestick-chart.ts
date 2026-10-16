@@ -1,6 +1,6 @@
 "use client";
 
-// PortfolioCandlestickChart コンポーネントのロジック Hook
+// PortfolioCandlestickChart 组件的逻辑 Hook
 // 職責：range/view 状態管理、データ取得、OHLC 計算、chart 描画
 
 import { useEffect, useRef, useState } from "react";

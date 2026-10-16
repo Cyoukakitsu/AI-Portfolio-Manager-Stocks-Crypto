@@ -63,7 +63,7 @@ const SignInForm = () => {
     >
       {/* Card */}
       <div className="rounded-xl border border-border bg-card shadow-lg overflow-hidden">
-        {/* Primary color top accent */}
+        {/* 顶部主色装饰条 */}
         <div
           className="h-px w-full"
           style={{
@@ -201,7 +201,7 @@ const SignInForm = () => {
                       <GoogleButton />
                     </motion.div>
 
-                    {/* Footer link */}
+                    {/* 底部链接 */}
                     <motion.p
                       variants={fieldVariants}
                       className="text-center text-sm text-muted-foreground"

@@ -1,7 +1,7 @@
 "use client";
 
 // 智能资产分析助手
-// 逻辑层见 hooks/use-portfolio-ai-summary.ts
+// 逻辑层见 hooks/use-portfolio-summary.ts
 
 import type { Asset } from "@/features/assets/types";
 import { useTranslations } from "next-intl";
@@ -16,14 +16,14 @@ import {
 } from "@/components/ui/dialog";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { usePortfolioAISummary } from "@/features/assets/hooks/use-portfolio-ai-summary";
+import { usePortfolioSummary } from "@/features/assets/hooks/use-portfolio-summary";
 
 type Props = { assets: Asset[] };
 
-export function PortfolioAISummary({ assets }: Props) {
+export function PortfolioSummary({ assets }: Props) {
   const t = useTranslations("aiSummary");
 
-  const { open, handleOpenChange, text, loading } = usePortfolioAISummary({
+  const { open, handleOpenChange, text, loading } = usePortfolioSummary({
     assets,
     fetchErrorMessage: t("fetchError"),
   });

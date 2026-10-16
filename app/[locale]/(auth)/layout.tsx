@@ -28,7 +28,7 @@ export default async function layout({
       <div className="flex flex-1">
         {/* ── Left branding panel (desktop only) ── */}
         <div className="hidden lg:flex lg:w-[45%] bg-sidebar flex-col justify-between p-12 relative overflow-hidden border-r border-sidebar-border">
-          {/* Subtle grid backdrop using primary color */}
+          {/* 主色网格背景 */}
           <div
             className="pointer-events-none absolute inset-0 opacity-[0.04]"
             style={{
@@ -38,7 +38,7 @@ export default async function layout({
             }}
           />
 
-          {/* Ambient glow */}
+          {/* 环境光晕 */}
           <div className="pointer-events-none absolute top-1/4 left-1/3 w-72 h-72 bg-primary/8 rounded-full blur-3xl" />
           <div className="pointer-events-none absolute bottom-1/4 right-1/4 w-56 h-56 bg-primary/5 rounded-full blur-3xl" />
 
@@ -55,7 +55,7 @@ export default async function layout({
             </Link>
           </div>
 
-          {/* Headline + feature list */}
+          {/* 标题与功能列表 */}
           <div className="relative z-10 space-y-10">
             <div className="space-y-4">
               <h1 className="text-4xl font-bold text-sidebar-foreground leading-tight tracking-tight">
@@ -87,7 +87,7 @@ export default async function layout({
             </div>
           </div>
 
-          {/* Decorative mini-chart */}
+          {/* 装饰性迷你图表 */}
           <div className="relative z-10">
             <div className="flex items-end gap-1.5 h-14">
               {chartBars.map((h, i) => (
@@ -103,7 +103,7 @@ export default async function layout({
 
         {/* ── Right form panel ── */}
         <div className="flex-1 flex flex-col items-center justify-center bg-background px-6 py-10">
-          {/* Mobile-only logo */}
+          {/* 仅移动端显示的 Logo */}
           <div className="mb-8 lg:hidden">
             <Link href="/">
               <Image

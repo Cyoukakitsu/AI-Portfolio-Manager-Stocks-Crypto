@@ -2,26 +2,26 @@
 
 ## 职责
 
-多角色 AI 投资分析引擎：模拟 5 种投资大师视角并行分析，再由 Coordinator 综合输出最终买卖建议。
+多角色 AI 投资分析引擎：模拟 5 种投资大师视角并行分析，再由 Committee 综合输出最终买卖建议。
 
 ## 分析流程
 
 ```
 用户输入股票代码
       ↓
-  并行调用 2 个 AgentPersona（SSE 流式推送）
+  并行调用 2 个 Persona（SSE 流式推送）
   （从 buffett/lynch/wood/burry/dalio 中选取）
   ↙                        ↘
-Agent1                   Agent2   ← 同时执行，谁先完成谁先推 SSE 事件
+Persona1                   Persona2   ← 同时执行，谁先完成谁先推 SSE 事件
   ↓                        ↓
-  每个 Agent 自主调用工具：
+  每个 Persona 自主调用工具：
     getStockPrice(symbol)   ← yahoo-finance2
     getNews(symbol)         ← Tavily 搜索
     getFinancials(symbol)   ← yahoo-finance2 财报数据
       ↓
-  两个 Agent 都完成后
+  两个 Persona 都完成后
       ↓
-  Coordinator 汇总 → 最终 verdict + buyRange → SSE 推送
+  Committee 汇总 → 最终 verdict + buyRange → SSE 推送
 ```
 
 ## 对外接口
@@ -30,9 +30,9 @@ Agent1                   Agent2   ← 同时执行，谁先完成谁先推 SSE �
 
 | 类型 | 说明 |
 |---|---|
-| `AgentPersona` | `"buffett" \| "lynch" \| "wood" \| "burry" \| "dalio"` |
-| `AgentResult` | 单个 Agent 的结论：`points / score / verdict / buyRange` |
-| `CoordinatorResult` | 综合结论：`verdict / score / summary / buyRange` |
+| `Persona` | `"buffett" \| "lynch" \| "wood" \| "burry" \| "dalio"` |
+| `PersonaAnalysis` | 单个 Persona 的结论：`points / score / verdict / buyRange` |
+| `CommitteeVerdict` | 综合结论：`verdict / score / summary / buyRange` |
 | `AnalysisResult` | 完整分析快照，前端展示与 Supabase 存储共用 |
 
 ### 分析执行（`server/run-persona.ts`）
@@ -49,7 +49,7 @@ Agent1                   Agent2   ← 同时执行，谁先完成谁先推 SSE �
 
 ### UI 组件
 
-`<AnalysisShell>` / `<AgentSelector>` / `<AgentCard>` / `<CoordinatorCard>` / `<SearchBar>`
+`<AnalysisShell>` / `<PersonaSelector>` / `<PersonaCard>` / `<CommitteeVerdictCard>` / `<SearchBar>`
 
 ## 依赖关系
 
@@ -62,8 +62,8 @@ ai
 
 ## 注意事项
 
-- API 路由使用 SSE (`ReadableStream`) 推送结果；两个 Agent 并行执行，各自完成后即推送事件，Coordinator 在两者都完成后启动
+- API 路由使用 SSE (`ReadableStream`) 推送结果；两个 Persona 并行执行，各自完成后即推送事件，Committee 在两者都完成后启动
 - LLM 内部仍用 `generateText + stopWhen`（非逐 token 流式），SSE 流式体现在卡片级别的推送粒度
-- LLM 输出由 `lib/schemas.ts`（zod）校验，不合格时抛错、SSE 推 `error` 事件，不伪造结果；Agent 提示词集中在 `lib/prompts.ts`，修改需同步测试所有 persona
+- LLM 输出由 `lib/schemas.ts`（zod）校验，不合格时抛错、SSE 推 `error` 事件，不伪造结果；Persona 提示词集中在 `lib/prompts.ts`，修改需同步测试所有 persona
 - locale 语言指令统一由 `lib/lang-instruction.ts` 的 `buildLangInstruction(locale)` 生成，新增语言只需修改该文件的 `LOCALE_NAMES`
 - yahoo-finance2 通过 `lib/yahoo-finance.ts` 单例访问，禁止在各路由中各自 `new YahooFinance()`

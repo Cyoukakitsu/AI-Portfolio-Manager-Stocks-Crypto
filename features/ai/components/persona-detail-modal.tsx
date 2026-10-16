@@ -3,7 +3,7 @@
 // 展示分析师详细分析内容的弹窗
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { AgentPersona } from "@/features/ai/types";
+import { Persona } from "@/features/ai/types";
 import { PERSONA_META } from "@/features/ai/lib/constants";
 import {
   Dialog,
@@ -13,12 +13,12 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 
-type AgentDetailModalProps = {
-  modalOpen: AgentPersona | null; // 当前打开的是哪个分析师，null 表示关闭
+type PersonaDetailModalProps = {
+  modalOpen: Persona | null; // 当前打开的是哪个分析师，null 表示关闭
   onClose: () => void;            // 关闭 Modal 的方法
 };
 
-export function AgentDetailModal({ modalOpen, onClose }: AgentDetailModalProps) {
+export function PersonaDetailModal({ modalOpen, onClose }: PersonaDetailModalProps) {
   const t = useTranslations("aiAnalyst");
   // 根据 modalOpen 取出当前分析师的详细信息
   const activePersona = modalOpen ? PERSONA_META[modalOpen] : null;

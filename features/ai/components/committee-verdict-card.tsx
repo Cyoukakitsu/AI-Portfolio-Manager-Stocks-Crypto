@@ -4,15 +4,15 @@
 import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { CoordinatorResult } from "@/features/ai/types";
+import { CommitteeVerdict } from "@/features/ai/types";
 import { VERDICT_STYLE } from "@/features/ai/lib/constants";
 
-export function CoordinatorCard({
+export function CommitteeVerdictCard({
   verdict,
   score,
   summary,
   buyRange,
-}: CoordinatorResult) {
+}: CommitteeVerdict) {
   const t = useTranslations("pages.ai");
   const tVerdict = useTranslations("verdict");
   return (
@@ -22,8 +22,8 @@ export function CoordinatorCard({
           <div className="flex items-center gap-2">
             <span className="text-2xl">⚖️</span>
             <div>
-              <p className="text-sm font-medium">{t("coordinatorName")}</p>
-              <p className="text-xs text-muted-foreground">{t("coordinatorRole")}</p>
+              <p className="text-sm font-medium">{t("committeeName")}</p>
+              <p className="text-xs text-muted-foreground">{t("committeeRole")}</p>
             </div>
           </div>
           {/* verdict 标签 + score 进度条 */}

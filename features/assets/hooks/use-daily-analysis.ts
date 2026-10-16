@@ -1,4 +1,4 @@
-// DailyAnalysis コンポーネントのロジック Hook
+// DailyAnalysis 组件的逻辑 Hook
 // 職責：symbol リスト生成、ニュースデータ取得、派生状態の計算
 
 import { useRef } from "react";

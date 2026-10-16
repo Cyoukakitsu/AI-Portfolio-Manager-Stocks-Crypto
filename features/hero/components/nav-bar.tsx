@@ -23,7 +23,7 @@ export function NavBar() {
           PortfolioX
         </Link>
 
-        {/* Nav Links (desktop only) — truly centered */}
+        {/* 导航链接（仅桌面端），严格居中 */}
         <div className="hidden md:flex absolute left-1/2 -translate-x-1/2 items-center gap-8 text-sm text-muted-foreground">
           {isHeroPage ? (
             <a href="#features" className="hover:text-primary transition-colors">
@@ -53,7 +53,7 @@ export function NavBar() {
           <ModeToggle />
         </div>
 
-        {/* Right Controls — flush right */}
+        {/* 右侧控件，靠右对齐 */}
         <div className="hidden md:flex items-center gap-4 ml-auto">
           <LocaleSwitcher />
           <ModeToggle />

@@ -4,7 +4,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { AgentPersona } from "@/features/ai/types";
+import { Persona } from "@/features/ai/types";
 import { PERSONA_META } from "@/features/ai/lib/constants";
 import {
   Tooltip,
@@ -12,16 +12,16 @@ import {
   TooltipProvider,
 } from "@/components/ui/tooltip";
 import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip";
-import { AgentDetailModal } from "./agent-detail-modal";
+import { PersonaDetailModal } from "./persona-detail-modal";
 
-type AgentSelectorProps = {
-  selected: AgentPersona[]; // 当前已选中的分析师列表
-  onChange: (personas: AgentPersona[]) => void; // 选择变更时通知父组件
+type PersonaSelectorProps = {
+  selected: Persona[]; // 当前已选中的分析师列表
+  onChange: (personas: Persona[]) => void; // 选择变更时通知父组件
   disabled: boolean; // 是否禁用（AI 分析进行中时禁用）
 };
 
 // 所有可选分析师的 ID，顺序固定
-const PERSONA_IDS: AgentPersona[] = [
+const PERSONA_IDS: Persona[] = [
   "buffett",
   "lynch",
   "wood",
@@ -29,18 +29,18 @@ const PERSONA_IDS: AgentPersona[] = [
   "dalio",
 ];
 
-export function AgentSelector({
+export function PersonaSelector({
   selected,
   onChange,
   disabled,
-}: AgentSelectorProps) {
+}: PersonaSelectorProps) {
   const t = useTranslations("aiAnalyst");
 
   // 打开的分析师详情弹窗
-  const [modalOpen, setModalOpen] = useState<AgentPersona | null>(null);
+  const [modalOpen, setModalOpen] = useState<Persona | null>(null);
 
   // 点击分析师卡片：已选则取消，未选且未满 2 个则添加
-  const handleClick = (id: AgentPersona) => {
+  const handleClick = (id: Persona) => {
     if (disabled) return;
 
     if (selected.includes(id)) {
@@ -51,7 +51,7 @@ export function AgentSelector({
   };
 
   // 点击分析师卡片问号：打开弹窗
-  const openModal = (e: React.MouseEvent, id: AgentPersona) => {
+  const openModal = (e: React.MouseEvent, id: Persona) => {
     e.stopPropagation(); //  阻止事件冒泡（事件往上传播），为了防止触发卡片的点击事件
     setModalOpen(id);
   };
@@ -163,7 +163,7 @@ export function AgentSelector({
       </div>
 
       {/* 分析师详情 Modal */}
-      <AgentDetailModal
+      <PersonaDetailModal
         modalOpen={modalOpen}
         onClose={() => setModalOpen(null)}
       />

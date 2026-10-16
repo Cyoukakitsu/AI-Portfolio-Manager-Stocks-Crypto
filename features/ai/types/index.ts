@@ -2,7 +2,7 @@
  * 投资大师派别
  * 每个值对应一套不同的 system prompt 和分析风格
  */
-export type AgentPersona =
+export type Persona =
   | "buffett" // 巴菲特：价值投资，护城河，长期持有
   | "lynch" // 彼得·林奇：成长股，PEG，消费者洞察
   | "wood" // 木头姐：颠覆式创新，TAM，5年期预测
@@ -16,11 +16,11 @@ export type Verdict = "buy" | "hold" | "sell";
 export type BuyRange = { low: number; high: number };
 
 /**
- * 单个 Agent 的分析结论
+ * 单个 Persona 的分析结论
  * 由 generateText + maxSteps 跑完后返回
  */
-export type AgentResult = {
-  persona: AgentPersona;
+export type PersonaAnalysis = {
+  persona: Persona;
   points: string[]; // 3个核心观点
   score: number; // 0-100
   verdict: Verdict;
@@ -28,9 +28,9 @@ export type AgentResult = {
 };
 
 /**
- * Coordinator 的综合结论
+ * Committee 的综合结论
  */
-export type CoordinatorResult = {
+export type CommitteeVerdict = {
   verdict: Verdict;
   score: number;
   summary: string;
@@ -43,8 +43,8 @@ export type CoordinatorResult = {
  */
 export type AnalysisResult = {
   symbol: string;
-  agentResults: AgentResult[];
-  coordinator: CoordinatorResult | null;
+  analyses: PersonaAnalysis[];
+  committee: CommitteeVerdict | null;
   analyzedAt: string; // ISO 时间字符串
 };
 

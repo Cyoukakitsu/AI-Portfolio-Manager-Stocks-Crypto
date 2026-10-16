@@ -7,7 +7,6 @@
 
 Phase 0：0.2b
 Phase 2：2.3 · 2.5 · 2.6
-Phase 3：3.2
 Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
 ## 已确定的约定（来自 2026-10-01 重构访谈）
@@ -49,7 +48,7 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 ## Phase 3：命名与可读性
 
 - [x] **3.1** 按 `CONTEXT.md` 改名（`AgentPersona`→`Persona`、`AgentResult`→`PersonaAnalysis`、`Coordinator*`→`CommitteeVerdict*`、`PortfolioAISummary`→`PortfolioSummary`，组件与文件同步；SSE 事件改 `persona1_done` / `persona2_done` / `committee_done`）；文件名 kebab-case；注释统一中文（2026-10-16；`/api/assets/ai-summary` 路径不动，i18n 展示文案 "Coordinator" 留给 Phase 4）
-- [ ] **3.2** 拆分过长组件和函数（如 `asset-table.tsx` 390 行）
+- [x] **3.2** 拆分过长组件和函数：`asset-table.tsx` 385→254 行，拆出 `transaction-list` / `return-cell` / `confirm-delete-dialog`（两个删除对话框合并）；其余文件均 ≤277 行，`sign-up-form` / `transaction-form` 为表单，按 1.3 D5 的结论不动（2026-10-16）
 
 ## Phase 4：UI/UX 重设计
 

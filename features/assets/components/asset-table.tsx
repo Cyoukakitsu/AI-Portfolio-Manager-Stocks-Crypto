@@ -13,17 +13,10 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { ChevronDown, Plus, Trash2 } from "lucide-react";
+import { ConfirmDeleteDialog } from "@/features/assets/components/confirm-delete-dialog";
+import { ReturnCell } from "@/features/assets/components/return-cell";
+import { TransactionList } from "@/features/assets/components/transaction-list";
 import { TransactionForm } from "@/features/assets/components/transaction-form";
 import type { Asset } from "@/features/assets/types";
 import { useAssetsTable } from "@/features/assets/hooks/use-asset-table";
@@ -138,29 +131,7 @@ export function AssetsTable({ assets }: Props) {
                     </TableCell>
                     {/* 收益率：(市场价格 - 均价) / 均价 * 100，正值绿色，负值红色 */}
                     <TableCell>
-                      {(() => {
-                        const price = currentPrices[asset.symbol];
-                        if (
-                          price == null ||
-                          asset.avg_price === null ||
-                          asset.avg_price === 0
-                        )
-                          return "—";
-                        const assetReturn =
-                          ((price - asset.avg_price) / asset.avg_price) * 100;
-                        return (
-                          <span
-                            className={
-                              assetReturn >= 0
-                                ? "text-green-500 dark:text-green-400"
-                                : "text-red-500 dark:text-red-400"
-                            }
-                          >
-                            {assetReturn >= 0 ? "+" : ""}
-                            {assetReturn.toFixed(2)}%
-                          </span>
-                        );
-                      })()}
+                      <ReturnCell price={currentPrices[asset.symbol]} avgPrice={asset.avg_price} />
                     </TableCell>
                     {/* 操作列：删除资产 + 展开/收起交易记录 */}
                     <TableCell className="text-right space-x-1">
@@ -219,73 +190,12 @@ export function AssetsTable({ assets }: Props) {
                                   {t("table.noTransactions")}
                                 </p>
                               ) : (
-                                <div className="overflow-x-auto">
-                                  <Table className="table-fixed w-full">
-                                    <colgroup>
-                                      <col className="w-32" />
-                                      <col className="w-28" />
-                                      <col className="w-24" />
-                                      <col className="w-20" />
-                                      <col className="w-10" />
-                                    </colgroup>
-                                    <TableHeader>
-                                      <TableRow>
-                                        <TableHead>{t("table.date")}</TableHead>
-                                        <TableHead>
-                                          {t("table.price")}
-                                        </TableHead>
-                                        <TableHead>
-                                          {t("table.quantity")}
-                                        </TableHead>
-                                        <TableHead>{t("table.type")}</TableHead>
-                                        <TableHead />
-                                      </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                      {transactionsMap[asset.id]?.map((tx) => (
-                                        <TableRow key={tx.id}>
-                                          <TableCell className="text-sm">
-                                            {tx.traded_at}
-                                          </TableCell>
-                                          <TableCell className="text-sm">
-                                            ${tx.price}
-                                          </TableCell>
-                                          <TableCell className="text-sm">
-                                            {tx.quantity}
-                                          </TableCell>
-                                          <TableCell>
-                                            <Badge
-                                              variant={
-                                                tx.type === "buy"
-                                                  ? "default"
-                                                  : "secondary"
-                                              }
-                                            >
-                                              {tx.type === "buy"
-                                                ? t("table.buy")
-                                                : t("table.sell")}
-                                            </Badge>
-                                          </TableCell>
-                                          <TableCell className="text-right">
-                                            <Button
-                                              variant="ghost"
-                                              size="icon"
-                                              className="text-destructive hover:text-destructive"
-                                              onClick={() =>
-                                                setDeletingTx({
-                                                  id: tx.id,
-                                                  assetId: asset.id,
-                                                })
-                                              }
-                                            >
-                                              <Trash2 className="w-4 h-4" />
-                                            </Button>
-                                          </TableCell>
-                                        </TableRow>
-                                      ))}
-                                    </TableBody>
-                                  </Table>
-                                </div>
+                                <TransactionList
+                                  transactions={transactionsMap[asset.id]}
+                                  onDelete={(id) =>
+                                    setDeletingTx({ id, assetId: asset.id })
+                                  }
+                                />
                               )}
 
                               {/* 新增交易按钮，点击后打开 TransactionForm Dialog */}
@@ -325,61 +235,20 @@ export function AssetsTable({ assets }: Props) {
         />
       ))}
 
-      {/* 删除资产确认对话框 */}
-      <AlertDialog
+      <ConfirmDeleteDialog
         open={deletingAssetId !== null}
-        onOpenChange={(open) => {
-          if (!open) setDeletingAssetId(null);
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("table.deleteAsset")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("table.deleteAssetDesc")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel variant="outline" size="default">
-              {t("table.cancel")}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={confirmDeleteAsset}
-            >
-              {t("table.delete")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-      {/* 删除交易确认对话框 */}
-      <AlertDialog
+        onClose={() => setDeletingAssetId(null)}
+        title={t("table.deleteAsset")}
+        description={t("table.deleteAssetDesc")}
+        onConfirm={confirmDeleteAsset}
+      />
+      <ConfirmDeleteDialog
         open={deletingTx !== null}
-        onOpenChange={(open) => {
-          if (!open) setDeletingTx(null);
-        }}
-      >
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>{t("table.deleteTransaction")}</AlertDialogTitle>
-            <AlertDialogDescription>
-              {t("table.deleteTransactionDesc")}
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel variant="outline" size="default">
-              {t("table.cancel")}
-            </AlertDialogCancel>
-            <AlertDialogAction
-              variant="destructive"
-              onClick={confirmDeleteTransaction}
-            >
-              {t("table.delete")}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+        onClose={() => setDeletingTx(null)}
+        title={t("table.deleteTransaction")}
+        description={t("table.deleteTransactionDesc")}
+        onConfirm={confirmDeleteTransaction}
+      />
     </>
   );
 }

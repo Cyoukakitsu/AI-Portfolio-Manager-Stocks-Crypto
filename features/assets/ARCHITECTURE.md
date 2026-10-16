@@ -47,7 +47,7 @@ calculateAssetHoldings(transactions): { total_quantity, total_cost, avg_price }
 
 ### UI 组件
 
-`<AssetTable>` / `<AssetForm>` / `<TransactionForm>` / `<TotalAssetCard>` / `<PortfolioCandlestickChart>` / `<SymbolSearch>` / `<PortfolioSummary>` / `<DailyAnalysis>`
+`<AssetTable>`（拆出 `<TransactionList>` / `<ReturnCell>` / `<ConfirmDeleteDialog>`）/ `<AssetForm>` / `<TransactionForm>` / `<TotalAssetCard>` / `<PortfolioCandlestickChart>` / `<SymbolSearch>` / `<PortfolioSummary>` / `<DailyAnalysis>`
 
 ## 依赖关系
 

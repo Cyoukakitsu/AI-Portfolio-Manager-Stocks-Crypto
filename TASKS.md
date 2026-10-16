@@ -6,7 +6,7 @@
 ## 剩余未完成
 
 Phase 0：0.2b
-Phase 2：2.3 · 2.5 · 2.6
+Phase 2：2.3 · 2.6
 Phase 4：4.1 · 4.2 · 4.3 · 4.4
 
 ## 已确定的约定（来自 2026-10-01 重构访谈）
@@ -42,7 +42,7 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 - [x] **2.2** 结构化输出（zod）：`features/ai/lib/schemas.ts` + `Output.object`；删 `parse-agent.ts` 与"持有 50 分"兜底；失败推 `error` 事件，前端 toast"分析失败，请重试"（ai-summary 是流式纯文本，不涉及；未用真实 DeepSeek 实测，留给 2.3；2026-10-16）
 - [ ] **2.3** Persona 提示词数据化 + 单模板，精简；用真实 DeepSeek 实测稳定性，不稳则退回"短提示词 + 一次校验重试"
 - [x] **2.4**（2026-10-16；`request.signal` 传入 `runPersona` 与 Coordinator，超时 persona 总 90s/单步 30s、Coordinator 30s，断开后 `send` 跳过 enqueue/close；未做真实断开实测）`/api/ai-analysis` 客户端断开即中止：`request.signal` 传入 `runPersona` 与 Coordinator 的 `generateText`（`abortSignal`），并加 `timeout: { totalMs, stepMs }`；顺带确认流被取消后 `enqueue` / `close` 不抛错。无行为变化，只省 token（来源：对照 dg-piagent 的 F04 / E11）
-- [ ] **2.5** 并行 Agent 失败隔离：`Promise.all` 改 `allSettled`，单个 persona 失败时推 `agent*_error`，成功的结果照常展示；只剩一个结果时是否仍出 Coordinator 结论需用户决定。同时让 `getNews` 失败返回 `{ error }`，不再与"无新闻"混为 `[]`。**行为变化，动手前先与用户确认**，并与 2.2 的"失败显式报错"一起设计
+- [x] **2.5** 并行 Persona 失败隔离：单个失败推 `persona1_error` / `persona2_error`，前端显示失败卡片，成功的照常展示；任一失败则不出 Committee Verdict（用户确认）；`fetchNews` 失败改为抛错，`getNews` 工具返回 `{ error }`，`/api/assets/news` 仍降级为空数组（2026-10-16）
 - [ ] **2.6** 工具进度推送：`generateText` 的 `onStepFinish` 推 SSE `status` 事件（如"正在查新闻"），前端 `analysis-shell` 展示，不换 `streamText`。**行为变化（UI 新增进度提示），与 Phase 4 的分析页方案可能冲突，建议放在 4.2 之后或一起做**
 
 ## Phase 3：命名与可读性
@@ -74,6 +74,8 @@ Phase 4：4.1 · 4.2 · 4.3 · 4.4
 ## 变更记录
 
 计划有变动时记一行：`YYYY-MM-DD 改了什么：原因`。
+
+- 2026-10-16 2.5 行为变化：双 Persona 时单个失败不再整体报错，改为该卡片显示"分析失败"、另一个照常展示，且不生成 Committee Verdict；未用 `Promise.allSettled`，改在 `analyze` 内 try/catch，效果等价
 
 - 2026-10-16 3.1 内部改名：SSE 事件名与 i18n key（`coordinatorName`/`coordinatorRole`→`committeeName`/`committeeRole`）随改，展示文案不变
 

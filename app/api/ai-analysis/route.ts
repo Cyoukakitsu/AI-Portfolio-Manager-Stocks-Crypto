@@ -45,21 +45,30 @@ export async function POST(request: Request) {
         if (!request.signal.aborted) controller.enqueue(sseEvent(event, data));
       };
       try {
-        // 每个 persona 一完成就立即推送，不等另一个
-        const analyze = (persona: Persona, event: string) =>
-          runPersona(persona, symbol, langInstruction, request.signal).then((result) => {
-            send(event, result);
+        // 每个 persona 一完成就立即推送，不等另一个；单个失败只推 error 事件，不影响另一个
+        const analyze = async (persona: Persona, n: 1 | 2) => {
+          try {
+            const result = await runPersona(persona, symbol, langInstruction, request.signal);
+            send(`persona${n}_done`, result);
             return result;
-          });
+          } catch (err) {
+            if (!request.signal.aborted) console.error(`[ai-analysis] ${persona} failed:`, err);
+            send(`persona${n}_error`, { persona });
+            return null;
+          }
+        };
 
         if (personas.length === 1) {
-          await analyze(personas[0], "persona1_done");
+          await analyze(personas[0], 1);
         } else {
           const [result1, result2, quote] = await Promise.all([
-            analyze(personas[0], "persona1_done"),
-            analyze(personas[1], "persona2_done"),
+            analyze(personas[0], 1),
+            analyze(personas[1], 2),
             yf.quote(symbol).catch(() => null),
           ]);
+
+          // Committee 需要两份分析；任一失败则不生成结论
+          if (!result1 || !result2) return;
 
           const currentPrice = quote?.regularMarketPrice ?? 0;
           const analyses = [result1, result2];

@@ -59,11 +59,11 @@ export async function GET(req: NextRequest) {
         }
       }
 
-      // fetchNews 内部已处理超时与失败，失败时返回空数组
+      // fetchNews 失败会抛错；此处降级为空数组，保持原有行为
       const articles: NewsArticle[] = await fetchNews(
         `${symbol} stock news today`,
         { maxResults: 1, timeoutMs: 5000 },
-      );
+      ).catch(() => []);
 
       // 写缓存失败不影响返回
       const { error } = await supabase.from("news_cache").upsert({

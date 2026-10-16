@@ -1,4 +1,4 @@
-// Tavily 新闻搜索统一封装，暴露 fetchNews()，内置超时和 API key 检查
+// Tavily 新闻搜索统一封装，暴露 fetchNews()，内置超时；失败（缺 key、超时、非 2xx）抛错，由调用方决定如何降级
 export interface NewsArticle {
   title: string;
   url: string;
@@ -17,7 +17,7 @@ export async function fetchNews(
   { maxResults = 5, timeoutMs = 5000 }: FetchNewsOptions = {},
 ): Promise<NewsArticle[]> {
   const apiKey = process.env.TAVILY_API_KEY;
-  if (!apiKey) return [];
+  if (!apiKey) throw new Error("TAVILY_API_KEY is not set");
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
@@ -37,7 +37,7 @@ export async function fetchNews(
       }),
     });
 
-    if (!res.ok) return [];
+    if (!res.ok) throw new Error(`Tavily responded ${res.status}`);
 
     const data = await res.json();
     return (data.results ?? []).map(
@@ -61,8 +61,6 @@ export async function fetchNews(
         content: r.content ?? "",
       }),
     );
-  } catch {
-    return [];
   } finally {
     clearTimeout(timer);
   }

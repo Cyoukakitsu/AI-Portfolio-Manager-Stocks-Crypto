@@ -8,6 +8,8 @@ import type { Persona, PersonaAnalysis, CommitteeVerdict } from "@/features/ai/t
 import { SearchBar } from "./search-bar";
 import { PersonaSelector } from "./persona-selector";
 import { PersonaCard } from "./persona-card";
+import { Card, CardContent } from "@/components/ui/card";
+import { PERSONA_META } from "@/features/ai/lib/constants";
 import { CommitteeVerdictCard } from "./committee-verdict-card";
 
 import { Brain } from "lucide-react";
@@ -21,6 +23,7 @@ export function AnalysisShell() {
   const [symbol, setSymbol] = useState("");
   const [isPending, setIsPending] = useState(false);
   const [analyses, setAnalyses] = useState<PersonaAnalysis[]>([]);
+  const [failed, setFailed] = useState<Persona[]>([]);
   const [committee, setCommittee] = useState<CommitteeVerdict | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -32,6 +35,7 @@ export function AnalysisShell() {
     setSymbol(inputSymbol);
     setIsPending(true);
     setAnalyses([]);
+    setFailed([]);
     setCommittee(null);
 
     try {
@@ -64,6 +68,8 @@ export function AnalysisShell() {
             const data = JSON.parse(line.slice(6));
             if (currentEvent === "persona1_done" || currentEvent === "persona2_done") {
               setAnalyses((prev) => [...prev, data as PersonaAnalysis]);
+            } else if (currentEvent === "persona1_error" || currentEvent === "persona2_error") {
+              setFailed((prev) => [...prev, data.persona as Persona]);
             } else if (currentEvent === "committee_done") {
               setCommittee(data as CommitteeVerdict);
             } else if (currentEvent === "error") {
@@ -106,11 +112,11 @@ export function AnalysisShell() {
         disabled={selected.length < 1}
       />
 
-      {isPending && analyses.length === 0 && (
+      {isPending && analyses.length === 0 && failed.length === 0 && (
         <p className="text-sm text-muted-foreground">{t("analyzing")}</p>
       )}
 
-      {analyses.length > 0 && (
+      {(analyses.length > 0 || failed.length > 0) && (
         <div className="space-y-4 animate-in fade-in duration-300">
           <p className="text-xs font-medium tracking-widest text-muted-foreground">
             {t("results")} — {symbol}
@@ -129,6 +135,13 @@ export function AnalysisShell() {
                   buyRange={analysis.buyRange}
                 />
               </div>
+            ))}
+            {failed.map((persona) => (
+              <Card key={persona}>
+                <CardContent className="py-6 text-sm text-muted-foreground">
+                  {PERSONA_META[persona].emoji} {PERSONA_META[persona].name} — {t("fetchError")}
+                </CardContent>
+              </Card>
             ))}
           </div>
 

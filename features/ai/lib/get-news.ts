@@ -16,7 +16,12 @@ export const getNews = tool({
   strict: true,
 
   execute: async ({ symbol }) => {
-    const articles = await fetchNews(`${symbol} news`, { maxResults: 5 });
-    return { symbol, articles };
+    // 失败要让模型知道"没查到"，而不是误以为"没有新闻"
+    try {
+      const articles = await fetchNews(`${symbol} news`, { maxResults: 5 });
+      return { symbol, articles };
+    } catch {
+      return { symbol, error: "News search unavailable" };
+    }
   },
 });

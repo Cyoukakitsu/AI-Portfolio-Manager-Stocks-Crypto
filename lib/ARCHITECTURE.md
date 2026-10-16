@@ -10,7 +10,7 @@
 | 文件 | 说明 |
 |---|---|
 | `yahoo-finance.ts` | yahoo-finance2 单例。全项目唯一实例，复用 cookie jar / crumb 缓存。**禁止在其他地方 `new YahooFinance()`** |
-| `news-fetcher.ts` | Tavily 新闻搜索统一封装。暴露 `fetchNews(query, { maxResults, timeoutMs })`，内置超时和 API key 检查 |
+| `news-fetcher.ts` | Tavily 新闻搜索统一封装。暴露 `fetchNews(query, { maxResults, timeoutMs })`，内置超时；缺 key、超时、非 2xx 时抛错，由调用方决定降级 |
 | `ai.ts` | 全站唯一的 LLM 配置：`model`（DeepSeek）与 `noThinking`。换模型只改这里 |
 | `lang-instruction.ts` | AI 语言指令生成。`buildLangInstruction(locale)` 返回注入 system prompt 的语言要求字符串。新增语言只改 `LOCALE_NAMES` |
 | `api-auth.ts` | route handler / server action 身份校验：`rejectIfUnauthenticated()` 未登录返回 401，须在调用任何外部服务之前执行 |

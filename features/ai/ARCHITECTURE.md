@@ -62,7 +62,7 @@ ai
 
 ## 注意事项
 
-- API 路由使用 SSE (`ReadableStream`) 推送结果；两个 Persona 并行执行，各自完成后即推送事件，Committee 在两者都完成后启动
+- API 路由使用 SSE (`ReadableStream`) 推送结果；两个 Persona 并行执行，各自完成后即推送事件，Committee 在两者都成功后才启动；单个 Persona 失败只推 `persona{n}_error`，另一个结果照常展示，不生成 Committee Verdict
 - LLM 内部仍用 `generateText + stopWhen`（非逐 token 流式），SSE 流式体现在卡片级别的推送粒度
 - LLM 输出由 `lib/schemas.ts`（zod）校验，不合格时抛错、SSE 推 `error` 事件，不伪造结果；Persona 提示词集中在 `lib/prompts.ts`，修改需同步测试所有 persona
 - locale 语言指令统一由 `lib/lang-instruction.ts` 的 `buildLangInstruction(locale)` 生成，新增语言只需修改该文件的 `LOCALE_NAMES`

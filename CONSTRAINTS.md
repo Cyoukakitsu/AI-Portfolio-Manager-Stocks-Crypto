@@ -29,7 +29,7 @@
 
 ## 外部服务
 
-**禁止**在 API route、server action 或 feature 中直接 `new YahooFinance()` 或直接 `fetch("https://api.tavily.com/search", ...)`。
+**禁止**在 API route 或 feature 中直接 `new YahooFinance()` 或直接 `fetch("https://api.tavily.com/search", ...)`。
 **必须**通过 `lib/yahoo-finance`（单例）和 `lib/news-fetcher`（统一封装）访问外部服务。
 
 ---
@@ -43,8 +43,8 @@
 
 ## 代码范围
 
-**禁止**在一个 session 中同时做多个 `TASKS.md` 任务。
-**必须**选定一个任务后，只修改该任务相关的文件；任务本身要求跨 `features/` 子目录的（如重构、改名），可以跨目录，但范围以任务描述为准。
+**禁止**在一个 session 中同时修改多个功能模块（`features/` 下的不同子目录）。
+**必须**从 `feature_list.json` 选定一个功能后，只修改该功能相关的文件。
 
 **禁止**在未运行 `./init.sh` 验证通过的情况下声称功能完成。
 **必须**提供 `pnpm build`、`pnpm lint`、`pnpm test` 三项全部通过的证据。
@@ -62,8 +62,7 @@
 ## 测试
 
 **禁止**使用 vitest mock 伪造数据库或外部 API 响应。
-**例外**：Playwright E2E 可以用 `page.route` 拦截浏览器发出的 `/api/*` 请求（如 AI、行情），服务端对 Supabase 的访问不 mock。
-**必须**使用真实集成测试或手动验证，记录验证证据到 `TASKS.md` 对应任务下。
+**必须**使用真实集成测试或手动验证，记录验证证据到 `progress.md`。
 
 ---
 

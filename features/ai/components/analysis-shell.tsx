@@ -67,7 +67,7 @@ export function AnalysisShell() {
             } else if (currentEvent === "coordinator_done") {
               setCoordinator(data as CoordinatorResult);
             } else if (currentEvent === "error") {
-              toast.error(data.message);
+              toast.error(data.message ?? t("fetchError"));
             }
             currentEvent = "";
           }

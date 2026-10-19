@@ -1,0 +1,39 @@
+// GET /api/yahoofinance/search — 搜索股票 / ETF / 加密货币 symbol
+import { NextRequest, NextResponse } from "next/server";
+import yf from "@/lib/yahoo-finance";
+
+export async function GET(req: NextRequest) {
+  const query = req.nextUrl.searchParams.get("q");
+
+  if (!query || query.trim() === "") {
+    return NextResponse.json([]);
+  }
+
+  try {
+    const result = await yf.search(query);
+
+    const results = result.quotes.slice(0, 5).map((item) => ({
+      symbol: item.symbol,
+      fullname:
+        "longname" in item
+          ? item.longname
+          : "shortname" in item
+            ? item.shortname
+            : item.symbol,
+      type: item.quoteType,
+    }));
+
+    return NextResponse.json(results);
+  } catch (err) {
+    const isValidationError =
+      err instanceof Error && err.message.includes("Failed validation");
+    if (isValidationError) {
+      console.warn("[yahoofinance/search] Validation warning:", err.message);
+      return NextResponse.json([]);
+    }
+    return NextResponse.json(
+      { error: "An error occurred while fetching data." },
+      { status: 500 },
+    );
+  }
+}

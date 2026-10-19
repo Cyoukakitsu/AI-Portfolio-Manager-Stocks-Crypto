@@ -28,7 +28,7 @@ export const getStockPrice = tool({
     return {
       symbol,
       price: quote.regularMarketPrice ?? null,
-      currency: quote.currency ?? null,
+      currency: quote.currency ?? "USD",
     };
   },
 });

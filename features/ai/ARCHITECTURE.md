@@ -35,10 +35,6 @@ Agent1                   Agent2   ← 同时执行，谁先完成谁先推 SSE �
 | `CoordinatorResult` | 综合结论：`verdict / score / summary / buyRange` |
 | `AnalysisResult` | 完整分析快照，前端展示与 Supabase 存储共用 |
 
-### 分析执行（`server/run-persona.ts`）
-
-`runPersona(persona, symbol, langInstruction)`：带工具调用一次 persona 分析，返回模型原始文本。`/api/ai-analysis` 路由只负责鉴权、校验与 SSE 推送。
-
 ### AI 工具（`lib/`）
 
 | 工具 | 外部依赖 |
@@ -55,7 +51,7 @@ Agent1                   Agent2   ← 同时执行，谁先完成谁先推 SSE �
 
 ```
 ai
-├── 外部：Vercel AI SDK、DeepSeek（LLM，配置见 `lib/ai.ts`）、Tavily、yahoo-finance2
+├── 外部：Vercel AI SDK、DeepSeek / Groq（LLM）、Tavily、yahoo-finance2
 ├── 共享：lib/yahoo-finance（YahooFinance 单例）、lib/lang-instruction（locale 语言指令）、lib/news-fetcher（Tavily 统一封装）
 └── 内部：features/auth（身份验证）
 ```

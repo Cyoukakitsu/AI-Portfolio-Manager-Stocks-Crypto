@@ -1,14 +1,17 @@
 // POST /api/ai-analysis — 运行 1-2 个 AI 分析师 agent，SSE 流式返回分析结果与 coordinator 综合结论
 import { deepseek } from "@ai-sdk/deepseek";
-import { generateText, stepCountIs } from "ai";
+import { generateText, Output, stepCountIs } from "ai";
 import yf from "@/lib/yahoo-finance";
 import { buildLangInstruction } from "@/lib/lang-instruction";
-import { AgentPersona } from "@/features/ai/types";
+import { AgentPersona, AgentResult } from "@/features/ai/types";
 
 import { getStockPrice } from "@/features/ai/lib/getStockPrice";
 import { getFinancials } from "@/features/ai/lib/getFinancials";
 import { getNews } from "@/features/ai/lib/getNews";
-import { cleanJSON, parseAgent } from "@/features/ai/lib/parse-agent";
+import {
+  agentOutputSchema,
+  coordinatorOutputSchema,
+} from "@/features/ai/lib/schemas";
 import {
   ANALYSIS_PROMPT,
   COORDINATOR_PROMPT,
@@ -17,7 +20,7 @@ import {
 
 function sseEvent(event: string, data: unknown): Uint8Array {
   return new TextEncoder().encode(
-    `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`
+    `event: ${event}\ndata: ${JSON.stringify(data)}\n\n`,
   );
 }
 
@@ -34,86 +37,54 @@ export async function POST(request: Request) {
   if (!symbol || !personas || personas.length < 1 || personas.length > 2) {
     return Response.json(
       { error: "symbol and 1 or 2 personas are required" },
-      { status: 400 }
+      { status: 400 },
     );
   }
+
+  // 单个分析师：工具循环 + 结构化输出（schema 校验失败会抛错，由外层转成 SSE error）
+  const runAgent = async (persona: AgentPersona): Promise<AgentResult> => {
+    const { output } = await generateText({
+      model: deepseek("deepseek-v4-flash"),
+      tools: { getStockPrice, getFinancials, getNews },
+      stopWhen: stepCountIs(5),
+      system: `${PERSONA_PROMPTS[persona]}${langInstruction}`,
+      prompt: ANALYSIS_PROMPT(symbol),
+      output: Output.object({ schema: agentOutputSchema }),
+    });
+    return { persona, ...output };
+  };
 
   const stream = new ReadableStream({
     async start(controller) {
       try {
-        if (personas.length === 1) {
-          const result = await generateText({
-            model: deepseek("deepseek-v4-flash"),
-            tools: { getStockPrice, getFinancials, getNews },
-            stopWhen: stepCountIs(5),
-            system: `${PERSONA_PROMPTS[personas[0]]}${langInstruction}`,
-            prompt: ANALYSIS_PROMPT(symbol),
-          });
-          controller.enqueue(
-            sseEvent("agent1_done", parseAgent(result.text, personas[0]))
-          );
-        } else {
-          const [result1, result2, quote] = await Promise.all([
-            generateText({
-              model: deepseek("deepseek-v4-flash"),
-              tools: { getStockPrice, getFinancials, getNews },
-              stopWhen: stepCountIs(5),
-              system: `${PERSONA_PROMPTS[personas[0]]}${langInstruction}`,
-              prompt: ANALYSIS_PROMPT(symbol),
-            }).then((r) => {
-              controller.enqueue(
-                sseEvent("agent1_done", parseAgent(r.text, personas[0]))
-              );
-              return r;
-            }),
-            generateText({
-              model: deepseek("deepseek-v4-flash"),
-              tools: { getStockPrice, getFinancials, getNews },
-              stopWhen: stepCountIs(5),
-              system: `${PERSONA_PROMPTS[personas[1]]}${langInstruction}`,
-              prompt: ANALYSIS_PROMPT(symbol),
-            }).then((r) => {
-              controller.enqueue(
-                sseEvent("agent2_done", parseAgent(r.text, personas[1]))
-              );
-              return r;
-            }),
-            yf.quote(symbol).catch(() => null),
-          ]);
+        const [results, quote] = await Promise.all([
+          Promise.all(
+            personas.map((p, i) =>
+              runAgent(p).then((r) => {
+                controller.enqueue(sseEvent(`agent${i + 1}_done`, r));
+                return r;
+              }),
+            ),
+          ),
+          personas.length === 2 ? yf.quote(symbol).catch(() => null) : null,
+        ]);
 
-          const currentPrice = quote?.regularMarketPrice ?? 0;
-          const agentResults = [
-            parseAgent(result1.text, personas[0]),
-            parseAgent(result2.text, personas[1]),
-          ];
-
-          const coordinatorResult = await generateText({
+        if (results.length === 2) {
+          const { output } = await generateText({
             model: deepseek("deepseek-v4-flash"),
             providerOptions: {
               deepseek: { thinking: { type: "disabled" } },
             },
             system: `${COORDINATOR_PROMPT}${langInstruction}`,
             prompt: `
-      Current market price: $${currentPrice}
-      Agent 1 (${personas[0]}): ${JSON.stringify(agentResults[0])}
-      Agent 2 (${personas[1]}): ${JSON.stringify(agentResults[1])}
+      Current market price: $${quote?.regularMarketPrice ?? 0}
+      Agent 1 (${personas[0]}): ${JSON.stringify(results[0])}
+      Agent 2 (${personas[1]}): ${JSON.stringify(results[1])}
 
       Synthesize these two perspectives and give your final recommendation for ${symbol}.`,
+            output: Output.object({ schema: coordinatorOutputSchema }),
           });
-
-          let coordinator;
-          try {
-            coordinator = JSON.parse(cleanJSON(coordinatorResult.text));
-          } catch {
-            coordinator = {
-              verdict: "hold",
-              score: 50,
-              summary: coordinatorResult.text,
-              buyRange: { low: 0, high: 0 },
-            };
-          }
-
-          controller.enqueue(sseEvent("coordinator_done", coordinator));
+          controller.enqueue(sseEvent("coordinator_done", output));
         }
       } catch (err) {
         const message = err instanceof Error ? err.message : String(err);

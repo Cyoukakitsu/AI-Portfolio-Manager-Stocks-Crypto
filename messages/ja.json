@@ -254,12 +254,14 @@
       "title": "AI分析",
       "subtitle": "アナリストを選択し、銘柄を入力して分析を開始",
       "analyzing": "分析中、しばらくお待ちください...",
+      "steps": { "getStockPrice": "株価を取得中…", "getFinancials": "財務データを取得中…", "getNews": "ニュースを検索中…", "start": "分析を開始中…" },
       "results": "分析結果",
       "fetchError": "分析に失敗しました。もう一度お試しください。",
       "buyRange": "買入レンジ",
       "targetPriceRange": "目標価格帯",
       "combinedRangeNote": "両アナリストの買入レンジの統合",
       "coordinatorName": "コーディネーター",
+      "coordinatorPending": "両者の見解を統合中…",
       "coordinatorRole": "最終判定"
     }
   },

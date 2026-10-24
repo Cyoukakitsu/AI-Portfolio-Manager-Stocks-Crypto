@@ -1,6 +1,6 @@
 // POST /api/ai-analysis — 运行 1-2 个 AI 分析师 agent，SSE 流式返回分析结果与 coordinator 综合结论
 import { deepseek } from "@ai-sdk/deepseek";
-import { generateText, Output, stepCountIs } from "ai";
+import { generateText, Output, stepCountIs, streamText } from "ai";
 import yf from "@/lib/yahoo-finance";
 import { buildLangInstruction } from "@/lib/lang-instruction";
 import { AgentPersona, AgentResult } from "@/features/ai/types";
@@ -42,8 +42,12 @@ export async function POST(request: Request) {
   }
 
   // 单个分析师：工具循环 + 结构化输出（schema 校验失败会抛错，由外层转成 SSE error）
-  const runAgent = async (persona: AgentPersona): Promise<AgentResult> => {
-    const { output } = await generateText({
+  // 单个分析师：工具循环 + 结构化输出；每次调用工具时通过 onStep 通知前端（schema 校验失败会抛错，由外层转成 SSE error）
+  const runAgent = async (
+    persona: AgentPersona,
+    onStep: (tool: string) => void
+  ): Promise<AgentResult> => {
+    const result = streamText({
       model: deepseek("deepseek-v4-flash"),
       tools: { getStockPrice, getFinancials, getNews },
       stopWhen: stepCountIs(5),
@@ -51,7 +55,11 @@ export async function POST(request: Request) {
       prompt: ANALYSIS_PROMPT(symbol),
       output: Output.object({ schema: agentOutputSchema }),
     });
-    return { persona, ...output };
+    for await (const part of result.fullStream) {
+      if (part.type === "tool-call") onStep(part.toolName);
+      else if (part.type === "error") throw part.error;
+    }
+    return { persona, ...(await result.output) };
   };
 
   const stream = new ReadableStream({
@@ -60,7 +68,9 @@ export async function POST(request: Request) {
         const [results, quote] = await Promise.all([
           Promise.all(
             personas.map((p, i) =>
-              runAgent(p).then((r) => {
+              runAgent(p, (tool) =>
+                controller.enqueue(sseEvent("step", { persona: p, tool }))
+              ).then((r) => {
                 controller.enqueue(sseEvent(`agent${i + 1}_done`, r));
                 return r;
               }),

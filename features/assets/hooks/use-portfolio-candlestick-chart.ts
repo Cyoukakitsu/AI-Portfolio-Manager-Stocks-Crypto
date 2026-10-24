@@ -3,21 +3,32 @@
 // PortfolioCandlestickChart コンポーネントのロジック Hook
 // 職責：range/view 状態管理、データ取得、OHLC 計算、chart 描画
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
   createChart,
   CandlestickSeries,
   AreaSeries,
-  IChartApi,
-  ISeriesApi,
   ColorType,
 } from "lightweight-charts";
 import type { Asset, Transaction } from "@/features/assets/types";
-import { getFromDate, type Range } from "@/features/assets/lib/date-utils";
+import { computeFromDate, type Range } from "@/features/assets/lib/date-utils";
 import { computePortfolioOHLC } from "@/features/assets/lib/portfolio-ohlc";
 
 export const RANGES: Range[] = ["1M", "6M", "1Y", "YTD", "MAX"];
+
+const UP_COLOR = "#22c55e";
+const DOWN_COLOR = "#ef4444";
+const PRICE_SCALE_OPTIONS = {
+  autoScale: true,
+  scaleMargins: { top: 0.1, bottom: 0.1 },
+};
+
+// 把收盘价换算为相对总成本的涨跌幅（%）；没有成本时记为 0
+function toReturnPct(close: number, totalCost: number) {
+  if (totalCost <= 0) return 0;
+  return parseFloat((((close - totalCost) / totalCost) * 100).toFixed(2));
+}
 
 type Params = {
   assets: Asset[];
@@ -29,18 +40,22 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
   const [view, setView] = useState<"usd" | "pct">("usd");
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
-  const chartRef = useRef<IChartApi | null>(null);
-  const seriesRef = useRef<ISeriesApi<"Candlestick"> | ISeriesApi<"Area"> | null>(null);
 
-  const cashAssets = assets.filter((a) => a.asset_type === "cash");
-  const tradableAssets = assets.filter((a) => a.asset_type !== "cash");
+  const cashAssets = useMemo(
+    () => assets.filter((a) => a.asset_type === "cash"),
+    [assets],
+  );
+  const tradableAssets = useMemo(
+    () => assets.filter((a) => a.asset_type !== "cash"),
+    [assets],
+  );
   const totalCost = assets.reduce((sum, a) => sum + a.total_cost, 0);
   const symbolsKey = tradableAssets.map((a) => a.symbol).join(",");
 
   const { data: historyData, isFetching } = useQuery({
     queryKey: ["history", symbolsKey, range],
     queryFn: async () => {
-      const from = getFromDate(range);
+      const from = computeFromDate(range);
       const to = new Date().toISOString().split("T")[0];
       const res = await fetch(
         `/api/yahoofinance/history?symbols=${symbolsKey}&from=${from}&to=${to}`,
@@ -51,25 +66,22 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
     staleTime: 5 * 60 * 1000,
   });
 
-  // 调用 lib 中的纯函数计算每日组合 OHLC
-  const chartData = historyData?.results
-    ? computePortfolioOHLC({
-        historyResults: historyData.results,
-        cashAssets,
-        tradableAssets,
-        allTransactions,
-      })
-    : [];
+  // useMemo 保持引用稳定：ohlcData 是下面 effect 的依赖，每次渲染都变会导致图表反复重建
+  const ohlcData = useMemo(
+    () =>
+      historyData?.results
+        ? computePortfolioOHLC({
+            historyResults: historyData.results,
+            cashAssets,
+            tradableAssets,
+            allTransactions,
+          })
+        : [],
+    [historyData, cashAssets, tradableAssets, allTransactions],
+  );
 
   useEffect(() => {
-    if (!chartContainerRef.current || chartData.length === 0) return;
-
-    // 每次重建前先销毁旧实例，防止内存泄漏
-    if (chartRef.current) {
-      chartRef.current.remove();
-      chartRef.current = null;
-      seriesRef.current = null;
-    }
+    if (!chartContainerRef.current || ohlcData.length === 0) return;
 
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
@@ -92,30 +104,22 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
       },
     });
 
-    chartRef.current = chart;
-
     if (view === "usd") {
       const series = chart.addSeries(CandlestickSeries, {
-        upColor: "#22c55e",
-        downColor: "#ef4444",
-        borderUpColor: "#22c55e",
-        borderDownColor: "#ef4444",
-        wickUpColor: "#22c55e",
-        wickDownColor: "#ef4444",
+        upColor: UP_COLOR,
+        downColor: DOWN_COLOR,
+        borderUpColor: UP_COLOR,
+        borderDownColor: DOWN_COLOR,
+        wickUpColor: UP_COLOR,
+        wickDownColor: DOWN_COLOR,
       });
-      series.setData(chartData);
-      series.priceScale().applyOptions({
-        autoScale: true,
-        scaleMargins: { top: 0.1, bottom: 0.1 },
-      });
-      seriesRef.current = series;
+      series.setData(ohlcData);
+      series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
     } else {
-      // 收益率模式：将每日收盘价换算为相对总成本的涨跌幅（%）
-      const areaData = chartData.map((p) => ({
+      // 收益率模式
+      const returnPctData = ohlcData.map((p) => ({
         time: p.time,
-        value: totalCost > 0
-          ? parseFloat((((p.close - totalCost) / totalCost) * 100).toFixed(2))
-          : 0,
+        value: toReturnPct(p.close, totalCost),
       }));
 
       const series = chart.addSeries(AreaSeries, {
@@ -123,12 +127,8 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
         topColor: "rgba(99,102,241,0.3)",
         bottomColor: "rgba(99,102,241,0)",
       });
-      series.setData(areaData);
-      series.priceScale().applyOptions({
-        autoScale: true,
-        scaleMargins: { top: 0.1, bottom: 0.1 },
-      });
-      seriesRef.current = series;
+      series.setData(returnPctData);
+      series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
     }
 
     chart.timeScale().fitContent();
@@ -144,10 +144,8 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
     return () => {
       observer.disconnect();
       chart.remove();
-      chartRef.current = null;
-      seriesRef.current = null;
     };
-  }, [chartData, view, totalCost]);
+  }, [ohlcData, view, totalCost]);
 
   return {
     range,
@@ -156,6 +154,6 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
     setView,
     chartContainerRef,
     isFetching,
-    chartData,
+    ohlcData,
   };
 }

@@ -25,7 +25,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
     setView,
     chartContainerRef,
     isFetching,
-    chartData,
+    ohlcData,
   } = usePortfolioCandlestickChart({ assets, allTransactions });
 
   return (
@@ -88,7 +88,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
           <div className="flex items-center justify-center h-52 sm:h-87.5 text-muted-foreground text-sm">
             {t("loading")}
           </div>
-        ) : chartData.length === 0 ? (
+        ) : ohlcData.length === 0 ? (
           <div className="flex items-center justify-center h-52 sm:h-87.5 text-muted-foreground text-sm">
             {t("noData")}
           </div>

@@ -3,7 +3,7 @@
 export type Range = "1M" | "6M" | "1Y" | "YTD" | "MAX";
 
 // 根据时间范围计算起始日期
-export function getFromDate(range: Range, firstTransactionDate?: string): string {
+export function computeFromDate(range: Range, firstTransactionDate?: string): string {
   const now = new Date();
 
   if (range === "YTD") {

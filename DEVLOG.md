@@ -4,6 +4,17 @@
 
 ---
 
+## 2026-10-24
+
+**AI 分析路由：结构化输出 + 去重**
+- 新增 `features/ai/lib/schemas.ts`：agent / coordinator 的 zod schema，经 `generateText` 的 `Output.object` 约束模型输出
+- `/api/ai-analysis`：三份重复的 `generateText` 合并为 `runAgent`，单人 / 双人分支统一；校验失败走 SSE `error`，不再静默降级为 `hold/50`
+- 删除 `parse-agent.ts`（`cleanJSON` / `parseAgent`）
+- 新增 `schemas.test.ts`；真实调用（DeepSeek 工具调用 + 结构化输出）验证稳定
+- 评估后决定暂不引入 Playwright E2E（投入偏大）；prompts 中的 JSON 示例保留未动
+
+---
+
 ## 2026-06-20
 
 **lib 层重构 — 外部服务统一封装（Task 5）**

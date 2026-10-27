@@ -51,11 +51,13 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
   );
   const totalCost = assets.reduce((sum, a) => sum + a.total_cost, 0);
   const symbolsKey = tradableAssets.map((a) => a.symbol).join(",");
+  // ISO 日期字符串按字典序排序即时间序，MAX 区间从最早一笔交易开始
+  const firstTradeDate = allTransactions.map((tx) => tx.traded_at.slice(0, 10)).sort()[0];
+  const from = computeFromDate(range, firstTradeDate);
 
   const { data: historyData, isFetching } = useQuery({
-    queryKey: ["history", symbolsKey, range],
+    queryKey: ["history", symbolsKey, from],
     queryFn: async () => {
-      const from = computeFromDate(range);
       const to = new Date().toISOString().split("T")[0];
       const res = await fetch(
         `/api/yahoofinance/history?symbols=${symbolsKey}&from=${from}&to=${to}`,

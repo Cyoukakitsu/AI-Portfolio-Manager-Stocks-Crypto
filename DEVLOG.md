@@ -30,6 +30,13 @@
 - 新增 `schemas.test.ts`；真实调用（DeepSeek 工具调用 + 结构化输出）验证稳定
 - 评估后决定暂不引入 Playwright E2E（投入偏大）；prompts 中的 JSON 示例保留未动
 
+
+**AI 分析页：真流式（工具步骤）**
+- `/api/ai-analysis`：agent 改用 `streamText`，工具调用时推送 SSE `step` 事件
+- 新增 `agent-pending-card.tsx`：运行中占位卡片显示当前步骤；Coordinator 等待期间也有占位卡片
+- `messages/` 增加 `pages.ai.steps.*`、`pages.ai.coordinatorPending`（英日）
+- 不展示思考文字、不逐字流式（控制成本）
+
 ---
 
 ## 2026-06-20

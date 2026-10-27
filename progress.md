@@ -23,8 +23,11 @@
 - [x] lib/lang-instruction.ts 導入：locale 注入を `buildLangInstruction()` に統一（2026-06-20）
 - [x] lib/news-fetcher.ts 導入：Tavily fetch 二重実装を統一、タイムアウト・エラー処理を一元化（2026-06-20）
 - [x] AI 分析路由结构化输出（zod + `Output.object`）与 runAgent 去重，删除 parse-agent（2026-10-24）
+- [x] asset-table 可读性重构：拆分 AssetRow / TransactionList / ConfirmDeleteDialog，修复展开重复请求，hook 文件改名 `use-assets-table.ts`（2026-10-27，PR #114）
 
 ## 进行中
+
+- [ ] PR #114 待合并；合并前需浏览器手动验证：展开/收起、删除资产、删除交易、记录交易，首次展开只发一次交易记录请求
 
 - [ ] Hero Page 重设计（brainstorming 完成，方向 B+C，待实现）
 - [ ] Stocks：行情图表与价格展示细化

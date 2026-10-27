@@ -1,4 +1,4 @@
-// hooks/use-asset-table.ts
+// hooks/use-assets-table.ts
 //
 // AssetsTable 组件的核心逻辑 Hook
 // 职责：行展开、交易记录缓存、当前价格拉取、删除确认状态管理

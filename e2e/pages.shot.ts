@@ -19,12 +19,18 @@ for (const theme of THEMES) {
         ([key, value]) => localStorage.setItem(key, value),
         [STORAGE_KEY, theme],
       );
+      // 页面可能返回 200，却在浏览器里抛出未捕获异常；必须在导航前开始收集
+      const pageErrors: string[] = [];
+      page.on("pageerror", (err) => pageErrors.push(err.message));
+
       const res = await page.goto(path);
       // 页面报错时必须失败，不能把错误页截成"通过"
       expect(res?.ok(), `${path} 返回 ${res?.status()}`).toBe(true);
       await page.waitForLoadState("load");
       // 等字体与入场动画稳定；TradingView 之类的嵌入件不会 networkidle，所以不用它
       await page.waitForTimeout(1200);
+      // 只看未捕获异常（pageerror），不看普通 console 报错，避免第三方嵌入件的噪音
+      expect(pageErrors, `${path} 在浏览器里抛出了异常`).toEqual([]);
       await page.screenshot({
         path: `test-results/shots/${name}-${theme}.png`,
         fullPage: true,

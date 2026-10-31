@@ -17,6 +17,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./dropdown-menu";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./select";
 
 // 浮层默认展开，方便截图验收；真实使用时由触发器控制。
 const meta = { title: "UI/Overlays" } satisfies Meta;
@@ -56,5 +57,22 @@ export const MenuOpen: Story = {
         <DropdownMenuItem variant="destructive">删除</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
+  ),
+};
+
+export const SelectOpen: Story = {
+  render: () => (
+    <Select defaultOpen defaultValue="1y">
+      <SelectTrigger className="w-40">
+        <SelectValue />
+      </SelectTrigger>
+      <SelectContent>
+        <SelectItem value="1m">1M</SelectItem>
+        <SelectItem value="6m">6M</SelectItem>
+        <SelectItem value="1y">1Y</SelectItem>
+        <SelectItem value="ytd">YTD</SelectItem>
+        <SelectItem value="max">全部</SelectItem>
+      </SelectContent>
+    </Select>
   ),
 };

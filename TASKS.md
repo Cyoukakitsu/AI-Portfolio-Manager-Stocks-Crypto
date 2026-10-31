@@ -23,7 +23,7 @@
 - [x] 旧主题名（white / Crail / default）写入旧存储键后，页面仍显示深色且无报错（靠换存储键 `portfoliox-theme` 实现）
 - [x] Storybook 在 Next 16 + Tailwind v4 下可构建并正确渲染（`.storybook/`、`pnpm storybook`、`pnpm build-storybook`；已关闭遥测）
 - [x] Playwright 截图脚本可用（`pnpm shot`）
-- [ ] 警示色 `--warn` 的色值已向用户确认（目前是暂定的琥珀色：深色 `#F0A020`、浅色 `#C97A00`）
+- [x] 警示色 `--warn` 的色值已向用户确认（琥珀色：深色 `#F0A020`、浅色 `#C97A00`）
 
 **已知限制**：往 `portfoliox-theme` 里手动写入 `dark` / `light` 之外的值，会显示浅色（next-themes 不校验）。正常使用不会出现。
 

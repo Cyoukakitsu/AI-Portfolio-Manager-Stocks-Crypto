@@ -43,7 +43,8 @@ next-env.d.ts
 
 # local dev
 .claude/
-docs/
+docs/*
+!docs/adr/
 
 .agents/
 .superpowers/

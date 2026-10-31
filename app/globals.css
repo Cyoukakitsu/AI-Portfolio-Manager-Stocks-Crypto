@@ -94,7 +94,7 @@
   --accent-foreground: #181a20;
   --elevated: #f0f1f3;
 
-  /* 警示（错误、删除）：琥珀色，暂定值，待用户确认 */
+  /* 警示（错误、删除）：琥珀色（已确认） */
   --destructive: #c97a00;
   --destructive-foreground: #ffffff;
   --warn: #c97a00;

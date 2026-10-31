@@ -51,3 +51,4 @@ docs/
 # playwright
 test-results/
 playwright-report/
+storybook-static/

@@ -4,6 +4,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * 设计令牌：详见 DESIGN.md。
+ * 只有深色（.dark，默认）与浅色（:root）两套主题；组件只引用令牌，不写死颜色。
+ * 红涨绿跌：--up 为红、--down 为绿，只表达涨跌，不用于成功/错误（ADR 0003）。
+ * 红色被涨色占用，错误与删除（--destructive / --warn）使用琥珀色。
+ */
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -37,185 +43,149 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* 新增语义令牌 */
+  --color-up: var(--up);
+  --color-down: var(--down);
+  --color-up-soft: var(--up-soft);
+  --color-down-soft: var(--down-soft);
+  --color-warn: var(--warn);
+  --color-elevated: var(--elevated);
+  --color-faint: var(--faint);
+  --color-strong: var(--strong);
+  --color-grid: var(--grid);
+
+  /* 圆角：sm 4 / md 6 / lg 8 / xl 12 */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* 字体：Geist 排界面，Geist Mono 排数字；CJK 回退到系统字体 */
+  --font-sans:
+    var(--font-geist-sans), -apple-system, BlinkMacSystemFont, "PingFang SC",
+    "Hiragino Sans", "Segoe UI", sans-serif;
+  --font-mono:
+    var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* 过渡：Playfair 已移除，hero-section 仍引用 font-serif，Task 9 改落地页时一并去掉 */
+  --font-serif: var(--font-sans);
 }
 
+/* ── 浅色主题 ── */
 :root {
-  /* ── 背景 / 文字 ── */
-  --background: oklch(0.946 0.018 78);
-  --foreground: oklch(0.25 0.04 55);
+  --background: #ffffff;
+  --foreground: #181a20;
+  --strong: #0b0e11;
 
-  /* ── 卡片 ── */
-  --card: oklch(0.946 0.018 78);
-  --card-foreground: oklch(0.25 0.04 55);
+  --card: #fafafa;
+  --card-foreground: #181a20;
+  --popover: #ffffff;
+  --popover-foreground: #181a20;
 
-  /* ── 弹出层 ── */
-  --popover: oklch(0.99 0.01 80);
-  --popover-foreground: oklch(0.25 0.04 55);
+  /* 主按钮：浅色下为近黑底白字 */
+  --primary: #181a20;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f5;
+  --secondary-foreground: #181a20;
+  --muted: #f5f5f5;
+  --muted-foreground: #707a8a;
+  --faint: #929aa5;
+  --accent: #f0f1f3;
+  --accent-foreground: #181a20;
+  --elevated: #f0f1f3;
 
-  /* ── 主色：赤土橙 ── */
-  --primary: oklch(0.6171 0.1375 39.0427);
-  --primary-foreground: oklch(1 0 0);
+  /* 警示（错误、删除）：琥珀色，暂定值，待用户确认 */
+  --destructive: #c97a00;
+  --destructive-foreground: #ffffff;
+  --warn: #c97a00;
 
-  /* ── 次色 ── */
-  --secondary: oklch(0.92 0.04 70);
-  --secondary-foreground: oklch(0.35 0.05 55);
+  --border: #eaecef;
+  --input: #eaecef;
+  --ring: #3b82f6;
 
-  /* ── 静音色 ── */
-  --muted: oklch(0.93 0.02 70);
-  --muted-foreground: oklch(0.40 0.04 55);
+  /* 涨（红）跌（绿） */
+  --up: #e5384f;
+  --down: #0a9f66;
+  --up-soft: rgb(229 56 79 / 0.1);
+  --down-soft: rgb(10 159 102 / 0.1);
+  --grid: rgb(0 0 0 / 0.06);
 
-  /* ── 强调色 ── */
-  --accent: oklch(0.88 0.06 50);
-  --accent-foreground: oklch(0.3 0.05 50);
+  /* 图表通用色：灰阶，涨跌另用 --up / --down */
+  --chart-1: #181a20;
+  --chart-2: #707a8a;
+  --chart-3: #929aa5;
+  --chart-4: #c4c9d0;
+  --chart-5: #eaecef;
 
-  /* ── 危险色 ── */
-  --destructive: oklch(0.57 0.19 25);
-  --destructive-foreground: oklch(1 0 0);
+  --sidebar: #fafafa;
+  --sidebar-foreground: #181a20;
+  --sidebar-primary: #181a20;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f0f1f3;
+  --sidebar-accent-foreground: #181a20;
+  --sidebar-border: #eaecef;
+  --sidebar-ring: #3b82f6;
 
-  /* ── 边框 / 输入框 / 焦点环 ── */
-  --border: oklch(0.87 0.04 65);
-  --input: oklch(0.92 0.03 68);
-  --ring: oklch(0.6171 0.1375 39.0427);
-
-  /* ── 图表色（保留原有橙色系，补充其他） ── */
-  --chart-1: oklch(0.5583 0.1276 42.9956);
-  --chart-2: oklch(0.6898 0.1581 290.4107);
-  --chart-3: oklch(0.8816 0.0276 93.128);
-  --chart-4: oklch(0.8822 0.0403 298.1792);
-  --chart-5: oklch(0.5608 0.1348 42.0584);
-
-  /* ── 侧边栏 ── */
-  --sidebar: oklch(0.936 0.018 78);
-  --sidebar-foreground: oklch(0.3 0.04 55);
-  --sidebar-primary: oklch(0.6171 0.1375 39.0427);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.9 0.05 65);
-  --sidebar-accent-foreground: oklch(0.3 0.04 55);
-  --sidebar-border: oklch(0.87 0.04 65);
-  --sidebar-ring: oklch(0.6171 0.1375 39.0427);
-
-  /* ── 圆角（略微增大，更柔和） ── */
-  --radius: 0.625rem;
+  --radius: 0.5rem;
 }
 
+/* ── 深色主题（默认） ── */
 .dark {
-  /* ── 背景 / 文字 ── */
-  --background: oklch(0.17 0.03 55);
-  --foreground: oklch(0.92 0.02 70);
+  --background: #0b0e11;
+  --foreground: #eaecef;
+  --strong: #ffffff;
 
-  /* ── 卡片 ── */
-  --card: oklch(0.22 0.03 55);
-  --card-foreground: oklch(0.92 0.02 70);
+  --card: #1e2329;
+  --card-foreground: #eaecef;
+  --popover: #1e2329;
+  --popover-foreground: #eaecef;
 
-  /* ── 弹出层 ── */
-  --popover: oklch(0.22 0.03 55);
-  --popover-foreground: oklch(0.92 0.02 70);
+  /* 主按钮：深色下为白底近黑字 */
+  --primary: #ffffff;
+  --primary-foreground: #0b0e11;
+  --secondary: #1e2329;
+  --secondary-foreground: #ffffff;
+  --muted: #1e2329;
+  --muted-foreground: #929aa5;
+  --faint: #707a8a;
+  --accent: #2b3139;
+  --accent-foreground: #ffffff;
+  --elevated: #2b3139;
 
-  /* ── 主色：暗模式橙（亮度稍高，深色背景上更清晰） ── */
-  --primary: oklch(0.6724 0.1308 38.7559);
-  --primary-foreground: oklch(1 0 0);
+  --destructive: #f0a020;
+  --destructive-foreground: #0b0e11;
+  --warn: #f0a020;
 
-  /* ── 次色 ── */
-  --secondary: oklch(0.27 0.04 55);
-  --secondary-foreground: oklch(0.9 0.02 70);
+  --border: #2b3139;
+  --input: #2b3139;
+  --ring: #3b82f6;
 
-  /* ── 静音色 ── */
-  --muted: oklch(0.27 0.03 55);
-  --muted-foreground: oklch(0.62 0.04 60);
+  --up: #f6465d;
+  --down: #0ecb81;
+  --up-soft: rgb(246 70 93 / 0.14);
+  --down-soft: rgb(14 203 129 / 0.14);
+  --grid: rgb(255 255 255 / 0.06);
 
-  /* ── 强调色 ── */
-  --accent: oklch(0.32 0.06 50);
-  --accent-foreground: oklch(0.9 0.03 65);
+  --chart-1: #eaecef;
+  --chart-2: #929aa5;
+  --chart-3: #707a8a;
+  --chart-4: #4a5260;
+  --chart-5: #2b3139;
 
-  /* ── 危险色 ── */
-  --destructive: oklch(0.65 0.18 25);
-  --destructive-foreground: oklch(0.98 0.01 90);
-
-  /* ── 边框 / 输入框 / 焦点环 ── */
-  --border: oklch(0.32 0.04 55);
-  --input: oklch(0.28 0.04 55);
-  --ring: oklch(0.6724 0.1308 38.7559);
-
-  /* ── 图表色 ── */
-  --chart-1: oklch(0.5583 0.1276 42.9956);
-  --chart-2: oklch(0.6898 0.1581 290.4107);
-  --chart-3: oklch(0.213 0.0078 95.4245);
-  --chart-4: oklch(0.3074 0.0516 289.323);
-  --chart-5: oklch(0.5608 0.1348 42.0584);
-
-  /* ── 侧边栏 ── */
-  --sidebar: oklch(0.2 0.03 55);
-  --sidebar-foreground: oklch(0.85 0.02 70);
-  --sidebar-primary: oklch(0.6724 0.1308 38.7559);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.28 0.05 52);
-  --sidebar-accent-foreground: oklch(0.85 0.02 70);
-  --sidebar-border: oklch(0.32 0.04 55);
-  --sidebar-ring: oklch(0.6724 0.1308 38.7559);
-
-  --radius: 0.625rem;
+  --sidebar: #0b0e11;
+  --sidebar-foreground: #eaecef;
+  --sidebar-primary: #ffffff;
+  --sidebar-primary-foreground: #0b0e11;
+  --sidebar-accent: #1e2329;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #2b3139;
+  --sidebar-ring: #3b82f6;
 }
 
-.white {
-  /* ── 背景 / 文字 ── */
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.15 0 0);
-
-  /* ── 卡片 ── */
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0 0);
-
-  /* ── 弹出层 ── */
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0 0);
-
-  /* ── 主色：琥珀金（dark テーマと同色） ── */
-  --primary: oklch(0.6724 0.1308 38.7559);
-  --primary-foreground: oklch(1 0 0);
-
-  /* ── 次色 ── */
-  --secondary: oklch(0.95 0.01 70);
-  --secondary-foreground: oklch(0.2 0.02 50);
-
-  /* ── 静音色 ── */
-  --muted: oklch(0.96 0.005 70);
-  --muted-foreground: oklch(0.40 0.02 55);
-
-  /* ── 强调色 ── */
-  --accent: oklch(0.93 0.02 65);
-  --accent-foreground: oklch(0.2 0.02 50);
-
-  /* ── 危险色 ── */
-  --destructive: oklch(0.57 0.19 25);
-  --destructive-foreground: oklch(1 0 0);
-
-  /* ── 边框 / 输入框 / 焦点环 ── */
-  --border: oklch(0.88 0.01 65);
-  --input: oklch(0.92 0.01 68);
-  --ring: oklch(0.6724 0.1308 38.7559);
-
-  /* ── 图表色 ── */
-  --chart-1: oklch(0.5583 0.1276 42.9956);
-  --chart-2: oklch(0.6898 0.1581 290.4107);
-  --chart-3: oklch(0.8816 0.0276 93.128);
-  --chart-4: oklch(0.8822 0.0403 298.1792);
-  --chart-5: oklch(0.5608 0.1348 42.0584);
-
-  /* ── 侧边栏 ── */
-  --sidebar: oklch(0.98 0.005 70);
-  --sidebar-foreground: oklch(0.2 0.02 50);
-  --sidebar-primary: oklch(0.6724 0.1308 38.7559);
-  --sidebar-primary-foreground: oklch(1 0 0);
-  --sidebar-accent: oklch(0.94 0.02 65);
-  --sidebar-accent-foreground: oklch(0.2 0.02 50);
-  --sidebar-border: oklch(0.88 0.01 65);
-  --sidebar-ring: oklch(0.6724 0.1308 38.7559);
-
-  --radius: 0.625rem;
+/* 数字：等宽字体 + 等宽数字，所有价格、数量、百分比使用 */
+@utility num {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 @layer base {

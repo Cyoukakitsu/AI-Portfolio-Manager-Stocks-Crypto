@@ -47,3 +47,7 @@ docs/
 
 .agents/
 .superpowers/
+
+# playwright
+test-results/
+playwright-report/

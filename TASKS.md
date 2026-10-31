@@ -31,12 +31,16 @@
 
 **范围文件**：`components/ui/*`（只改样式，保留 Base UI 结构）
 
-- 按钮、输入框、卡片、表格、徽标、对话框、下拉、标签页、侧边栏等按 `DESIGN.md` 重写
-- 为核心组件补 Storybook 条目，覆盖默认、悬停、禁用、焦点、深浅两套主题
-- 在 Storybook 里放一个模拟持仓表，提前验证数字对齐、涨跌色与表格密度
-- [ ] `./init.sh` 通过
-- [ ] 核心组件的 Storybook 条目在深浅主题下都已人工确认
-- [ ] 模拟持仓表的数字右对齐、等宽，涨跌色与 ▲▼ 符号正确
+**范围收窄**：55 个组件里只有约 25 个被页面实际引用，只重写这些；未被引用的约 30 个不动（已通过令牌拿到新配色），是否删除见下方"清理未使用的 UI 组件"。
+
+- 已重写：button（默认 40px / 14px / 600，按下缩放）、input、textarea、label、card（24px 内边距、线色边框）、badge（4px 圆角，新增 `up` / `down` 变体）、table（14px、灰色表头、12px 行距）、skeleton；select、dropdown-menu、popover、command、dialog、alert-dialog、field、tabs 的字号由 12px 提到 14px；弹层、侧边栏、标签页去掉阴影，卡片与弹层的边线统一为 `--border`
+- Storybook 条目：`button`、`table`（模拟持仓表）、`forms`（输入框、徽标、卡片、标签页、骨架屏）、`overlays`（对话框、下拉菜单）
+- [x] `./init.sh` 通过
+- [x] 模拟持仓表的数字右对齐、等宽，涨跌色与 ▲▼ 符号正确（截图已检查）
+- [ ] 核心组件的 Storybook 条目在深浅主题下都已由用户人工确认
+- [ ] 按钮默认高度从 32px 提到 40px 后，dashboard 各页面（需登录，Playwright 无法直接截图）的布局由用户在本机确认没有错位
+
+**未验证**：dashboard 内页需要登录，Playwright 截不到，Task 7 改动对这些页面的实际影响目前只能靠用户本机查看。
 
 ### Task 8：登录、注册与重置密码页
 
@@ -82,6 +86,13 @@
 - [ ] `./init.sh` 通过
 - [ ] 全仓无 `text-green-*`、`text-red-*`、`#22c55e`、`#ef4444` 等表达涨跌的写死颜色
 - [ ] 页面截图在深浅主题下已确认
+
+### 清理未使用的 UI 组件（独立 PR，建议在 Task 7 之后做）
+
+- `docs/knip-report.md`（2026-10-01）已列出 `components/ui` 下 32 个未使用文件，当时建议整文件删除，待用户确认
+- 删除前用 `knip` 重新跑一遍，并确认 `pnpm build`、`./init.sh` 通过；删除后检查是否能一并移除无人使用的依赖（如只被 `chart.tsx` 使用的 `recharts`，删前需确认）
+- 保留未使用的导出（属于组件库完整 API，删了下次 `shadcn add` 会回来）
+- [ ] 用户已确认删除清单；[ ] `./init.sh` 通过
 
 ### 视觉重设计之后的逻辑任务（独立 PR，另行排期）
 

@@ -1,19 +1,18 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Playfair_Display } from "next/font/google";
+import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "@/components/theme-provider";
 import { QueryProvider } from "@/components/query-provider";
 
-const jetbrainsMono = JetBrains_Mono({
+const geistSans = Geist({
   subsets: ["latin"],
-  variable: "--font-sans",
+  variable: "--font-geist-sans",
 });
 
-const playfairDisplay = Playfair_Display({
+const geistMono = Geist_Mono({
   subsets: ["latin"],
-  variable: "--font-serif",
-  weight: ["400", "600", "700"],
+  variable: "--font-geist-mono",
 });
 
 export const metadata: Metadata = {
@@ -27,13 +26,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ja" className={`${jetbrainsMono.variable} ${playfairDisplay.variable}`} suppressHydrationWarning>
+    <html lang="ja" className={`${geistSans.variable} ${geistMono.variable}`} suppressHydrationWarning>
       <body className="antialiased">
         <QueryProvider>
           <ThemeProvider
             attribute="class"
-            defaultTheme="default"
-            themes={["default", "white", "dark"]}
+            defaultTheme="dark"
+            themes={["dark", "light"]}
+            // 换新的存储键，让旧主题名（default / white / Crail）自然失效，首次打开回到深色
+            storageKey="portfoliox-theme"
             enableSystem={false}
           >
             <div id="root">{children}</div>

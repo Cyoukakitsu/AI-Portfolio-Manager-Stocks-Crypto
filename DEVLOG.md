@@ -4,6 +4,28 @@
 
 ---
 
+## 2026-11-01
+
+**UI 视觉重设计：设计语言与前两个任务（PR #115、Task 7 叠加 PR）**
+- 目标：界面从 shadcn 默认的暖米色风格，改为深色优先、黑白单色、红涨绿跌的加密原生风格；只改视觉层，功能与信息架构留到第二阶段
+- 设计依据：以 `VoltAgent/awesome-design-md` 里 Binance（暗色结构、表格与数字规范）和 Vercel（Geist 字体、负字距）的规范为骨架；OKX 的真实数据没能提取到（Chrome 扩展与会话标签组对不上），设计稿是基于这些参考调整的草案，并先做了可交互的 HTML 预览供确认
+- 新增 `DESIGN.md`、`CONTEXT.md`、`docs/adr/0001`–`0003`（只保留深浅主题、保留 Base UI 交互层、红涨绿跌）；`.gitignore` 给 `docs/adr/` 开例外；`TASKS.md` 加入 Task 6–13 与后续逻辑任务
+- **Task 6**：`globals.css` 改为深色（默认）与浅色两套令牌，新增 `--up` / `--down` / `--warn`；字体换 Geist + Geist Mono；主题切换只剩深浅，存储键改为 `portfoliox-theme`；新增 Playwright 截图脚本（`pnpm shot`）与 Storybook
+- **Task 7**：按设计稿重写被页面实际引用的约 25 个 `components/ui`（按钮默认 40px、卡片 24px 内边距、表格 14px 等），徽标新增 `up` / `down` 变体；补 Storybook 条目（按钮、模拟持仓表、表单与卡片、浮层、资产页的总资产卡与持仓表，均用示例数据）
+- 在真实 dashboard 上验证：按钮变大没有造成布局错位；发现股票页、加密页的嵌入件在深色下仍是白底，已记入 Task 11
+
+**踩坑**
+- 文档里一度把交互层写成 Radix，实际 `components/ui` 全是 Base UI（33 个文件），已更正
+- lyra 风格的 `dropdown-menu`、`select` 弹层写死了 `dark` 类，浅色主题下仍是深色（已修，记入 `GOTCHAS.md`）；当时只看了深色截图，教训是浮层必须深浅两套都看
+- Supabase 项目被暂停，域名解析失败，登录不可用；恢复后本机 DNS 仍缓存着旧结果，需清缓存
+
+**决定**
+- 10-24 曾决定暂不引入 Playwright E2E；今天引入的 Playwright 只做截图验收，不写功能 E2E
+- 约 30 个未被引用的 `components/ui` 不动，另开独立任务清理（`docs/knip-report.md` 已有清单）
+- 点击持仓切换 K 线、日 / 月 / 年周期、单标的 YTD 与全部区间，作为视觉重设计之后的独立逻辑任务
+
+---
+
 ## 2026-10-27
 
 **readable-code-review skill 同步与首次审查**

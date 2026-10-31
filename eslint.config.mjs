@@ -20,6 +20,10 @@ const eslintConfig = defineConfig([
     "build/**",
     "next-env.d.ts",
     ".claude/**",
+    // 构建产物，不是源码
+    "storybook-static/**",
+    "playwright-report/**",
+    "test-results/**",
   ]),
 ]);
 

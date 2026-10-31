@@ -509,5 +509,10 @@
         "content": "If you have any questions or concerns about this Privacy Policy or how your data is handled, please contact the developer at: z261459808@gmail.com"
       }
     }
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "dark": "Dark",
+    "light": "Light"
   }
 }

@@ -98,3 +98,15 @@
 **根因**：原代码用 `Promise.all` 并行跑两个 Agent，耗时取决于最慢的那个。改成顺序后变成两者相加
 
 **注意**：SSE 流式推送不需要改变执行顺序。正确做法是保持 `Promise.all` 并行，对每个 Promise 附加 `.then()` 回调——谁先完成谁先 push 事件，总耗时不变，用户依然能看到卡片逐步出现
+
+---
+
+## [2026-11-01] shadcn lyra 风格的弹层写死了 `dark` 类，浅色主题下菜单仍是深色
+
+**场景**：UI 重设计 Task 7，在 Storybook 里切到浅色主题检查下拉菜单
+
+**现象**：页面是白底，但 `DropdownMenu` 和 `Select` 弹出的面板仍然是深色
+
+**根因**：`base-lyra` 风格生成的 `dropdown-menu.tsx`、`select.tsx`（以及未使用的 `menubar`、`combobox`、`context-menu`）在弹层的 className 里直接写了一个独立的 `dark` 类，等于强制让面板用 `.dark` 的令牌，不跟随主题
+
+**注意**：以后用 `shadcn add` 新增或重新生成这类弹层组件，先搜一遍 className 里有没有独立的 `dark`，有就删掉；检查弹层时必须深浅两套主题都截图看，不能只看深色

@@ -65,8 +65,14 @@
 **范围文件**：`app/[locale]/dashboard/stocks`、`crypto`，`features/stocks`、`features/crypto`
 
 - TradingView 嵌入件：能反转涨跌色的（如 `positive-color`、`negative-color` 属性）改成红涨绿跌；不支持的保持原样，记为已知问题
-- [ ] `./init.sh` 通过；页面截图已确认
-- [ ] 已知问题清单（哪些嵌入件无法反转涨跌色）已记录到 `GOTCHAS.md`
+- **深色主题下嵌入件仍是白底（2026-11-01 在真实页面确认）**：
+  - 股票页写死浅色：`advanced-chart.tsx`（`"theme": "light"`）、`stock-heatmap.tsx`、`market-data-stock.tsx`、`top-stories.tsx`（`colorTheme: "light"`）
+  - 加密页的 CoinGecko 组件写死白底：`marquee-ticker.tsx`、`coin-list.tsx`、`converter.tsx`（`background-color="#ffffff"`）
+  - 加密页的 `crypto-heatmap.tsx`、`market-quotes.tsx`、`market-overview.tsx` 已按 `resolvedTheme` 切换，可作为参照
+  - 做法：写死浅色的改成跟随 `resolvedTheme`（组件主题变化时要重新挂载），CoinGecko 组件的背景色与文字色改为随主题传值；某个嵌入件确实不支持深色的，记为已知问题
+- [ ] `./init.sh` 通过；页面截图已确认（深浅两套主题；真实页面需登录，可用 ego-browser 配合用户登录后截图）
+- [ ] 深色主题下股票页、加密页没有突兀的白底嵌入件（无法深色化的除外，并已记录）
+- [ ] 已知问题清单（哪些嵌入件无法反转涨跌色、无法深色化）已记录到 `GOTCHAS.md`
 
 ### Task 12：AI 页
 

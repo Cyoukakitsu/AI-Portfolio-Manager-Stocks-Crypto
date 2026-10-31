@@ -26,6 +26,23 @@
 
 ---
 
+## 2026-10-27
+
+**readable-code-review skill 同步与首次审查**
+- 将 `~/.claude/skills/readable-code-review` 同步到上游最新（新增 `extraction.md`・`single-task.md`・`explain-first.md`，更新 `SKILL.md`・`comments.md`・`variables.md`）
+- 用新版 skill 审查 `features/assets/components/asset-table.tsx`，处理全部指摘（PR #114）
+
+**asset-table 重构**
+- 价格归一化与收益率计算抽成 `formatPrice` / `calcReturnPct` / `ReturnPct`，去掉 JSX 内的 IIFE 与多余的 `Number` / `isNaN`
+- 拆出 `AssetRow`・`TransactionList`・`ConfirmDeleteDialog`，`AssetsTable` 只保留整体结构
+- `getBadgeVariant` 改为 `Record<Asset["asset_type"], ...>` 常量，补上 `cash`
+- `use-asset-table.ts` 改名为 `use-assets-table.ts`，与 `useAssetsTable` 一致（3 个文件）
+- 修复 bug：展开按钮点击冒泡使 `handleExpand` 被调用两次，首次展开重复请求交易记录
+- 行为变化：交易记录加载失败时显示"暂无交易记录"，不再渲染空表格
+- 未在浏览器手动验证，仅 `./init.sh` 通过
+
+---
+
 ## 2026-10-24
 
 **AI 分析路由：结构化输出 + 去重**
@@ -34,6 +51,13 @@
 - 删除 `parse-agent.ts`（`cleanJSON` / `parseAgent`）
 - 新增 `schemas.test.ts`；真实调用（DeepSeek 工具调用 + 结构化输出）验证稳定
 - 评估后决定暂不引入 Playwright E2E（投入偏大）；prompts 中的 JSON 示例保留未动
+
+
+**AI 分析页：真流式（工具步骤）**
+- `/api/ai-analysis`：agent 改用 `streamText`，工具调用时推送 SSE `step` 事件
+- 新增 `agent-pending-card.tsx`：运行中占位卡片显示当前步骤；Coordinator 等待期间也有占位卡片
+- `messages/` 增加 `pages.ai.steps.*`、`pages.ai.coordinatorPending`（英日）
+- 不展示思考文字、不逐字流式（控制成本）
 
 ---
 

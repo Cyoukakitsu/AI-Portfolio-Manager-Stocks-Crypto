@@ -8,9 +8,11 @@ import type { AgentPersona, AgentResult, CoordinatorResult } from "@/features/ai
 import { SearchBar } from "./search-bar";
 import { AgentSelector } from "./agent-selector";
 import { AgentCard } from "./agent-card";
+import { AgentPendingCard } from "./agent-pending-card";
 import { CoordinatorCard } from "./coordinator-card";
 
-import { Brain } from "lucide-react";
+import { Brain, Loader2 } from "lucide-react";
+import { Card, CardHeader } from "@/components/ui/card";
 import { toast } from "sonner";
 
 export function AnalysisShell() {
@@ -22,6 +24,8 @@ export function AnalysisShell() {
   const [isPending, setIsPending] = useState(false);
   const [agentResults, setAgentResults] = useState<AgentResult[]>([]);
   const [coordinator, setCoordinator] = useState<CoordinatorResult | null>(null);
+  const [running, setRunning] = useState<AgentPersona[]>([]);
+  const [steps, setSteps] = useState<Partial<Record<AgentPersona, string>>>({});
   const abortRef = useRef<AbortController | null>(null);
 
   const handleAnalyze = async (inputSymbol: string) => {
@@ -33,6 +37,8 @@ export function AnalysisShell() {
     setIsPending(true);
     setAgentResults([]);
     setCoordinator(null);
+    setRunning(selected);
+    setSteps({});
 
     try {
       const res = await fetch("/api/ai-analysis", {
@@ -64,6 +70,8 @@ export function AnalysisShell() {
             const data = JSON.parse(line.slice(6));
             if (currentEvent === "agent1_done" || currentEvent === "agent2_done") {
               setAgentResults((prev) => [...prev, data as AgentResult]);
+            } else if (currentEvent === "step") {
+              setSteps((prev) => ({ ...prev, [data.persona]: data.tool }));
             } else if (currentEvent === "coordinator_done") {
               setCoordinator(data as CoordinatorResult);
             } else if (currentEvent === "error") {
@@ -106,11 +114,7 @@ export function AnalysisShell() {
         disabled={selected.length < 1}
       />
 
-      {isPending && agentResults.length === 0 && (
-        <p className="text-sm text-muted-foreground">{t("analyzing")}</p>
-      )}
-
-      {agentResults.length > 0 && (
+      {(isPending || agentResults.length > 0) && (
         <div className="space-y-4 animate-in fade-in duration-300">
           <p className="text-xs font-medium tracking-widest text-muted-foreground">
             {t("results")} — {symbol}
@@ -130,7 +134,28 @@ export function AnalysisShell() {
                 />
               </div>
             ))}
+            {isPending &&
+              running
+                .filter((p) => !agentResults.some((r) => r.persona === p))
+                .map((p) => (
+                  <AgentPendingCard key={p} persona={p} tool={steps[p]} />
+                ))}
           </div>
+
+          {isPending && !coordinator && running.length === 2 && agentResults.length === 2 && (
+            <Card className="animate-in fade-in duration-300">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <span className="text-2xl">⚖️</span>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium">{t("coordinatorName")}</p>
+                    <p className="text-xs text-muted-foreground">{t("coordinatorPending")}</p>
+                  </div>
+                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                </div>
+              </CardHeader>
+            </Card>
+          )}
 
           {coordinator && (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">

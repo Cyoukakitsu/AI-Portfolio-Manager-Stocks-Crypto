@@ -255,12 +255,14 @@
       "title": "AI Analysis",
       "subtitle": "Select analysts, enter a symbol, and start the analysis",
       "analyzing": "Analyzing, please wait...",
+      "steps": { "getStockPrice": "Fetching price…", "getFinancials": "Fetching financials…", "getNews": "Searching news…", "start": "Starting analysis…" },
       "results": "RESULTS",
       "fetchError": "Analysis failed. Please try again.",
       "buyRange": "Buy Range",
       "targetPriceRange": "Target Price Range",
       "combinedRangeNote": "Combined buy range from both analysts",
       "coordinatorName": "Coordinator",
+      "coordinatorPending": "Synthesizing both views…",
       "coordinatorRole": "Final Verdict"
     }
   },

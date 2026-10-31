@@ -56,14 +56,18 @@ describe("calculateAssetHoldings", () => {
     expect(result.avg_price).toBe(20);
   });
 
-  it("卖出价格不影响均价计算（均价只由买入成本决定）", () => {
-    const buyOnly = calculateAssetHoldings([
-      { type: "buy", price: 100, quantity: 10 },
+  it("卖出价格会影响持仓成本价（卖出回款冲减成本）", () => {
+    const buy = { type: "buy", price: 100, quantity: 10 };
+    const sellHigh = calculateAssetHoldings([
+      buy,
+      { type: "sell", price: 150, quantity: 4 },
     ]);
-    const withSell = calculateAssetHoldings([
-      { type: "buy", price: 100, quantity: 10 },
-      { type: "sell", price: 999, quantity: 0 }, // 卖出数量为 0
+    const sellLow = calculateAssetHoldings([
+      buy,
+      { type: "sell", price: 50, quantity: 4 },
     ]);
-    expect(withSell.avg_price).toBeCloseTo(buyOnly.avg_price!, 5);
+    // 成本价 = (1000 - 回款) / 6
+    expect(sellHigh.avg_price).toBeCloseTo(66.67, 2);
+    expect(sellLow.avg_price).toBeCloseTo(133.33, 2);
   });
 });

@@ -31,12 +31,16 @@
 
 **范围文件**：`components/ui/*`（只改样式，保留 Base UI 结构）
 
-- 按钮、输入框、卡片、表格、徽标、对话框、下拉、标签页、侧边栏等按 `DESIGN.md` 重写
-- 为核心组件补 Storybook 条目，覆盖默认、悬停、禁用、焦点、深浅两套主题
-- 在 Storybook 里放一个模拟持仓表，提前验证数字对齐、涨跌色与表格密度
-- [ ] `./init.sh` 通过
-- [ ] 核心组件的 Storybook 条目在深浅主题下都已人工确认
-- [ ] 模拟持仓表的数字右对齐、等宽，涨跌色与 ▲▼ 符号正确
+**范围收窄**：55 个组件里只有约 25 个被页面实际引用，只重写这些；未被引用的约 30 个不动（已通过令牌拿到新配色），是否删除见下方"清理未使用的 UI 组件"。
+
+- 已重写：button（默认 40px / 14px / 600，按下缩放）、input、textarea、label、card（24px 内边距、线色边框）、badge（4px 圆角，新增 `up` / `down` 变体）、table（14px、灰色表头、12px 行距）、skeleton；select、dropdown-menu、popover、command、dialog、alert-dialog、field、tabs 的字号由 12px 提到 14px；弹层、侧边栏、标签页去掉阴影，卡片与弹层的边线统一为 `--border`
+- Storybook 条目：`button`、`table`（模拟持仓表）、`forms`（输入框、徽标、卡片、标签页、骨架屏）、`overlays`（对话框、下拉菜单）
+- [x] `./init.sh` 通过
+- [x] 模拟持仓表的数字右对齐、等宽，涨跌色与 ▲▼ 符号正确（截图已检查）
+- [ ] 核心组件的 Storybook 条目在深浅主题下都已由用户人工确认
+- [ ] 按钮默认高度从 32px 提到 40px 后，dashboard 各页面（需登录，Playwright 无法直接截图）的布局由用户在本机确认没有错位
+
+**未验证**：dashboard 内页需要登录，Playwright 截不到，Task 7 改动对这些页面的实际影响目前只能靠用户本机查看。
 
 ### Task 8：登录、注册与重置密码页
 
@@ -61,14 +65,21 @@
 **范围文件**：`app/[locale]/dashboard/stocks`、`crypto`，`features/stocks`、`features/crypto`
 
 - TradingView 嵌入件：能反转涨跌色的（如 `positive-color`、`negative-color` 属性）改成红涨绿跌；不支持的保持原样，记为已知问题
-- [ ] `./init.sh` 通过；页面截图已确认
-- [ ] 已知问题清单（哪些嵌入件无法反转涨跌色）已记录到 `GOTCHAS.md`
+- **深色主题下嵌入件仍是白底（2026-11-01 在真实页面确认）**：
+  - 股票页写死浅色：`advanced-chart.tsx`（`"theme": "light"`）、`stock-heatmap.tsx`、`market-data-stock.tsx`、`top-stories.tsx`（`colorTheme: "light"`）
+  - 加密页的 CoinGecko 组件写死白底：`marquee-ticker.tsx`、`coin-list.tsx`、`converter.tsx`（`background-color="#ffffff"`）
+  - 加密页的 `crypto-heatmap.tsx`、`market-quotes.tsx`、`market-overview.tsx` 已按 `resolvedTheme` 切换，可作为参照
+  - 做法：写死浅色的改成跟随 `resolvedTheme`（组件主题变化时要重新挂载），CoinGecko 组件的背景色与文字色改为随主题传值；某个嵌入件确实不支持深色的，记为已知问题
+- [ ] `./init.sh` 通过；页面截图已确认（深浅两套主题；真实页面需登录，可用 ego-browser 配合用户登录后截图）
+- [ ] 深色主题下股票页、加密页没有突兀的白底嵌入件（无法深色化的除外，并已记录）
+- [ ] 已知问题清单（哪些嵌入件无法反转涨跌色、无法深色化）已记录到 `GOTCHAS.md`
 
 ### Task 12：AI 页
 
 **范围文件**：`app/[locale]/dashboard/ai`、`features/ai`
 
 - 买入、卖出标签改为中性色加文字，不使用红绿；`agent-card.tsx`、`coordinator-card.tsx` 里的绿色文字逐一检查
+- 检查 `features/ai/components/search-bar.tsx` 里的 "Analyze" 按钮：Task 7 把默认按钮提到 40px 后，它与旁边搜索框（约 32px 高）很可能对不齐，需对齐高度（调按钮尺寸或搜索框高度，二选一）
 - [ ] `./init.sh` 通过；页面截图已确认
 
 ### Task 13：资产页（最难，放最后）
@@ -79,9 +90,18 @@
 - lightweight-charts 的涨跌色、背景、网格与刻度文字改为运行时读取 CSS 变量，主题切换时同步更新
 - 右侧面板按"可切换标的、带周期与区间控件"的结构预留布局，但本任务不实现切换逻辑
 - 三个页面里绿色"在线"脉冲点改为中性色
+- 持仓表每行的删除、展开按钮是 `size="icon"`，Task 7 之后从 32px 变成 40px，行高约 65px 偏松；改为 `icon-sm`（32px），行高回到约 56px
+- 持仓表的数字列（持仓量、价格、盈亏率）改用 `num` 工具类并右对齐，涨跌符号带 ▲ / ▼
 - [ ] `./init.sh` 通过
 - [ ] 全仓无 `text-green-*`、`text-red-*`、`#22c55e`、`#ef4444` 等表达涨跌的写死颜色
 - [ ] 页面截图在深浅主题下已确认
+
+### 清理未使用的 UI 组件（独立 PR，建议在 Task 7 之后做）
+
+- `docs/knip-report.md`（2026-10-01）已列出 `components/ui` 下 32 个未使用文件，当时建议整文件删除，待用户确认
+- 删除前用 `knip` 重新跑一遍，并确认 `pnpm build`、`./init.sh` 通过；删除后检查是否能一并移除无人使用的依赖（如只被 `chart.tsx` 使用的 `recharts`，删前需确认）
+- 保留未使用的导出（属于组件库完整 API，删了下次 `shadcn add` 会回来）
+- [ ] 用户已确认删除清单；[ ] `./init.sh` 通过
 
 ### 视觉重设计之后的逻辑任务（独立 PR，另行排期）
 

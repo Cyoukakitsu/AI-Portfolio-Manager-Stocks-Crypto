@@ -38,7 +38,7 @@ export function NavBar() {
             </a>
           )}
           <a
-            href="https://cyoukakitsu-portfolio.pages.dev/"
+            href="https://github.com/Cyoukakitsu"
             target="_blank"
             rel="noopener noreferrer"
             className={navLinkClass}

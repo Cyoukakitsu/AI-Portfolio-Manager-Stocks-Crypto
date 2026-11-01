@@ -16,21 +16,20 @@ import { useTranslations } from "next-intl";
 import { signInSchema, SignInFormValues } from "@/features/auth/schemas/sign-in";
 import GoogleButton from "./google-button";
 import ForgotPasswordForm from "./forgot-password-form";
+import {
+  AuthCard,
+  AuthHeader,
+  FieldMessage,
+  authLinkClass,
+  authSubtleLinkClass,
+} from "./auth-card";
 import { signIn } from "@/features/auth/server/auth";
 import { Link } from "@/i18n/navigation";
 
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-
-const fieldVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: "easeOut" as const },
-  },
-};
 
 const SignInForm = () => {
   const t = useTranslations("auth.signIn");
@@ -55,173 +54,96 @@ const SignInForm = () => {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 30 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className="w-full"
-    >
-      {/* Card */}
-      <div className="rounded-xl border border-border bg-card shadow-lg overflow-hidden">
-        {/* Primary color top accent */}
-        <div
-          className="h-px w-full"
-          style={{
-            background:
-              "linear-gradient(to right, transparent, var(--color-primary), transparent)",
-          }}
-        />
+    <AuthCard>
+      <AnimatePresence mode="wait" initial={false}>
+        {view === "forgotPassword" ? (
+          <ForgotPasswordForm key="forgot" onBack={() => setView("signIn")} />
+        ) : (
+          <motion.div
+            key="sign-in"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.15 }}
+          >
+            <AuthHeader title={t("title")} subtitle={t("subtitle")} />
 
-        <div className="px-7 py-8">
-          <AnimatePresence mode="wait">
-            {view === "forgotPassword" ? (
-              <ForgotPasswordForm
-                key="forgot"
-                onBack={() => setView("signIn")}
-              />
-            ) : (
-              <motion.div
-                key="sign-in"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3, ease: "easeOut" }}
-              >
-                {/* Header */}
-                <div className="mb-8">
-                  <h2 className="text-xl font-semibold text-card-foreground tracking-tight">
-                    {t("title")}
-                  </h2>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    {t("subtitle")}
-                  </p>
-                </div>
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              {/* Email */}
+              <div className="space-y-1.5">
+                <Label htmlFor="email">{t("email")}</Label>
+                <Input
+                  {...register("email")}
+                  id="email"
+                  type="email"
+                  placeholder="fujimoto@example.com"
+                  aria-invalid={!!errors.email}
+                  aria-describedby={errors.email ? "email-message" : undefined}
+                />
+                <FieldMessage id="email-message" error={errors.email?.message} />
+              </div>
 
-                <form onSubmit={handleSubmit(onSubmit)}>
-                  <motion.div
-                    variants={{
-                      hidden: { opacity: 0 },
-                      show: { opacity: 1, transition: { staggerChildren: 0.08 } },
-                    }}
-                    initial="hidden"
-                    animate="show"
-                    className="space-y-5"
+              {/* Password */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <Label htmlFor="password">{t("password")}</Label>
+                  <button
+                    type="button"
+                    onClick={() => setView("forgotPassword")}
+                    className={authSubtleLinkClass}
                   >
-                    {/* Email */}
-                    <motion.div variants={fieldVariants} className="space-y-1.5">
-                      <label
-                        htmlFor="email"
-                        className="block text-sm font-medium text-foreground"
-                      >
-                        {t("email")}
-                      </label>
-                      <Input
-                        {...register("email")}
-                        id="email"
-                        type="email"
-                        placeholder="fujimoto@example.com"
-                      />
-                      <AnimatePresence>
-                        {errors.email && (
-                          <motion.p
-                            key="email-error"
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="text-xs text-destructive overflow-hidden"
-                          >
-                            {errors.email.message}
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>
+                    {t("forgotPassword")}
+                  </button>
+                </div>
+                <Input
+                  {...register("password")}
+                  id="password"
+                  type="password"
+                  aria-invalid={!!errors.password}
+                  aria-describedby={
+                    errors.password ? "password-message" : undefined
+                  }
+                />
+                <FieldMessage
+                  id="password-message"
+                  error={errors.password?.message}
+                />
+              </div>
 
-                    {/* Password */}
-                    <motion.div variants={fieldVariants} className="space-y-1.5">
-                      <div className="flex items-center justify-between">
-                        <label
-                          htmlFor="password"
-                          className="block text-sm font-medium text-foreground"
-                        >
-                          {t("password")}
-                        </label>
-                        <button
-                          type="button"
-                          onClick={() => setView("forgotPassword")}
-                          className="text-xs text-primary hover:text-primary/80 transition-colors cursor-pointer"
-                        >
-                          {t("forgotPassword")}
-                        </button>
-                      </div>
-                      <Input
-                        {...register("password")}
-                        id="password"
-                        type="password"
-                      />
-                      <AnimatePresence>
-                        {errors.password && (
-                          <motion.p
-                            key="password-error"
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="text-xs text-destructive overflow-hidden"
-                          >
-                            {errors.password.message}
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
-                    </motion.div>
-
-                    {/* Buttons */}
-                    <motion.div variants={fieldVariants} className="space-y-3 pt-1">
-                      <Button
-                        type="submit"
-                        disabled={isSubmitting}
-                        className="w-full cursor-pointer"
-                      >
-                        {isSubmitting ? t("signingIn") : t("submit")}
-                      </Button>
-                      <AnimatePresence>
-                        {loginFailed && (
-                          <motion.p
-                            key="google-hint"
-                            initial={{ opacity: 0, height: 0 }}
-                            animate={{ opacity: 1, height: "auto" }}
-                            exit={{ opacity: 0, height: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className="text-xs text-muted-foreground text-center overflow-hidden"
-                          >
-                            {t("googleHint")}
-                          </motion.p>
-                        )}
-                      </AnimatePresence>
-                      <GoogleButton />
-                    </motion.div>
-
-                    {/* Footer link */}
+              {/* Buttons */}
+              <div className="space-y-3 pt-1">
+                <Button type="submit" disabled={isSubmitting} className="w-full">
+                  {isSubmitting ? t("signingIn") : t("submit")}
+                </Button>
+                <AnimatePresence>
+                  {loginFailed && (
                     <motion.p
-                      variants={fieldVariants}
-                      className="text-center text-sm text-muted-foreground"
+                      key="google-hint"
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: "auto" }}
+                      exit={{ opacity: 0, height: 0 }}
+                      transition={{ duration: 0.15 }}
+                      className="overflow-hidden text-center text-xs text-muted-foreground"
                     >
-                      {t("noAccount")}{" "}
-                      <Link
-                        href="/sign-up"
-                        className="text-primary hover:text-primary/80 transition-colors"
-                      >
-                        {t("signUp")}
-                      </Link>
+                      {t("googleHint")}
                     </motion.p>
-                  </motion.div>
-                </form>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-    </motion.div>
+                  )}
+                </AnimatePresence>
+                <GoogleButton />
+              </div>
+
+              {/* Footer link */}
+              <p className="text-center text-sm text-muted-foreground">
+                {t("noAccount")}{" "}
+                <Link href="/sign-up" className={authLinkClass}>
+                  {t("signUp")}
+                </Link>
+              </p>
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </AuthCard>
   );
 };
 

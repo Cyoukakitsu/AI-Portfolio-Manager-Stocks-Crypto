@@ -29,6 +29,8 @@ getAuthSession(): Promise<{ supabase: SupabaseClient; user: User }>
 
 `<SignInForm>` / `<SignUpForm>` / `<ForgotPasswordForm>` / `<ResetPasswordForm>` / `<GoogleButton>` / `<AuthLayoutWrapper>`
 
+共用的视觉片段在 `components/auth-card.tsx`：`AuthCard`（卡片外壳）、`AuthHeader`（标题区）、`FieldMessage`（字段下的错误或提示）、`authLinkClass` / `authSubtleLinkClass`（链接样式）。新增 auth 表单时复用这些，不要再各写一套卡片与错误提示标记。样式依据根目录 `DESIGN.md`：无阴影、无渐变、颜色只用令牌；错误用琥珀色（`text-destructive`），不用红色。
+
 ## 依赖关系
 
 ```

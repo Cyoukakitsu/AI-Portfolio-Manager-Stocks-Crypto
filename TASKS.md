@@ -46,7 +46,20 @@
 
 **范围文件**：`app/[locale]/(auth)/*` 及 `features/auth` 的样式
 
-- [ ] `./init.sh` 通过；三个页面深浅主题截图已确认
+- 左侧品牌栏：去掉网格背景、两团发光和装饰柱图；米黄色 PNG logo 换成文字字标 `PortfolioX`（与顶栏一致）；标题改 36px / 600 / -1.5px 负字距，第二行用 `--muted-foreground`；图标换 Phosphor light，图标块改 6px 圆角灰阶
+- 表单卡片：去掉阴影与顶部渐变线，内边距 24px；标题用 Title 规格（24 / 600 / -0.6px）；标签改用 Task 7 重写的 `Label` 组件；链接用 `--strong` 加悬停下划线，键盘焦点显示 2px 焦点环
+- 新增 `features/auth/components/auth-card.tsx`：`AuthCard`、`AuthHeader`、`FieldMessage` 与两个链接样式，四个表单共用，去掉重复的卡片与错误提示标记
+- 动效：原先卡片、容器、逐字段三层叠加的上滑入场，收敛为容器一次 0.25s 淡入；视图切换与错误提示只做 0.15s 淡入淡出；`MotionConfig reducedMotion="user"` 遵守系统"减少动态效果"
+- 输入框出错时加 `aria-invalid` 与 `aria-describedby`，边框随之变琥珀色；错误文字 `role="alert"`
+- `e2e/pages.shot.ts` 的 PAGES 加入 `reset-password`
+- [x] `./init.sh` 通过（build、lint、test 12/12）
+- [x] 三个页面深浅主题截图已生成（`pnpm shot` → `test-results/shots/`），并检查了校验错误态、忘记密码视图、390px 手机宽度（无横向溢出、无未捕获异常）
+- [ ] 三个页面深浅主题截图已由用户确认
+
+**范围外、本任务未处理**
+- 顶栏 `NavBar` 仍是旧样式（`border-primary/30`、`font-bold`、`backdrop-blur`），归 Task 9
+- `features/auth/components/google-button.tsx` 里"Continue with Google"硬编码英文（违反 `CONSTRAINTS.md` 的 i18n 约束）；注册失败的 `"Validation failed"` 也是硬编码；Zod 校验提示（如 "Password must be at least 6 characters"）在日文页面显示英文。需要补 `messages/` 键并让 schema 读翻译
+- `public/header-icon.png` 现在没有任何引用，且是旧的米黄色配色，可删除，需用户确认
 
 ### Task 9：落地页与隐私、条款页
 

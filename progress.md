@@ -28,6 +28,8 @@
 - [x] UI 重设计 Task 6：设计语言文档（`DESIGN.md`、`CONTEXT.md`、ADR）、深浅两套令牌、Geist 字体、Playwright 截图与 Storybook（PR #115，2026-11-01）
 - [x] UI 重设计 Task 7：基础组件按设计稿重写样式并补 Storybook 条目（叠加 PR，目标 `feat/ui-redesign-tokens`，2026-11-01）
 
+- [x] UI 重设计 Task 8：登录、注册、重置密码页重做，抽出 `auth-card.tsx` 共用片段；`./init.sh` 通过，待用户确认深浅主题截图（2026-11-01）
+
 ## 进行中
 
 - [ ] PR #114 待合并；合并前需浏览器手动验证：展开/收起、删除资产、删除交易、记录交易，首次展开只发一次交易记录请求
@@ -44,7 +46,7 @@
 
 ## 下一步
 
-0. UI 重设计：合并 #115 后合并 Task 7 PR，再做 Task 8（登录、注册、重置密码页）；同时可排"清理未使用的 UI 组件"
+0. UI 重设计：用户确认 Task 8 截图后，做 Task 9（落地页与隐私、条款页，同时处理顶栏 `NavBar`）；同时可排"清理未使用的 UI 组件"
 1. 确认 Hero Page 设计方案后开始实现（feat-hero）
 2. AI 分析模块基础功能搭建（feat-ai）
 3. Dashboard 总览图表完善（feat-dashboard）

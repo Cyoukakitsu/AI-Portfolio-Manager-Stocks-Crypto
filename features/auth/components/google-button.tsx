@@ -20,7 +20,7 @@ const GoogleButton = () => {
       variant="outline"
       type="button"
       onClick={handleGoogle}
-      className="w-full cursor-pointer"
+      className="w-full"
     >
       Continue with Google
     </Button>

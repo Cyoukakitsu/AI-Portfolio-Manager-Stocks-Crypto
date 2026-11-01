@@ -7,6 +7,7 @@ const PAGES = [
   { name: "landing", path: "/ja" },
   { name: "sign-in", path: "/ja/sign-in" },
   { name: "sign-up", path: "/ja/sign-up" },
+  { name: "reset-password", path: "/ja/reset-password" },
 ];
 const THEMES = ["dark", "light"] as const;
 // 与 app/layout.tsx 里 ThemeProvider 的 storageKey 保持一致

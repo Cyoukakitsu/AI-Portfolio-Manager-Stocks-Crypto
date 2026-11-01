@@ -78,7 +78,7 @@ export function HeroSection() {
       : "dark";
 
   return (
-    <section className="flex min-h-screen flex-col items-center justify-center bg-background px-6 pb-10 pt-4">
+    <section className="bg-dots flex min-h-screen flex-col items-center justify-center bg-background px-6 pb-10 pt-4">
       <Badge
         variant="outline"
         className="mb-4 h-6 rounded-md px-3 text-muted-foreground"

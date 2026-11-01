@@ -186,6 +186,17 @@
   font-variant-numeric: tabular-nums;
 }
 
+/* 点阵背景：24px 间距的 1px 圆点，颜色取自 --foreground 的低透明度混合，深浅主题自动适配。
+   只用于落地页、隐私页、条款页等内容页的底纹，不用于 dashboard（DESIGN.md） */
+@utility bg-dots {
+  background-image: radial-gradient(
+    circle,
+    color-mix(in oklch, var(--foreground) 14%, transparent) 1px,
+    transparent 1px
+  );
+  background-size: 24px 24px;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -19,7 +19,7 @@ export default async function PrivacyPage() {
   return (
     <main>
       <NavBar />
-      <section className="min-h-screen bg-background px-6 py-16">
+      <section className="bg-dots min-h-screen bg-background px-6 py-16">
         <div className="max-w-3xl mx-auto">
           <h1 className="mb-2 text-3xl font-semibold tracking-[-0.8px] text-strong">
             {t("title")}

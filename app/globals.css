@@ -67,8 +67,6 @@
     "Hiragino Sans", "Segoe UI", sans-serif;
   --font-mono:
     var(--font-geist-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
-  /* 过渡：Playfair 已移除，hero-section 仍引用 font-serif，Task 9 改落地页时一并去掉 */
-  --font-serif: var(--font-sans);
 }
 
 /* ── 浅色主题 ── */

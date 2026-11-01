@@ -21,15 +21,9 @@ export default async function TermsPage() {
   return (
     <main>
       <NavBar />
-      <section
-        className="min-h-screen bg-background px-6 py-16"
-        style={{
-          backgroundImage: `radial-gradient(circle, color-mix(in oklch, var(--primary) 20%, transparent) 1px, transparent 1px)`,
-          backgroundSize: `24px 24px`,
-        }}
-      >
+      <section className="min-h-screen bg-background px-6 py-16">
         <div className="max-w-3xl mx-auto">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
+          <h1 className="mb-2 text-3xl font-semibold tracking-[-0.8px] text-strong">
             {t("title")}
           </h1>
           <p className="text-sm text-muted-foreground mb-10">
@@ -38,10 +32,10 @@ export default async function TermsPage() {
           <div className="space-y-8">
             {sectionKeys.map((key) => (
               <div key={key}>
-                <h2 className="text-xl font-bold text-foreground mb-3">
+                <h2 className="mb-3 text-xl font-semibold tracking-[-0.4px] text-strong">
                   {t(`sections.${key}.title`)}
                 </h2>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+                <p className="text-sm leading-relaxed text-foreground">
                   {t(`sections.${key}.content`)}
                 </p>
               </div>

@@ -2,9 +2,7 @@
 
 // 落地页功能特性展示区块
 import Image from "next/image";
-import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
-
 
 const featureIds = [
   { id: "portfolio", image: "/Portfolio-Page.png" },
@@ -17,35 +15,18 @@ export function FeaturesSection() {
   const t = useTranslations("hero.features");
 
   return (
-    <section
-      id="features"
-      className="pt-10 pb-20 px-6 bg-background"
-      style={{
-        backgroundImage: `radial-gradient(circle, color-mix(in oklch, var(--primary) 20%, transparent) 1px, transparent 1px)`,
-        backgroundSize: `24px 24px`,
-      }}
-    >
-      <div className="max-w-5xl mx-auto">
-        <motion.h2
-          className="text-3xl font-bold text-center text-foreground mb-4"
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-        >
+    <section id="features" className="bg-background px-6 pb-20 pt-10">
+      <div className="mx-auto max-w-5xl">
+        <h2 className="mb-8 text-center text-3xl font-semibold tracking-[-0.8px] text-strong">
           {t("title")}
-        </motion.h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
-          {featureIds.map((f, i) => (
-            <motion.div
+        </h2>
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          {featureIds.map((f) => (
+            <div
               key={f.id}
-              className="bg-white/40 dark:bg-card backdrop-blur-md border border-[#c9a84c]/30 dark:border-border rounded-2xl overflow-hidden"
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: i * 0.1 }}
+              className="overflow-hidden rounded-xl border border-border bg-card"
             >
-              <div className="relative w-full aspect-video bg-muted">
+              <div className="relative aspect-video w-full bg-muted">
                 <Image
                   src={f.image}
                   alt={t(`items.${f.id}.title`)}
@@ -54,15 +35,15 @@ export function FeaturesSection() {
                   sizes="(max-width: 640px) 100vw, 50vw"
                 />
               </div>
-              <div className="p-5">
-                <h3 className="text-base font-bold text-card-foreground mb-2">
+              <div className="p-6">
+                <h3 className="mb-2 text-base font-semibold text-strong">
                   {t(`items.${f.id}.title`)}
                 </h3>
-                <p className="text-sm text-muted-foreground dark:text-foreground/70 leading-relaxed">
+                <p className="text-sm leading-relaxed text-muted-foreground">
                   {t(`items.${f.id}.description`)}
                 </p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
       </div>

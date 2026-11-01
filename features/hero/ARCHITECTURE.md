@@ -25,5 +25,7 @@ hero
 
 ## 注意事项
 
-- 当前处于重设计阶段（方向 B+C，参考 Gemini UI 风格），实现前需确认最终设计方案
+- 视觉依据是根目录 `DESIGN.md`（深色优先、黑白单色、无渐变、无阴影、无模糊）；旧的"方向 B+C / Gemini 风格"已被取代，不再使用
+- `<HeroSection>` 里的 TradingView 迷你图依赖用户主题（存在 localStorage），服务端渲染时不能直接写入 `color-theme`，否则 hydration 不匹配；现在用 `useSyncExternalStore` 区分服务端与客户端，客户端挂载后才放入图表
+- 落地页不再使用入场动画：`whileInView` 的内容在整页截图和禁用 JS 时会一直是透明的
 - 本模块对 SEO 有直接影响，组件应使用语义化 HTML 标签

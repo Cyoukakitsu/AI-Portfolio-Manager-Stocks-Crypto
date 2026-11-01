@@ -1,17 +1,28 @@
 "use client";
 
 // 落地页主视觉 Hero 区块与 CTA
-import { useEffect } from "react";
-import { motion } from "motion/react";
+import { useEffect, useSyncExternalStore } from "react";
+import { useTheme } from "next-themes";
 import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
+import { cn } from "@/lib/utils";
 import { useTranslations } from "next-intl";
-
 
 const TV_SCRIPT_SRC =
   "https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js";
 
 let scriptLoaded = false;
+
+// 服务端渲染时不知道用户的主题（存在 localStorage 里），直接渲染会造成 hydration 不匹配；
+// 用 useSyncExternalStore 区分服务端与客户端，客户端挂载后才放入图表
+const subscribeNoop = () => () => {};
+const useIsClient = () =>
+  useSyncExternalStore(
+    subscribeNoop,
+    () => true,
+    () => false,
+  );
 
 function loadTvScript() {
   if (scriptLoaded || document.querySelector(`script[src="${TV_SCRIPT_SRC}"]`))
@@ -25,9 +36,11 @@ function loadTvScript() {
 
 function TvChartCard({
   symbol,
+  colorTheme,
   showTimeRange = false,
 }: {
   symbol: string;
+  colorTheme: "dark" | "light" | null;
   showTimeRange?: boolean;
 }) {
   useEffect(() => {
@@ -38,112 +51,88 @@ function TvChartCard({
 
   return (
     <div
-      className="bg-white/40 backdrop-blur-md border border-[#c9a84c]/30 rounded-2xl overflow-hidden"
+      className="overflow-hidden rounded-xl border border-border bg-card"
       style={{ width: 220, height: 160 }}
     >
-      <div
-        dangerouslySetInnerHTML={{
-          __html: `<tv-mini-chart symbol="${symbol}" time-frame="1M" ${attrs} style="display:block;width:220px;height:160px;"></tv-mini-chart>`,
-        }}
-      />
+      {/* 主题变化时 __html 随之变化，React 会重建元素；主题未确定时只保留占位 */}
+      {colorTheme && (
+        <div
+          dangerouslySetInnerHTML={{
+            __html: `<tv-mini-chart symbol="${symbol}" time-frame="1M" color-theme="${colorTheme}" ${attrs} style="display:block;width:220px;height:160px;"></tv-mini-chart>`,
+          }}
+        />
+      )}
     </div>
   );
 }
 
 export function HeroSection() {
   const t = useTranslations("hero");
+  const { resolvedTheme } = useTheme();
+  const isClient = useIsClient();
+  // 默认主题是深色；服务端与 hydration 期间返回 null，不渲染图表
+  const colorTheme = !isClient
+    ? null
+    : resolvedTheme === "light"
+      ? "light"
+      : "dark";
 
   return (
-    <section
-      className="min-h-screen flex flex-col items-center justify-center px-6 pt-4 pb-10 bg-background"
-      style={{
-        backgroundImage: `radial-gradient(circle, color-mix(in oklch, var(--primary) 20%, transparent) 1px, transparent 1px)`,
-        backgroundSize: `24px 24px`,
-      }}
-    >
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0 }}
-        className="mb-4"
+    <section className="flex min-h-screen flex-col items-center justify-center bg-background px-6 pb-10 pt-4">
+      <Badge
+        variant="outline"
+        className="mb-4 h-6 rounded-md px-3 text-muted-foreground"
       >
-        <Badge className="bg-primary/10 text-primary border border-primary/30 px-4 py-1">
-          {t("badge")}
-        </Badge>
-      </motion.div>
+        {t("badge")}
+      </Badge>
 
-      <motion.div
-        className="text-6xl md:text-7xl font-bold text-primary tracking-wider mb-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.1 }}
-      >
+      <div className="mb-4 text-6xl font-semibold tracking-[-1.5px] text-strong md:text-7xl">
         PortfolioX
-      </motion.div>
+      </div>
 
-      <motion.h1
-        className="text-2xl md:text-5xl font-serif font-bold text-center text-foreground leading-tight mb-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.2 }}
-      >
+      <h1 className="mb-4 text-center text-2xl font-semibold leading-tight tracking-[-1px] text-muted-foreground md:text-5xl">
         {t("headlineLine1")}
         <br />
-        {t("headlinePrefix") && <>{t("headlinePrefix")} </>}
-        <span className="bg-linear-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+        <span className="text-strong">
+          {t("headlinePrefix") && <>{t("headlinePrefix")} </>}
           {t("headlineAccent")}
+          {t("headlineSuffix")}
         </span>
-        {t("headlineSuffix")}
-      </motion.h1>
+      </h1>
 
-      <motion.p
-        className="text-lg text-muted-foreground text-center max-w-xl mb-10"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.3 }}
-      >
+      <p className="mb-10 max-w-xl text-center text-lg text-muted-foreground">
         {t("subheadline1a")}
         <br />
         {t("subheadline1b")}
-      </motion.p>
+      </p>
 
-      <motion.div
-        className="flex gap-4 mb-10"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.4 }}
-      >
+      <div className="mb-10 flex gap-4">
         <Link
           href="/sign-in"
-          className="px-6 py-3 min-w-36 text-center border-2 border-primary text-primary font-semibold rounded-lg hover:bg-primary/10 transition-colors"
+          className={cn(buttonVariants({ variant: "outline" }), "min-w-36")}
         >
           {t("signIn")}
         </Link>
         <Link
           href="/sign-up"
-          className="px-6 py-3 min-w-36 text-center bg-primary text-primary-foreground font-semibold rounded-lg hover:bg-primary/90 transition-colors"
+          className={cn(buttonVariants(), "min-w-36")}
         >
           {t("signUp")}
         </Link>
-      </motion.div>
+      </div>
 
-      <motion.div
-        className="flex flex-col gap-4"
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut", delay: 0.5 }}
-      >
-        <div className="flex flex-col sm:flex-row gap-4">
-          <TvChartCard symbol="AMEX:SPY" />
-          <TvChartCard symbol="BLACKBULL:JPN225" />
-          <TvChartCard symbol="OANDA:XAUUSD" />
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <TvChartCard symbol="AMEX:SPY" colorTheme={colorTheme} />
+          <TvChartCard symbol="BLACKBULL:JPN225" colorTheme={colorTheme} />
+          <TvChartCard symbol="OANDA:XAUUSD" colorTheme={colorTheme} />
         </div>
-        <div className="flex flex-col sm:flex-row gap-4">
-          <TvChartCard symbol="BINANCE:BTCUSDT" showTimeRange />
-          <TvChartCard symbol="FX:USDJPY" showTimeRange />
-          <TvChartCard symbol="FOREXCOM:CHINA50" showTimeRange />
+        <div className="flex flex-col gap-4 sm:flex-row">
+          <TvChartCard symbol="BINANCE:BTCUSDT" colorTheme={colorTheme} showTimeRange />
+          <TvChartCard symbol="FX:USDJPY" colorTheme={colorTheme} showTimeRange />
+          <TvChartCard symbol="FOREXCOM:CHINA50" colorTheme={colorTheme} showTimeRange />
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }

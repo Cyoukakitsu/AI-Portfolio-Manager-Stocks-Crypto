@@ -65,7 +65,24 @@
 
 **范围文件**：`app/[locale]/(root)/*`、`features/hero`
 
-- [ ] `./init.sh` 通过；页面截图已确认
+- 顶栏 `NavBar`（登录、注册页也在用）：去掉背景模糊与 `border-primary/30`，改实色底 + 1px 线色底边；Logo 改 600 字重、负字距；注册链接改用 `buttonVariants`
+- Hero：去掉点阵背景、渐变文字、`font-serif`；字标与标题改 600 字重加负字距，标题第一行用灰色、第二行用 `--strong`；徽标改中性描边；两个 CTA 改用 `buttonVariants`（次按钮 / 主按钮）；去掉 `✦` 装饰符（`messages/` 中 `hero.badge`）
+- 功能区与页脚：卡片去掉玻璃底与金色边线，改 `--card` + 线色边框、12px 圆角、24px 内边距；页脚链接悬停去掉写死的金色 `#c9a84c`
+- 隐私、条款页：去掉点阵背景，标题改 600 字重，正文用 `--foreground` 以保证长文可读
+- 动效：落地页所有入场动画移除（含 `whileInView`）。原先功能区的内容在整页截图里一直是透明的
+- 删除 `globals.css` 里 Task 6 留下的过渡别名 `--font-serif`
+- 迷你图：卡片改令牌色，给 `tv-mini-chart` 传 `color-theme` 跟随主题
+- `e2e/pages.shot.ts` 的 PAGES 加入 `terms`、`privacy`
+- [x] `./init.sh` 通过（build、lint、test 12/12）
+- [x] 落地页、隐私、条款页（以及换了顶栏的三个认证页）深浅主题截图已生成，浏览器控制台无报错与警告（dark / light 各 5 个页面检查）
+- [ ] 页面截图已由用户确认
+- [ ] 在能访问 TradingView 的环境确认：深色主题下 6 张迷你图是否真的变深色（沙箱拦截了 `widgets.tradingview-widget.com`，`color-theme` 属性是否被该组件识别未验证；只验证了属性会随主题切换）
+
+**踩坑**：把用户主题直接写进服务端渲染的 HTML 会让 hydration 不匹配（浅色主题下 Next 开发提示 "1 Issue"，且 React 声明"不会被修补"）。已记入 `GOTCHAS.md`。
+
+**范围外、本任务未处理**
+- 功能区四张产品截图（`public/Portfolio-Page.png` 等）是旧的米黄配色界面，与新设计不一致；需在 Task 13 之后重新截取替换
+- 手机宽度下导航只有语言与主题切换，没有登录、注册入口（落地页自身有 CTA）；属于功能与信息架构，本轮不动
 
 ### Task 10：Dashboard 外壳与首页
 

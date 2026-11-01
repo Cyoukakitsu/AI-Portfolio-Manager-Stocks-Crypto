@@ -101,6 +101,18 @@
 
 ---
 
+## [2026-11-01] 服务端渲染的 HTML 里写入用户主题，会造成 hydration 不匹配
+
+**场景**：UI 重设计 Task 9，给落地页的 TradingView 迷你图传 `color-theme`，值取自 `useTheme().resolvedTheme`
+
+**现象**：浅色主题下页面左下角出现 Next 开发提示 "1 Issue"，控制台报 "A tree hydrated but some attributes of the server rendered HTML didn't match the client properties"；深色主题下没有。截图脚本只看 `pageerror`，这条是 `console.error`，所以脚本全部通过
+
+**根因**：用户的主题存在 localStorage，服务端不知道，渲染时按默认的深色写出 `color-theme="dark"`；客户端 hydration 时读到 light，两边不一致。React 明确说这种不一致"不会被修补"，属性会一直错下去
+
+**注意**：凡是把主题（或 localStorage、`window`、时间）写进会被服务端渲染的 HTML，都要避免首次渲染就取这个值。用 `useSyncExternalStore(subscribe, () => true, () => false)` 区分服务端与客户端，主题确定前只渲染占位。验证时要在深浅两套主题下各看一次浏览器控制台，不能只看截图是否生成
+
+---
+
 ## [2026-11-01] shadcn lyra 风格的弹层写死了 `dark` 类，浅色主题下菜单仍是深色
 
 **场景**：UI 重设计 Task 7，在 Storybook 里切到浅色主题检查下拉菜单

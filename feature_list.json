@@ -43,10 +43,10 @@
     {
       "id": "feat-hero",
       "name": "Hero Page（首页）",
-      "description": "落地页重设计：方向 B+C，参考 Gemini UI 风格",
+      "description": "落地页、隐私与条款页，按 DESIGN.md 的视觉设计语言重做（UI 重设计 Task 9）",
       "dependencies": [],
       "status": "in-progress",
-      "evidence": "features/hero/components 存在；brainstorming 已完成，待实现"
+      "evidence": "Task 9 视觉重做完成（2026-11-01）：去掉点阵背景、渐变文字、玻璃卡片与金色边线，顶栏改实色；./init.sh 通过，深浅主题截图已生成；迷你图深色主题待在能访问 TradingView 的环境验证"
     },
     {
       "id": "feat-ai",

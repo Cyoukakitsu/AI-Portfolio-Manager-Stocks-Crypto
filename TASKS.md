@@ -117,6 +117,45 @@
 
 ---
 
+## Task 14：AI 分析路由与前端加固（2026-11-01 审查所得，另行排期）
+
+**背景**：对 PR #109（真流式）与结构化输出改动的静态审查，只读代码，未跑 build 和真实调用。UI 重设计期间不做，排期时单独一条分支、一个 PR。
+
+**范围文件**：`app/api/ai-analysis/route.ts`、`features/ai/components/analysis-shell.tsx`、`features/ai/lib/schemas.ts`、`features/ai/types/index.ts`
+
+**高优先级**
+- 路由无登录保护：`proxy.ts` 的 matcher 排除了 `api`，`app/api` 下没有任何地方调用 `getAuthSession()`，任何人都能直接调用并消耗 DeepSeek / Tavily 额度，且违反 `CONSTRAINTS.md` 的认证约定。`POST` 开头先 `getAuthSession()`，未登录返回 401。
+- 入参无校验（`route.ts` 约 28–42 行）：`personas` 元素不检查（传未知值会得到 `undefined` 的 system prompt）、可重复（前端 `key={agent.persona}` 会冲突）；`symbol` 不限格式与长度，直接拼进 prompt 并传给工具；`request.json()` 遇到畸形 body 会 500。按 `CONSTRAINTS.md` 用 Zod `safeParse`：`symbol` 建议 `^[A-Za-z0-9.\-=^]{1,15}$`，`personas` 用 enum 数组、1–2 个且不重复。
+
+**中优先级**
+- 客户端断开后服务端不停：`request.signal` 没传给 `streamText` / `generateText`；一个 agent 报错时另一个继续跑；断开后 `enqueue` 抛错，`catch` 里再次 `enqueue`、`finally` 里 `close()` 也会抛。传 `abortSignal`，出错时用内部 `AbortController` 中止另一个 agent，加 `safeEnqueue` 判断流是否已关闭。
+- 原始错误信息发给客户端（约 102–104 行）：`err.message` 经 SSE 发出，前端直接 `toast.error(data.message)`，违反 `CONSTRAINTS.md`。改为通用文案，详情只写服务端日志。
+- 结构化输出过严：`score` 必须是整数、`points` 必须正好 3 条，模型返回 `68.5` 或 4 条会让整次分析失败。`score` 改为 `z.number().min(0).max(100).transform(Math.round)`，或加一次重试。
+- 行情失败时 coordinator 拿到价格 `$0`（约 90 行）：`quote?.regularMarketPrice ?? 0` 加 `.catch(() => null)`，失败无日志，而 `COORDINATOR_PROMPT` 要求 buyRange 锚定当前价。改用 agent 里 `getStockPrice` 的结果，或在 prompt 中明确写"价格不可用"，并记录日志。
+- 步数预算可能偏紧（**未验证**）：`stepCountIs(5)` 要同时容纳 3 个工具调用与最后生成结构化输出的一步，模型串行调用并重试一次时可能没有位置输出。先记录 `finishReason` 观察，再决定是否调到 6。
+
+**前端（`analysis-shell.tsx`）**
+- 重新分析时的竞态：`abort()` 后旧请求的 `finally { setIsPending(false) }` 会在新请求已 `setIsPending(true)` 之后执行，新一轮的占位卡片与加载状态消失。改为 `if (abortRef.current === ctrl) setIsPending(false)`。
+- SSE 解析会丢事件：`currentEvent` 声明在 `while` 循环内，`event:` 与 `data:` 落在不同 chunk 时事件被静默丢弃；`JSON.parse` 也没有保护。把 `currentEvent` 提到循环外，或按 `\n\n` 切分事件。
+
+**顺手清理**
+- `route.ts` 约 44–45 行有两行重复注释
+- `types/index.ts` 里 `AgentResult` 的注释仍写"由 generateText + maxSteps 跑完"
+- `AgentResult`、`CoordinatorResult` 与 zod schema 重复定义，改用 `z.infer` 推导
+
+**验收标准**
+- [ ] 未登录 `curl` 调用 `/api/ai-analysis` 返回 401
+- [ ] 传未知或重复的 persona、非法 symbol 返回 400
+- [ ] 分析途中关闭页面或点击重新分析后，服务端日志显示上一次请求已中止
+- [ ] 模拟 agent 或 coordinator 失败时，前端只看到通用错误文案，服务端日志有详情
+- [ ] 行情接口失败时 coordinator 不再收到 `$0`
+- [ ] 连续点击两次分析，第二次的占位卡片与加载状态正常
+- [ ] `./init.sh` 通过，并补充对应的 schema / 入参校验测试
+
+**同时发现、不在本任务范围**：`app/api` 下其余路由同样没有调用 `getAuthSession()`（`yahoofinance/*`、`assets/news`、`assets/ai-summary`），排期时一并确认哪些需要加登录保护。
+
+---
+
 ## Task 2：AI 分析页 SSE 流式推送
 
 **目标**：将 `/api/ai-analysis` 从阻塞式 JSON 改为 SSE 流，Agent 结果逐张滑入，删除 `ProgressSteps` 假进度条。

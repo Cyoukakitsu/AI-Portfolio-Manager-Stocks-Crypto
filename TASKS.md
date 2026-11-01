@@ -46,13 +46,43 @@
 
 **范围文件**：`app/[locale]/(auth)/*` 及 `features/auth` 的样式
 
-- [ ] `./init.sh` 通过；三个页面深浅主题截图已确认
+- 左侧品牌栏：去掉网格背景、两团发光和装饰柱图；米黄色 PNG logo 去掉（顶栏已有字标，左栏不再重复），标题与功能列表是定宽（max-w-md）内容块，在左栏内水平、垂直居中，随窗口缩放跟着栏中心移动（参考 Supabase 注册页的做法）；标题字号 lg 下 30px、xl 起 36px，避免窄栏时"ツール"折行；标题改 36px / 600 / -1.5px 负字距，第二行用 `--muted-foreground`；图标换 Phosphor light，图标块改 6px 圆角灰阶
+- 表单卡片：去掉阴影与顶部渐变线，内边距 24px；标题用 Title 规格（24 / 600 / -0.6px）；标签改用 Task 7 重写的 `Label` 组件；链接用 `--strong` 加悬停下划线，键盘焦点显示 2px 焦点环
+- 新增 `features/auth/components/auth-card.tsx`：`AuthCard`、`AuthHeader`、`FieldMessage` 与两个链接样式，四个表单共用，去掉重复的卡片与错误提示标记
+- 动效：原先卡片、容器、逐字段三层叠加的上滑入场，收敛为容器一次 0.25s 淡入；视图切换与错误提示只做 0.15s 淡入淡出；用 `auth-card.tsx` 的 `useFadeDuration`（基于 `useReducedMotion`）遵守系统"减少动态效果"：开启时时长为 0。不能只用 `MotionConfig reducedMotion="user"`，它不关透明度与高度动画（Greptile 指出，见 `GOTCHAS.md`）；已用 Playwright 逐帧采样验证（开启时透明度只有 0 和 1，关闭时有中间帧）
+- 输入框出错时加 `aria-invalid` 与 `aria-describedby`，边框随之变琥珀色；错误文字 `role="alert"`
+- `e2e/pages.shot.ts` 的 PAGES 加入 `reset-password`
+- [x] `./init.sh` 通过（build、lint、test 12/12）
+- [x] 三个页面深浅主题截图已生成（`pnpm shot` → `test-results/shots/`），并检查了校验错误态、忘记密码视图、390px 手机宽度（无横向溢出、无未捕获异常）
+- [ ] 三个页面深浅主题截图已由用户确认
+
+**范围外、本任务未处理**
+- 顶栏 `NavBar` 仍是旧样式（`border-primary/30`、`font-bold`、`backdrop-blur`），归 Task 9
+- ~~Google 按钮硬编码英文~~：已改走 `messages/` 的 `auth.google.continue`（2026-11-01）。仍未处理：服务端 `auth.ts` 返回的 `"Validation failed"` 经 toast 直接显示；Zod 校验提示（如 "Password must be at least 6 characters"）在日文页面显示英文。需要补 `messages/` 键并让 schema 读翻译
+- `public/header-icon.png` 现在没有任何引用，且是旧的米黄色配色，可删除，需用户确认
 
 ### Task 9：落地页与隐私、条款页
 
 **范围文件**：`app/[locale]/(root)/*`、`features/hero`
 
-- [ ] `./init.sh` 通过；页面截图已确认
+- 顶栏 `NavBar`（登录、注册页也在用）：去掉背景模糊与 `border-primary/30`，改实色底 + 1px 线色底边；Logo 改 600 字重、负字距；注册链接改用 `buttonVariants`
+- Hero：去掉点阵背景、渐变文字、`font-serif`；字标与标题改 600 字重加负字距，标题第一行用灰色、第二行用 `--strong`；徽标改中性描边；两个 CTA 改用 `buttonVariants`（次按钮 / 主按钮）；去掉 `✦` 装饰符（`messages/` 中 `hero.badge`）
+- 功能区与页脚：卡片去掉玻璃底与金色边线，改 `--card` + 线色边框、12px 圆角、24px 内边距；页脚链接悬停去掉写死的金色 `#c9a84c`
+- 隐私、条款页：去掉点阵背景，标题改 600 字重，正文用 `--foreground` 以保证长文可读
+- 动效：落地页所有入场动画移除（含 `whileInView`）。原先功能区的内容在整页截图里一直是透明的
+- 删除 `globals.css` 里 Task 6 留下的过渡别名 `--font-serif`
+- 迷你图：卡片改令牌色，给 `tv-mini-chart` 传 `theme`（`light` / `dark`）跟随主题
+- `e2e/pages.shot.ts` 的 PAGES 加入 `terms`、`privacy`
+- [x] `./init.sh` 通过（build、lint、test 12/12）
+- [x] 落地页、隐私、条款页（以及换了顶栏的三个认证页）深浅主题截图已生成，浏览器控制台无报错与警告（dark / light 各 5 个页面检查）
+- [ ] 页面截图已由用户确认
+- [ ] 在能访问 TradingView 的环境确认：深色主题下 6 张迷你图是否真的变深色（沙箱拦截了 `widgets.tradingview-widget.com`，没看到真实效果。已读脚本确认该组件的主题属性是 `theme`，不是 `color-theme`，见 `GOTCHAS.md`；仍需在本机看真实渲染）
+
+**踩坑**：把用户主题直接写进服务端渲染的 HTML 会让 hydration 不匹配（浅色主题下 Next 开发提示 "1 Issue"，且 React 声明"不会被修补"）。已记入 `GOTCHAS.md`。
+
+**范围外、本任务未处理**
+- 功能区四张产品截图（`public/Portfolio-Page.png` 等）是旧的米黄配色界面，与新设计不一致；已记入 Task 13 的最后一步，Task 10–13 全部合并后重新截取替换
+- 手机宽度下导航只有语言与主题切换，没有登录、注册入口（落地页自身有 CTA）；属于功能与信息架构，本轮不动
 
 ### Task 10：Dashboard 外壳与首页
 
@@ -95,6 +125,13 @@
 - [ ] `./init.sh` 通过
 - [ ] 全仓无 `text-green-*`、`text-red-*`、`#22c55e`、`#ef4444` 等表达涨跌的写死颜色
 - [ ] 页面截图在深浅主题下已确认
+- **重截落地页功能区的四张产品截图**（Task 9 遗留，最后一步，需等 Task 10–13 全部合并后做）：
+  - 替换 `public/Portfolio-Page.png`、`AI-Agent-Analysis.png`、`Stock-Page.png`、`Crypto-Page.png`，保持原文件名，`features-section.tsx` 不用改；这四张图现在是旧的米黄配色界面
+  - 在 `e2e/` 新增截图脚本（建议 `pnpm shot:product`，文件后缀 `.shot.ts`）：默认深色主题，视口 1440×900，登录后依次打开资产、AI、股票、加密页，输出 16:9 的图；账号密码只从环境变量读取（如 `SHOT_EMAIL`、`SHOT_PASSWORD`），不进仓库
+  - 必须在能访问 TradingView 且有真实持仓数据的本机运行，沙箱做不了（需要登录、Supabase、TradingView 域名）；AI 页需要先跑出一次分析结果再截
+  - 截图前确认没有个人信息：持仓金额、邮箱、头像，必要时用测试账号的示例数据
+  - [ ] 四张图已替换为新设计，落地页功能区在深浅两套主题下截图已确认
+  - [ ] 截图里没有真实个人信息
 
 ### 清理未使用的 UI 组件（独立 PR，建议在 Task 7 之后做）
 
@@ -102,6 +139,15 @@
 - 删除前用 `knip` 重新跑一遍，并确认 `pnpm build`、`./init.sh` 通过；删除后检查是否能一并移除无人使用的依赖（如只被 `chart.tsx` 使用的 `recharts`，删前需确认）
 - 保留未使用的导出（属于组件库完整 API，删了下次 `shadcn add` 会回来）
 - [ ] 用户已确认删除清单；[ ] `./init.sh` 通过
+
+### 明暗模式切换按钮改为直接切换（独立 PR，2026-11-01 用户新增）
+
+**范围文件**：`features/dashboard/components/mode-toggle.tsx`（目前只有它引用 `ModeToggle`，开工前再 grep 一次确认，用到的页面一并核对）
+
+- 现状：点按钮会弹出下拉菜单，菜单里有"深色 / 浅色"两项
+- 目标：点一下按钮就直接在深色与浅色之间切换，不再弹菜单；图标按当前主题显示（深色显示月亮，浅色显示太阳）
+- 要点：用 `resolvedTheme` 判断当前主题；`aria-label` 沿用 `messages/` 的 `theme.toggle`；主题确定前（服务端渲染与首次 hydration）不能直接按主题渲染图标，否则会 hydration 不匹配（见 `GOTCHAS.md` 2026-11-01 条）；`theme.dark` / `theme.light` 两个文案键若不再使用，一并清理 `messages/` 里的 ja、en
+- [ ] `./init.sh` 通过；深浅主题下点击都能切换，刷新后保持，控制台无 hydration 警告
 
 ### 视觉重设计之后的逻辑任务（独立 PR，另行排期）
 
@@ -114,6 +160,45 @@
 
 - `app/layout.tsx` 中 `<html lang>` 写死为 `"ja"`，不随 locale 变化
 - `components/ui/chart.tsx`（recharts 封装）没有任何使用点，可考虑清理
+
+---
+
+## Task 14：AI 分析路由与前端加固（2026-11-01 审查所得，另行排期）
+
+**背景**：对 PR #109（真流式）与结构化输出改动的静态审查，只读代码，未跑 build 和真实调用。UI 重设计期间不做，排期时单独一条分支、一个 PR。
+
+**范围文件**：`app/api/ai-analysis/route.ts`、`features/ai/components/analysis-shell.tsx`、`features/ai/lib/schemas.ts`、`features/ai/types/index.ts`
+
+**高优先级**
+- 路由无登录保护：`proxy.ts` 的 matcher 排除了 `api`，`app/api` 下没有任何地方调用 `getAuthSession()`，任何人都能直接调用并消耗 DeepSeek / Tavily 额度，且违反 `CONSTRAINTS.md` 的认证约定。`POST` 开头先 `getAuthSession()`，未登录返回 401。
+- 入参无校验（`route.ts` 约 28–42 行）：`personas` 元素不检查（传未知值会得到 `undefined` 的 system prompt）、可重复（前端 `key={agent.persona}` 会冲突）；`symbol` 不限格式与长度，直接拼进 prompt 并传给工具；`request.json()` 遇到畸形 body 会 500。按 `CONSTRAINTS.md` 用 Zod `safeParse`：`symbol` 建议 `^[A-Za-z0-9.\-=^]{1,15}$`，`personas` 用 enum 数组、1–2 个且不重复。
+
+**中优先级**
+- 客户端断开后服务端不停：`request.signal` 没传给 `streamText` / `generateText`；一个 agent 报错时另一个继续跑；断开后 `enqueue` 抛错，`catch` 里再次 `enqueue`、`finally` 里 `close()` 也会抛。传 `abortSignal`，出错时用内部 `AbortController` 中止另一个 agent，加 `safeEnqueue` 判断流是否已关闭。
+- 原始错误信息发给客户端（约 102–104 行）：`err.message` 经 SSE 发出，前端直接 `toast.error(data.message)`，违反 `CONSTRAINTS.md`。改为通用文案，详情只写服务端日志。
+- 结构化输出过严：`score` 必须是整数、`points` 必须正好 3 条，模型返回 `68.5` 或 4 条会让整次分析失败。`score` 改为 `z.number().min(0).max(100).transform(Math.round)`，或加一次重试。
+- 行情失败时 coordinator 拿到价格 `$0`（约 90 行）：`quote?.regularMarketPrice ?? 0` 加 `.catch(() => null)`，失败无日志，而 `COORDINATOR_PROMPT` 要求 buyRange 锚定当前价。改用 agent 里 `getStockPrice` 的结果，或在 prompt 中明确写"价格不可用"，并记录日志。
+- 步数预算可能偏紧（**未验证**）：`stepCountIs(5)` 要同时容纳 3 个工具调用与最后生成结构化输出的一步，模型串行调用并重试一次时可能没有位置输出。先记录 `finishReason` 观察，再决定是否调到 6。
+
+**前端（`analysis-shell.tsx`）**
+- 重新分析时的竞态：`abort()` 后旧请求的 `finally { setIsPending(false) }` 会在新请求已 `setIsPending(true)` 之后执行，新一轮的占位卡片与加载状态消失。改为 `if (abortRef.current === ctrl) setIsPending(false)`。
+- SSE 解析会丢事件：`currentEvent` 声明在 `while` 循环内，`event:` 与 `data:` 落在不同 chunk 时事件被静默丢弃；`JSON.parse` 也没有保护。把 `currentEvent` 提到循环外，或按 `\n\n` 切分事件。
+
+**顺手清理**
+- `route.ts` 约 44–45 行有两行重复注释
+- `types/index.ts` 里 `AgentResult` 的注释仍写"由 generateText + maxSteps 跑完"
+- `AgentResult`、`CoordinatorResult` 与 zod schema 重复定义，改用 `z.infer` 推导
+
+**验收标准**
+- [ ] 未登录 `curl` 调用 `/api/ai-analysis` 返回 401
+- [ ] 传未知或重复的 persona、非法 symbol 返回 400
+- [ ] 分析途中关闭页面或点击重新分析后，服务端日志显示上一次请求已中止
+- [ ] 模拟 agent 或 coordinator 失败时，前端只看到通用错误文案，服务端日志有详情
+- [ ] 行情接口失败时 coordinator 不再收到 `$0`
+- [ ] 连续点击两次分析，第二次的占位卡片与加载状态正常
+- [ ] `./init.sh` 通过，并补充对应的 schema / 入参校验测试
+
+**同时发现、不在本任务范围**：`app/api` 下其余路由同样没有调用 `getAuthSession()`（`yahoofinance/*`、`assets/news`、`assets/ai-summary`），排期时一并确认哪些需要加登录保护。
 
 ---
 

@@ -1,10 +1,12 @@
 "use client";
 
 // 参考：https://supabase.com/docs/guides/auth/social-login/auth-google?queryGroups=framework&framework=nextjs&queryGroups=environment&environment=client
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
 const GoogleButton = () => {
+  const t = useTranslations("auth.google");
   const handleGoogle = async () => {
     const supabase = createClient();
     await supabase.auth.signInWithOAuth({
@@ -20,9 +22,9 @@ const GoogleButton = () => {
       variant="outline"
       type="button"
       onClick={handleGoogle}
-      className="w-full cursor-pointer"
+      className="w-full"
     >
-      Continue with Google
+      {t("continue")}
     </Button>
   );
 };

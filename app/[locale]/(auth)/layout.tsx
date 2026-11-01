@@ -1,13 +1,12 @@
 import AuthLayoutWrapper from "@/features/auth/components/auth-layout-wrapper";
 import { NavBar } from "@/features/hero/components/nav-bar";
 
-import { TrendingUp, ShieldCheck, BotMessageSquare } from "lucide-react";
+import {
+  Robot,
+  ShieldCheck,
+  TrendUp,
+} from "@phosphor-icons/react/dist/ssr";
 import { getTranslations } from "next-intl/server";
-
-import Image from "next/image";
-import { Link } from "@/i18n/navigation";
-
-const chartBars = [38, 52, 34, 68, 58, 78, 62, 88, 72, 94, 82, 100];
 
 export default async function layout({
   children,
@@ -17,8 +16,8 @@ export default async function layout({
   const t = await getTranslations("auth.layout");
 
   const features = [
-    { icon: TrendingUp, title: t("tracking.title"), desc: t("tracking.desc") },
-    { icon: BotMessageSquare, title: t("ai.title"), desc: t("ai.desc") },
+    { icon: TrendUp, title: t("tracking.title"), desc: t("tracking.desc") },
+    { icon: Robot, title: t("ai.title"), desc: t("ai.desc") },
     { icon: ShieldCheck, title: t("security.title"), desc: t("security.desc") },
   ];
 
@@ -27,43 +26,18 @@ export default async function layout({
       <NavBar />
       <div className="flex flex-1">
         {/* ── Left branding panel (desktop only) ── */}
-        <div className="hidden lg:flex lg:w-[45%] bg-sidebar flex-col justify-between p-12 relative overflow-hidden border-r border-sidebar-border">
-          {/* Subtle grid backdrop using primary color */}
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.04]"
-            style={{
-              backgroundImage:
-                "linear-gradient(var(--color-primary) 1px, transparent 1px), linear-gradient(90deg, var(--color-primary) 1px, transparent 1px)",
-              backgroundSize: "40px 40px",
-            }}
-          />
-
-          {/* Ambient glow */}
-          <div className="pointer-events-none absolute top-1/4 left-1/3 w-72 h-72 bg-primary/8 rounded-full blur-3xl" />
-          <div className="pointer-events-none absolute bottom-1/4 right-1/4 w-56 h-56 bg-primary/5 rounded-full blur-3xl" />
-
-          {/* Logo */}
-          <div className="relative z-10">
-            <Link href="/">
-              <Image
-                src="/header-icon.png"
-                alt="PortfolioX"
-                width={160}
-                height={36}
-                className="h-auto w-auto"
-              />
-            </Link>
-          </div>
-
-          {/* Headline + feature list */}
-          <div className="relative z-10 space-y-10">
+        <div className="hidden lg:flex lg:w-[45%] flex-col items-center justify-center border-r border-border bg-background p-12">
+          {/* Headline + feature list：定宽内容块在左栏内水平、垂直居中，随窗口缩放跟着栏中心移动（参考 Supabase 注册页） */}
+          <div className="w-full max-w-md space-y-10">
             <div className="space-y-4">
-              <h1 className="text-4xl font-bold text-sidebar-foreground leading-tight tracking-tight">
+              <h1 className="text-3xl font-semibold leading-tight tracking-[-1.2px] text-strong xl:text-4xl xl:tracking-[-1.5px]">
                 {t("headline")}
                 <br />
-                <span className="text-primary">{t("headlineAccent")}</span>
+                <span className="text-muted-foreground">
+                  {t("headlineAccent")}
+                </span>
               </h1>
-              <p className="text-muted-foreground text-sm leading-relaxed max-w-xs">
+              <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
                 {t("subtitle")}
               </p>
             </div>
@@ -71,14 +45,17 @@ export default async function layout({
             <div className="space-y-5">
               {features.map(({ icon: Icon, title, desc }) => (
                 <div key={title} className="flex items-start gap-3">
-                  <div className="shrink-0 w-9 h-9 rounded-xl bg-primary/15 border border-primary/20 flex items-center justify-center">
-                    <Icon className="w-4 h-4 text-primary" />
+                  <div className="flex size-9 shrink-0 items-center justify-center rounded-md border border-border bg-card">
+                    <Icon
+                      weight="light"
+                      className="size-5 text-muted-foreground"
+                    />
                   </div>
                   <div>
-                    <p className="text-sm font-medium text-sidebar-foreground">
+                    <p className="text-sm font-medium text-foreground">
                       {title}
                     </p>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="mt-0.5 text-xs text-muted-foreground">
                       {desc}
                     </p>
                   </div>
@@ -86,36 +63,10 @@ export default async function layout({
               ))}
             </div>
           </div>
-
-          {/* Decorative mini-chart */}
-          <div className="relative z-10">
-            <div className="flex items-end gap-1.5 h-14">
-              {chartBars.map((h, i) => (
-                <div
-                  key={i}
-                  className="flex-1 rounded-sm bg-primary/40"
-                  style={{ height: `${h}%` }}
-                />
-              ))}
-            </div>
-          </div>
         </div>
 
         {/* ── Right form panel ── */}
         <div className="flex-1 flex flex-col items-center justify-center bg-background px-6 py-10">
-          {/* Mobile-only logo */}
-          <div className="mb-8 lg:hidden">
-            <Link href="/">
-              <Image
-                src="/header-icon.png"
-                alt="PortfolioX"
-                width={140}
-                height={32}
-                className="h-8 w-auto"
-              />
-            </Link>
-          </div>
-
           <AuthLayoutWrapper>{children}</AuthLayoutWrapper>
         </div>
       </div>

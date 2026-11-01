@@ -47,8 +47,8 @@
   },
   "auth": {
     "signIn": {
-      "title": "おかえりなさい",
-      "subtitle": "ポートフォリオアカウントにサインイン",
+      "title": "サインイン",
+      "subtitle": "サインインして、資産管理を続けましょう",
       "email": "メールアドレス",
       "password": "パスワード",
       "forgotPassword": "パスワードをお忘れの方",
@@ -74,6 +74,9 @@
       "submit": "アカウントを作成",
       "hasAccount": "すでにアカウントをお持ちの方は",
       "signIn": "サインイン"
+    },
+    "google": {
+      "continue": "Googleで続ける"
     },
     "forgotPassword": {
       "title": "パスワードをリセット",
@@ -389,7 +392,7 @@
       "signIn": "サインイン",
       "getStarted": "新規登録"
     },
-    "badge": "✦ AI実装 · 株式 · 暗号資産",
+    "badge": "AI実装 · 株式 · 暗号資産",
     "headlineLine1": "あなたのポートフォリオを、",
     "headlinePrefix": "",
     "headlineAccent": "伝説の投資家",

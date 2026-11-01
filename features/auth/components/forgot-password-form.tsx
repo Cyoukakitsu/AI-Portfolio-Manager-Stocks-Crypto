@@ -3,7 +3,7 @@
 // 忘记密码表单——发送重置邮件
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { motion, AnimatePresence } from "motion/react";
+import { motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import { toast } from "sonner";
 
@@ -12,23 +12,22 @@ import {
   ForgotPasswordFormValues,
 } from "@/features/auth/schemas/forgot-password";
 import { resetPasswordEmail } from "@/features/auth/server/auth";
+import {
+  AuthHeader,
+  FieldMessage,
+  authLinkClass,
+  useFadeDuration,
+} from "./auth-card";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-
-const fieldVariants = {
-  hidden: { opacity: 0, y: 16 },
-  show: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 0.4, ease: "easeOut" as const },
-  },
-};
 
 interface ForgotPasswordFormProps {
   onBack: () => void;
 }
 
 const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
+  const fadeDuration = useFadeDuration(0.15);
   const t = useTranslations("auth.forgotPassword");
   const locale = useLocale();
   const {
@@ -49,80 +48,45 @@ const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
   return (
     <motion.div
       key="forgot-password"
-      initial={{ opacity: 0, x: 20 }}
-      animate={{ opacity: 1, x: 0 }}
-      exit={{ opacity: 0, x: -20 }}
-      transition={{ duration: 0.3, ease: "easeOut" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: fadeDuration }}
     >
-      <div className="mb-8">
-        <h2 className="text-xl font-semibold text-card-foreground tracking-tight">
-          {t("title")}
-        </h2>
-        <p className="text-sm text-muted-foreground mt-1">{t("subtitle")}</p>
-      </div>
+      <AuthHeader title={t("title")} subtitle={t("subtitle")} />
 
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <motion.div
-          variants={{
-            hidden: { opacity: 0 },
-            show: { opacity: 1, transition: { staggerChildren: 0.08 } },
-          }}
-          initial="hidden"
-          animate="show"
-          className="space-y-5"
-        >
-          <motion.div variants={fieldVariants} className="space-y-1.5">
-            <label
-              htmlFor="forgot-email"
-              className="block text-sm font-medium text-foreground"
-            >
-              {t("email")}
-            </label>
-            <Input
-              {...register("email")}
-              id="forgot-email"
-              type="email"
-              placeholder="fujimoto@example.com"
-            />
-            <AnimatePresence>
-              {errors.email && (
-                <motion.p
-                  key="email-error"
-                  initial={{ opacity: 0, height: 0 }}
-                  animate={{ opacity: 1, height: "auto" }}
-                  exit={{ opacity: 0, height: 0 }}
-                  transition={{ duration: 0.2 }}
-                  className="text-xs text-destructive overflow-hidden"
-                >
-                  {errors.email.message}
-                </motion.p>
-              )}
-            </AnimatePresence>
-          </motion.div>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+        <div className="space-y-1.5">
+          <Label htmlFor="forgot-email">{t("email")}</Label>
+          <Input
+            {...register("email")}
+            id="forgot-email"
+            type="email"
+            placeholder="fujimoto@example.com"
+            aria-invalid={!!errors.email}
+            aria-describedby={errors.email ? "forgot-email-message" : undefined}
+          />
+          <FieldMessage
+            id="forgot-email-message"
+            error={errors.email?.message}
+          />
+        </div>
 
-          <motion.div variants={fieldVariants} className="space-y-3 pt-1">
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className="w-full cursor-pointer"
-            >
-              {isSubmitting ? t("sending") : t("submit")}
-            </Button>
-          </motion.div>
+        <div className="pt-1">
+          <Button type="submit" disabled={isSubmitting} className="w-full">
+            {isSubmitting ? t("sending") : t("submit")}
+          </Button>
+        </div>
 
-          <motion.p
-            variants={fieldVariants}
-            className="text-center text-sm"
+        <p className="text-center text-sm">
+          <button
+            type="button"
+            onClick={onBack}
+            className={`cursor-pointer ${authLinkClass}`}
           >
-            <button
-              type="button"
-              onClick={onBack}
-              className="text-primary hover:text-primary/80 transition-colors cursor-pointer"
-            >
-              {t("backToSignIn")}
-            </button>
-          </motion.p>
-        </motion.div>
+            {t("backToSignIn")}
+          </button>
+        </p>
       </form>
     </motion.div>
   );

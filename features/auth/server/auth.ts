@@ -1,12 +1,12 @@
 "use server";
 
-// Server Actions：处理注册 / 登录逻辑
+// Server Actions：注册、登录、登出、修改密码、发送重置邮件、重置密码
 //参考https://supabase.com/docs/guides/getting-started/tutorials/with-nextjs
 
-import { z } from "zod";
 import { signInSchema } from "@/features/auth/schemas/sign-in";
 import { signUpSchema } from "@/features/auth/schemas/sign-up";
 import { forgotPasswordSchema } from "@/features/auth/schemas/forgot-password";
+import { passwordSchema } from "@/features/auth/schemas/password";
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -93,7 +93,7 @@ export async function changePassword(currentPassword: string, newPassword: strin
   return { success: true };
 }
 
-export async function resetPasswordEmail(email: unknown, locale: string = "ja") {
+export async function resetPasswordEmail(email: unknown, locale: string) {
   const result = forgotPasswordSchema.safeParse({ email });
   if (!result.success) return { error: "Invalid email" };
 
@@ -107,7 +107,7 @@ export async function resetPasswordEmail(email: unknown, locale: string = "ja") 
 }
 
 export async function updatePassword(newPassword: unknown) {
-  const result = z.string().min(6, "Password must be at least 6 characters").safeParse(newPassword);
+  const result = passwordSchema.safeParse(newPassword);
   if (!result.success) return { error: "Password too short" };
 
   const supabase = await createClient();

@@ -66,9 +66,9 @@
 **范围文件**：`app/[locale]/(root)/*`、`features/hero`
 
 - 顶栏 `NavBar`（登录、注册页也在用）：去掉背景模糊与 `border-primary/30`，改实色底 + 1px 线色底边；Logo 改 600 字重、负字距；注册链接改用 `buttonVariants`
-- Hero：去掉点阵背景、渐变文字、`font-serif`；字标与标题改 600 字重加负字距，标题第一行用灰色、第二行用 `--strong`；徽标改中性描边；两个 CTA 改用 `buttonVariants`（次按钮 / 主按钮）；去掉 `✦` 装饰符（`messages/` 中 `hero.badge`）
+- Hero：渐变文字、`font-serif` 去掉；点阵背景保留，但改用 `bg-dots` 工具类（颜色取自 `--foreground` 14% 混合，深浅主题自适应）；字标与标题改 600 字重加负字距，标题第一行用灰色、第二行用 `--strong`；徽标改中性描边；两个 CTA 改用 `buttonVariants`（次按钮 / 主按钮）；去掉 `✦` 装饰符（`messages/` 中 `hero.badge`）
 - 功能区与页脚：卡片去掉玻璃底与金色边线，改 `--card` + 线色边框、12px 圆角、24px 内边距；页脚链接悬停去掉写死的金色 `#c9a84c`
-- 隐私、条款页：去掉点阵背景，标题改 600 字重，正文用 `--foreground` 以保证长文可读
+- 隐私、条款页：点阵背景同样改用 `bg-dots`，标题改 600 字重，正文用 `--foreground` 以保证长文可读
 - 动效：落地页所有入场动画移除（含 `whileInView`）。原先功能区的内容在整页截图里一直是透明的
 - 删除 `globals.css` 里 Task 6 留下的过渡别名 `--font-serif`
 - 迷你图：卡片改令牌色，给 `tv-mini-chart` 传 `theme`（`light` / `dark`）跟随主题

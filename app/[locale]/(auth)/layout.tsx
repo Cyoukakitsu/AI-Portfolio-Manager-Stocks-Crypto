@@ -8,8 +8,6 @@ import {
 } from "@phosphor-icons/react/dist/ssr";
 import { getTranslations } from "next-intl/server";
 
-import { Link } from "@/i18n/navigation";
-
 export default async function layout({
   children,
 }: {
@@ -28,16 +26,8 @@ export default async function layout({
       <NavBar />
       <div className="flex flex-1">
         {/* ── Left branding panel (desktop only) ── */}
-        <div className="hidden lg:flex lg:w-[45%] flex-col justify-between border-r border-border bg-background p-12">
-          {/* Wordmark */}
-          <Link
-            href="/"
-            className="w-fit text-xl font-semibold tracking-[-0.4px] text-strong"
-          >
-            PortfolioX
-          </Link>
-
-          {/* Headline + feature list */}
+        <div className="hidden lg:flex lg:w-[45%] flex-col justify-center border-r border-border bg-background p-12">
+          {/* Headline + feature list：左栏内垂直居中，字标由顶栏提供 */}
           <div className="space-y-10">
             <div className="space-y-4">
               <h1 className="text-4xl font-semibold leading-tight tracking-[-1.5px] text-strong">

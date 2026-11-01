@@ -46,7 +46,7 @@
 
 **范围文件**：`app/[locale]/(auth)/*` 及 `features/auth` 的样式
 
-- 左侧品牌栏：去掉网格背景、两团发光和装饰柱图；米黄色 PNG logo 换成文字字标 `PortfolioX`（与顶栏一致）；标题改 36px / 600 / -1.5px 负字距，第二行用 `--muted-foreground`；图标换 Phosphor light，图标块改 6px 圆角灰阶
+- 左侧品牌栏：去掉网格背景、两团发光和装饰柱图；米黄色 PNG logo 去掉（顶栏已有字标，左栏不再重复），标题与功能列表在左栏内垂直居中；标题改 36px / 600 / -1.5px 负字距，第二行用 `--muted-foreground`；图标换 Phosphor light，图标块改 6px 圆角灰阶
 - 表单卡片：去掉阴影与顶部渐变线，内边距 24px；标题用 Title 规格（24 / 600 / -0.6px）；标签改用 Task 7 重写的 `Label` 组件；链接用 `--strong` 加悬停下划线，键盘焦点显示 2px 焦点环
 - 新增 `features/auth/components/auth-card.tsx`：`AuthCard`、`AuthHeader`、`FieldMessage` 与两个链接样式，四个表单共用，去掉重复的卡片与错误提示标记
 - 动效：原先卡片、容器、逐字段三层叠加的上滑入场，收敛为容器一次 0.25s 淡入；视图切换与错误提示只做 0.15s 淡入淡出；`MotionConfig reducedMotion="user"` 遵守系统"减少动态效果"
@@ -58,7 +58,7 @@
 
 **范围外、本任务未处理**
 - 顶栏 `NavBar` 仍是旧样式（`border-primary/30`、`font-bold`、`backdrop-blur`），归 Task 9
-- `features/auth/components/google-button.tsx` 里"Continue with Google"硬编码英文（违反 `CONSTRAINTS.md` 的 i18n 约束）；注册失败的 `"Validation failed"` 也是硬编码；Zod 校验提示（如 "Password must be at least 6 characters"）在日文页面显示英文。需要补 `messages/` 键并让 schema 读翻译
+- ~~Google 按钮硬编码英文~~：已改走 `messages/` 的 `auth.google.continue`（2026-11-01）。仍未处理：服务端 `auth.ts` 返回的 `"Validation failed"` 经 toast 直接显示；Zod 校验提示（如 "Password must be at least 6 characters"）在日文页面显示英文。需要补 `messages/` 键并让 schema 读翻译
 - `public/header-icon.png` 现在没有任何引用，且是旧的米黄色配色，可删除，需用户确认
 
 ### Task 9：落地页与隐私、条款页
@@ -139,6 +139,15 @@
 - 删除前用 `knip` 重新跑一遍，并确认 `pnpm build`、`./init.sh` 通过；删除后检查是否能一并移除无人使用的依赖（如只被 `chart.tsx` 使用的 `recharts`，删前需确认）
 - 保留未使用的导出（属于组件库完整 API，删了下次 `shadcn add` 会回来）
 - [ ] 用户已确认删除清单；[ ] `./init.sh` 通过
+
+### 明暗模式切换按钮改为直接切换（独立 PR，2026-11-01 用户新增）
+
+**范围文件**：`features/dashboard/components/mode-toggle.tsx`（目前只有它引用 `ModeToggle`，开工前再 grep 一次确认，用到的页面一并核对）
+
+- 现状：点按钮会弹出下拉菜单，菜单里有"深色 / 浅色"两项
+- 目标：点一下按钮就直接在深色与浅色之间切换，不再弹菜单；图标按当前主题显示（深色显示月亮，浅色显示太阳）
+- 要点：用 `resolvedTheme` 判断当前主题；`aria-label` 沿用 `messages/` 的 `theme.toggle`；主题确定前（服务端渲染与首次 hydration）不能直接按主题渲染图标，否则会 hydration 不匹配（见 `GOTCHAS.md` 2026-11-01 条）；`theme.dark` / `theme.light` 两个文案键若不再使用，一并清理 `messages/` 里的 ja、en
+- [ ] `./init.sh` 通过；深浅主题下点击都能切换，刷新后保持，控制台无 hydration 警告
 
 ### 视觉重设计之后的逻辑任务（独立 PR，另行排期）
 

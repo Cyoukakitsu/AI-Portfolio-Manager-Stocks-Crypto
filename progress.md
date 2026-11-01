@@ -28,12 +28,10 @@
 - [x] UI 重设计 Task 6：设计语言文档（`DESIGN.md`、`CONTEXT.md`、ADR）、深浅两套令牌、Geist 字体、Playwright 截图与 Storybook（PR #115，2026-11-01）
 - [x] UI 重设计 Task 7：基础组件按设计稿重写样式并补 Storybook 条目（叠加 PR，目标 `feat/ui-redesign-tokens`，2026-11-01）
 
-- [x] UI 重设计 Task 8：登录、注册、重置密码页重做，抽出 `auth-card.tsx` 共用片段；用户已确认截图（2026-11-01）
+- [x] UI 重设计 Task 8：登录、注册、重置密码页重做，抽出 `auth-card.tsx` 共用片段；截图待用户确认；Google 按钮已走 i18n（2026-11-01）
 - [x] UI 重设计 Task 9：落地页、隐私、条款页与顶栏重做；`./init.sh` 通过，待用户确认截图，迷你图深色效果待在能访问 TradingView 的环境验证（2026-11-01）
 
 ## 进行中
-
-- [ ] PR #114 待合并；合并前需浏览器手动验证：展开/收起、删除资产、删除交易、记录交易，首次展开只发一次交易记录请求
 
 - [ ] UI 视觉重设计 Task 10–13（dashboard 外壳 → 股票与加密页 → AI 页 → 资产页），见 `TASKS.md`
 - [ ] Stocks：行情图表与价格展示细化

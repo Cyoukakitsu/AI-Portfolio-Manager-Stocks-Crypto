@@ -75,6 +75,9 @@
       "hasAccount": "Already have an account?",
       "signIn": "Sign in"
     },
+    "google": {
+      "continue": "Continue with Google"
+    },
     "forgotPassword": {
       "title": "Reset Password",
       "subtitle": "Enter your registered email address",

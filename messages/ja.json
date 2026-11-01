@@ -75,6 +75,9 @@
       "hasAccount": "すでにアカウントをお持ちの方は",
       "signIn": "サインイン"
     },
+    "google": {
+      "continue": "Googleで続ける"
+    },
     "forgotPassword": {
       "title": "パスワードをリセット",
       "subtitle": "登録済みのメールアドレスを入力してください",

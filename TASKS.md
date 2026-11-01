@@ -49,7 +49,7 @@
 - 左侧品牌栏：去掉网格背景、两团发光和装饰柱图；米黄色 PNG logo 去掉（顶栏已有字标，左栏不再重复），标题与功能列表是定宽（max-w-md）内容块，在左栏内水平、垂直居中，随窗口缩放跟着栏中心移动（参考 Supabase 注册页的做法）；标题字号 lg 下 30px、xl 起 36px，避免窄栏时"ツール"折行；标题改 36px / 600 / -1.5px 负字距，第二行用 `--muted-foreground`；图标换 Phosphor light，图标块改 6px 圆角灰阶
 - 表单卡片：去掉阴影与顶部渐变线，内边距 24px；标题用 Title 规格（24 / 600 / -0.6px）；标签改用 Task 7 重写的 `Label` 组件；链接用 `--strong` 加悬停下划线，键盘焦点显示 2px 焦点环
 - 新增 `features/auth/components/auth-card.tsx`：`AuthCard`、`AuthHeader`、`FieldMessage` 与两个链接样式，四个表单共用，去掉重复的卡片与错误提示标记
-- 动效：原先卡片、容器、逐字段三层叠加的上滑入场，收敛为容器一次 0.25s 淡入；视图切换与错误提示只做 0.15s 淡入淡出；`MotionConfig reducedMotion="user"` 遵守系统"减少动态效果"
+- 动效：原先卡片、容器、逐字段三层叠加的上滑入场，收敛为容器一次 0.25s 淡入；视图切换与错误提示只做 0.15s 淡入淡出；用 `auth-card.tsx` 的 `useFadeDuration`（基于 `useReducedMotion`）遵守系统"减少动态效果"：开启时时长为 0。不能只用 `MotionConfig reducedMotion="user"`，它不关透明度与高度动画（Greptile 指出，见 `GOTCHAS.md`）；已用 Playwright 逐帧采样验证（开启时透明度只有 0 和 1，关闭时有中间帧）
 - 输入框出错时加 `aria-invalid` 与 `aria-describedby`，边框随之变琥珀色；错误文字 `role="alert"`
 - `e2e/pages.shot.ts` 的 PAGES 加入 `reset-password`
 - [x] `./init.sh` 通过（build、lint、test 12/12）

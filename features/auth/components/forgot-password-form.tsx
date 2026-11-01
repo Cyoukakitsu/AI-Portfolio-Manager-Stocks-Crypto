@@ -12,7 +12,12 @@ import {
   ForgotPasswordFormValues,
 } from "@/features/auth/schemas/forgot-password";
 import { resetPasswordEmail } from "@/features/auth/server/auth";
-import { AuthHeader, FieldMessage, authLinkClass } from "./auth-card";
+import {
+  AuthHeader,
+  FieldMessage,
+  authLinkClass,
+  useFadeDuration,
+} from "./auth-card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
@@ -22,6 +27,7 @@ interface ForgotPasswordFormProps {
 }
 
 const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
+  const fadeDuration = useFadeDuration(0.15);
   const t = useTranslations("auth.forgotPassword");
   const locale = useLocale();
   const {
@@ -45,7 +51,7 @@ const ForgotPasswordForm = ({ onBack }: ForgotPasswordFormProps) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      transition={{ duration: 0.15 }}
+      transition={{ duration: fadeDuration }}
     >
       <AuthHeader title={t("title")} subtitle={t("subtitle")} />
 

@@ -22,6 +22,7 @@ import {
   FieldMessage,
   authLinkClass,
   authSubtleLinkClass,
+  useFadeDuration,
 } from "./auth-card";
 import { signIn } from "@/features/auth/server/auth";
 import { Link } from "@/i18n/navigation";
@@ -32,6 +33,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
 const SignInForm = () => {
+  const fadeDuration = useFadeDuration(0.15);
   const t = useTranslations("auth.signIn");
   const [view, setView] = useState<"signIn" | "forgotPassword">("signIn");
   const [loginFailed, setLoginFailed] = useState(false);
@@ -64,7 +66,7 @@ const SignInForm = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
+            transition={{ duration: fadeDuration }}
           >
             <AuthHeader title={t("title")} subtitle={t("subtitle")} />
 
@@ -122,7 +124,7 @@ const SignInForm = () => {
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: "auto" }}
                       exit={{ opacity: 0, height: 0 }}
-                      transition={{ duration: 0.15 }}
+                      transition={{ duration: fadeDuration }}
                       className="overflow-hidden text-center text-xs text-muted-foreground"
                     >
                       {t("googleHint")}

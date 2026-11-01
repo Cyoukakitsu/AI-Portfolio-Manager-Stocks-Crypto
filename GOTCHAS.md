@@ -113,6 +113,18 @@
 
 ---
 
+## [2026-11-01] Motion 的 `reducedMotion="user"` 只关位移和布局动画，透明度、高度动画仍会播放
+
+**场景**：UI 重设计 Task 8，认证页只用透明度与高度做淡入淡出，并按 `DESIGN.md` 要求"开启 `prefers-reduced-motion` 时全部关闭"
+
+**现象**：代码里加了 `<MotionConfig reducedMotion="user">` 就以为遵守了；Greptile 审查指出开启系统"减少动态效果"后淡入仍在播放
+
+**根因**：`reducedMotion="user"` 的语义只是关闭 transform 与 layout 动画，`opacity`、`height` 等不受影响。用 Playwright 逐帧采样容器透明度确认：加了 `MotionConfig` 也会出现 0.1、0.2…的中间值
+
+**注意**：要完全关闭，用 `useReducedMotion()` 把动画时长设为 0（本项目是 `features/auth/components/auth-card.tsx` 的 `useFadeDuration`）。验证方法：`browser.newContext({ reducedMotion: "reduce" })`，用 `requestAnimationFrame` 采样透明度，开启时应只有 0 和 1
+
+---
+
 ## [2026-11-01] TradingView 新版 `tv-*` 组件的主题属性是 `theme`，不是 `color-theme`
 
 **场景**：UI 重设计 Task 9，落地页迷你图 `tv-mini-chart` 需要跟随深浅主题

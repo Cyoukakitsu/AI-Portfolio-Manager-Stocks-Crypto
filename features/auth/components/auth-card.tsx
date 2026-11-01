@@ -2,9 +2,15 @@
 
 // Auth 表单的公共视觉片段：卡片外壳、标题区、字段下方的错误/提示文字、链接样式
 // 样式依据 DESIGN.md：无阴影、无渐变，卡片 12px 圆角 + 24px 内边距 + 1px 线色边框
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 import { cn } from "@/lib/utils";
+
+// 系统开启"减少动态效果"时返回 0，淡入淡出与高度变化都瞬间完成。
+// MotionConfig 的 reducedMotion="user" 只关位移与布局动画，透明度、高度动画仍会播放，所以不能只靠它（DESIGN.md：开启时全部关闭）
+export function useFadeDuration(seconds: number) {
+  return useReducedMotion() ? 0 : seconds;
+}
 
 const focusRing =
   "rounded-sm outline-none focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring";
@@ -59,6 +65,7 @@ export function FieldMessage({
   error?: string;
   hint?: string;
 }) {
+  const duration = useFadeDuration(0.15);
   return (
     <AnimatePresence mode="wait" initial={false}>
       {error ? (
@@ -69,7 +76,7 @@ export function FieldMessage({
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.15 }}
+          transition={{ duration }}
           className="overflow-hidden text-xs text-destructive"
         >
           {error}
@@ -81,7 +88,7 @@ export function FieldMessage({
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
+          transition={{ duration }}
           className="text-xs text-muted-foreground"
         >
           {hint}

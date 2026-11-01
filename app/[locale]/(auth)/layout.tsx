@@ -26,11 +26,11 @@ export default async function layout({
       <NavBar />
       <div className="flex flex-1">
         {/* ── Left branding panel (desktop only) ── */}
-        <div className="hidden lg:flex lg:w-[45%] flex-col justify-center border-r border-border bg-background p-12">
-          {/* Headline + feature list：左栏内垂直居中，字标由顶栏提供 */}
-          <div className="space-y-10">
+        <div className="hidden lg:flex lg:w-[45%] flex-col items-center justify-center border-r border-border bg-background p-12">
+          {/* Headline + feature list：定宽内容块在左栏内水平、垂直居中，随窗口缩放跟着栏中心移动（参考 Supabase 注册页） */}
+          <div className="w-full max-w-md space-y-10">
             <div className="space-y-4">
-              <h1 className="text-4xl font-semibold leading-tight tracking-[-1.5px] text-strong">
+              <h1 className="text-3xl font-semibold leading-tight tracking-[-1.2px] text-strong xl:text-4xl xl:tracking-[-1.5px]">
                 {t("headline")}
                 <br />
                 <span className="text-muted-foreground">

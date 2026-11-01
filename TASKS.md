@@ -213,7 +213,8 @@
 - 隐私、条款页：抽出 `LegalDocument`，两页只剩章节列表
 - `hero-section.tsx`：`useChartTheme` 取代嵌套三元，图表尺寸只写一处，`attrs` 改名，去掉多余的 `scriptLoaded`
 - 注释修正：`sign-in-form.tsx` 的"实时校验"改成与代码一致；`auth.ts` 文件头注释补全
-- 小项：`forgot-password-form.tsx` 去掉无效的 `key`、类名改用 `cn()`；`auth.ts` 去掉没有人用的 `locale = "ja"` 默认值；`features-section.tsx` 的 `featureIds` 改名 `features`；淡入淡出三件套抽成 `FadeIn`
+- 小项：`forgot-password-form.tsx` 去掉无效的 `key`、类名改用 `cn()`；`auth.ts` 去掉没有人用的 `locale = "ja"` 默认值；`features-section.tsx` 的 `featureIds` 改名 `features`
+- **评估后不做**：淡入淡出三件套抽成 `FadeIn`。只有 3 处、每处 5 行，抽出后还要为动画缓动加参数，成本大于收益
 
 **B 组（会改变行为，需先由用户决定，另开任务）**：
 - 注册表单收集了 `name` 但 `signUp` 没有保存（全仓库搜不到 `full_name`、`user_metadata`）：要不要保存、存到哪里
@@ -223,10 +224,11 @@
 **未处理**：品牌名 "PortfolioX" 在 `hero-section.tsx`、`nav-bar.tsx` 里是硬编码，页脚用 `t("brand")`，统一哪一种需要用户定；`NavBar` 引用了 `features/dashboard` 里的 `LocaleSwitcher`、`ModeToggle`（跨 feature 依赖），等 dashboard 改完再整理；`eslint.config.mjs` 建议启用 `no-nested-ternary`。
 
 **验收标准**
-- [ ] `./init.sh` 通过
-- [ ] 重构前后各跑一次 `pnpm shot`，12 张截图逐字节对比一致（含迷你图的 `landing-*` 用像素差对比，差异只允许出现在迷你图区域）
-- [ ] 登录、注册、重置密码、忘记密码四个表单的提交、校验错误提示在浏览器里手动走一遍，行为与重构前一致
-- [ ] 顶栏的"功能"链接在首页和在登录页点击都能到达落地页功能区（`Link href="/#features"` 的实测）
+- [x] `./init.sh` 通过
+- [x] 重构前后各跑一次 `pnpm shot`：隐私、条款、登录、注册、重置密码 10 张像素完全一致；`landing-*` 的差异只在迷你图区域（x 375–1064、y 556–889），改动前就存在（TradingView 渲染噪声）
+- [ ] 登录、注册、重置密码、忘记密码四个表单的提交、校验错误提示由用户在浏览器里走一遍（我只验证了页面外观、校验文案与出错位置，没有真实提交；Supabase 提交流程没有测）
+- [x] 顶栏"功能"链接实测：在登录页、首页、条款页点击都到 `/ja#features` 并滚动到功能区
+- 实测补充：注册页"确认密码"的消息元素 id 由 `confirm-message` 变为 `confirm-password-message`（`AuthField` 统一命名），无其它引用
 
 ---
 

@@ -113,6 +113,18 @@
 
 ---
 
+## [2026-11-01] 开发服务器不认新增的 `@utility`，页面 HTML 有类名却没有样式
+
+**场景**：UI 重设计 Task 9，在 `app/globals.css` 新增 `@utility bg-dots`（点阵底纹），三个页面加了 `bg-dots` 类
+
+**现象**：用户的开发服务器上看不到点阵。页面 HTML 里有 `bg-dots`，但服务器返回的 CSS 里没有对应样式；同样的代码 `pnpm build` 后用生产构建看，点阵正常
+
+**根因**：开发服务器长时间不重启，样式缓存没有重新生成新增的工具类。不是代码问题
+
+**注意**：往 `globals.css` 新增 `@utility`（或自定义 `@theme` 令牌）后，先重启 `pnpm dev` 并强制刷新，再判断代码有没有问题。排查方法：`curl` 取页面里的 CSS 地址，看 CSS 里有没有这个类名；有类名没样式就是缓存。Playwright 的 `reuseExistingServer: true` 会复用已有的旧服务器，截图前也要确认服务器是新的，或改在生产构建上截图
+
+---
+
 ## [2026-11-01] Motion 的 `reducedMotion="user"` 只关位移和布局动画，透明度、高度动画仍会播放
 
 **场景**：UI 重设计 Task 8，认证页只用透明度与高度做淡入淡出，并按 `DESIGN.md` 要求"开启 `prefers-reduced-motion` 时全部关闭"

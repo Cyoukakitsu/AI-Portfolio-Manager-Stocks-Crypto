@@ -29,7 +29,11 @@ getAuthSession(): Promise<{ supabase: SupabaseClient; user: User }>
 
 `<SignInForm>` / `<SignUpForm>` / `<ForgotPasswordForm>` / `<ResetPasswordForm>` / `<GoogleButton>` / `<AuthLayoutWrapper>`
 
-共用的视觉片段在 `components/auth-card.tsx`：`AuthCard`（卡片外壳）、`AuthHeader`（标题区）、`FieldMessage`（字段下的错误或提示）、`authLinkClass` / `authSubtleLinkClass`（链接样式）。新增 auth 表单时复用这些，不要再各写一套卡片与错误提示标记。样式依据根目录 `DESIGN.md`：无阴影、无渐变、颜色只用令牌；错误用琥珀色（`text-destructive`），不用红色。
+共用的视觉片段在 `components/auth-card.tsx`：`AuthCard`（卡片外壳）、`AuthHeader`（标题区）、`FieldMessage`（字段下的错误或提示）、`AuthField`（标签 + 输入框 + 消息，`aria-invalid` / `aria-describedby` 统一在此处理）、`authLinkClass` / `authSubtleLinkClass`（链接样式）。新增 auth 表单时复用这些，不要再各写一套卡片、字段与错误提示标记。样式依据根目录 `DESIGN.md`：无阴影、无渐变、颜色只用令牌；错误用琥珀色（`text-destructive`），不用红色。
+
+### 校验规则（`schemas/`）
+
+密码长度、`passwordSchema`、"两次密码一致"的跨字段校验在 `schemas/password.ts` 只定义一次，登录、注册、重置密码与 `updatePassword` 共用；新增涉及密码的 schema 时引用它，不要再写 `z.string().min(6, …)`。
 
 ## 依赖关系
 

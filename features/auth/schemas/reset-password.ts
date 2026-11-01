@@ -1,14 +1,16 @@
 // 重置密码表单的 Zod 校验 Schema
 import { z } from "zod";
+import {
+  PASSWORDS_MISMATCH,
+  passwordSchema,
+  passwordsMatch,
+} from "./password";
 
 export const resetPasswordSchema = z
   .object({
-    password: z.string().min(6, "Password must be at least 6 characters"),
+    password: passwordSchema,
     confirmPassword: z.string(),
   })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match",
-    path: ["confirmPassword"],
-  });
+  .refine(passwordsMatch, PASSWORDS_MISMATCH);
 
 export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>;

@@ -4,7 +4,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 
-const featureIds = [
+const features = [
   { id: "portfolio", image: "/Portfolio-Page.png" },
   { id: "ai", image: "/AI-Agent-Analysis.png" },
   { id: "stock", image: "/Stock-Page.png" },
@@ -21,15 +21,15 @@ export function FeaturesSection() {
           {t("title")}
         </h2>
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-          {featureIds.map((f) => (
+          {features.map((feature) => (
             <div
-              key={f.id}
+              key={feature.id}
               className="overflow-hidden rounded-xl border border-border bg-card"
             >
               <div className="relative aspect-video w-full bg-muted">
                 <Image
-                  src={f.image}
-                  alt={t(`items.${f.id}.title`)}
+                  src={feature.image}
+                  alt={t(`items.${feature.id}.title`)}
                   fill
                   className="object-cover object-top"
                   sizes="(max-width: 640px) 100vw, 50vw"
@@ -37,10 +37,10 @@ export function FeaturesSection() {
               </div>
               <div className="p-6">
                 <h3 className="mb-2 text-base font-semibold text-strong">
-                  {t(`items.${f.id}.title`)}
+                  {t(`items.${feature.id}.title`)}
                 </h3>
                 <p className="text-sm leading-relaxed text-muted-foreground">
-                  {t(`items.${f.id}.description`)}
+                  {t(`items.${feature.id}.description`)}
                 </p>
               </div>
             </div>

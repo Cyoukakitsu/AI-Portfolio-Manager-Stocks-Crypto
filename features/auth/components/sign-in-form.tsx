@@ -4,7 +4,7 @@
 //
 // 架构：react-hook-form（表单状态管理）+ Zod（校验规则）+ Server Action（提交逻辑）
 // 校验在两处发生：
-//   1. 客户端：Zod 实时校验，给出即时错误提示
+//   1. 客户端：提交时用 Zod 校验，提交后随输入重新校验（react-hook-form 的默认 mode）
 //   2. 服务端 Server Action 中：二次校验，防止绕过前端直接请求
 
 import { useState } from "react";
@@ -18,8 +18,8 @@ import GoogleButton from "./google-button";
 import ForgotPasswordForm from "./forgot-password-form";
 import {
   AuthCard,
+  AuthField,
   AuthHeader,
-  FieldMessage,
   authLinkClass,
   authSubtleLinkClass,
   useFadeDuration,
@@ -27,8 +27,6 @@ import {
 import { signIn } from "@/features/auth/server/auth";
 import { Link } from "@/i18n/navigation";
 
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -71,24 +69,22 @@ const SignInForm = () => {
             <AuthHeader title={t("title")} subtitle={t("subtitle")} />
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-              {/* Email */}
-              <div className="space-y-1.5">
-                <Label htmlFor="email">{t("email")}</Label>
-                <Input
-                  {...register("email")}
-                  id="email"
-                  type="email"
-                  placeholder="fujimoto@example.com"
-                  aria-invalid={!!errors.email}
-                  aria-describedby={errors.email ? "email-message" : undefined}
-                />
-                <FieldMessage id="email-message" error={errors.email?.message} />
-              </div>
+              <AuthField
+                id="email"
+                label={t("email")}
+                type="email"
+                placeholder="fujimoto@example.com"
+                registration={register("email")}
+                error={errors.email?.message}
+              />
 
-              {/* Password */}
-              <div className="space-y-1.5">
-                <div className="flex items-center justify-between">
-                  <Label htmlFor="password">{t("password")}</Label>
+              <AuthField
+                id="password"
+                label={t("password")}
+                type="password"
+                registration={register("password")}
+                error={errors.password?.message}
+                labelAction={
                   <button
                     type="button"
                     onClick={() => setView("forgotPassword")}
@@ -96,23 +92,9 @@ const SignInForm = () => {
                   >
                     {t("forgotPassword")}
                   </button>
-                </div>
-                <Input
-                  {...register("password")}
-                  id="password"
-                  type="password"
-                  aria-invalid={!!errors.password}
-                  aria-describedby={
-                    errors.password ? "password-message" : undefined
-                  }
-                />
-                <FieldMessage
-                  id="password-message"
-                  error={errors.password?.message}
-                />
-              </div>
+                }
+              />
 
-              {/* Buttons */}
               <div className="space-y-3 pt-1">
                 <Button type="submit" disabled={isSubmitting} className="w-full">
                   {isSubmitting ? t("signingIn") : t("submit")}
@@ -134,7 +116,6 @@ const SignInForm = () => {
                 <GoogleButton />
               </div>
 
-              {/* Footer link */}
               <p className="text-center text-sm text-muted-foreground">
                 {t("noAccount")}{" "}
                 <Link href="/sign-up" className={authLinkClass}>

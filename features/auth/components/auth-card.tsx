@@ -3,7 +3,10 @@
 // Auth 表单的公共视觉片段：卡片外壳、标题区、字段下方的错误/提示文字、链接样式
 // 样式依据 DESIGN.md：无阴影、无渐变，卡片 12px 圆角 + 24px 内边距 + 1px 线色边框
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import type { UseFormRegisterReturn } from "react-hook-form";
 
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 // 系统开启"减少动态效果"时返回 0，淡入淡出与高度变化都瞬间完成。
@@ -95,5 +98,55 @@ export function FieldMessage({
         </motion.p>
       ) : null}
     </AnimatePresence>
+  );
+}
+
+/**
+ * 表单字段：标签 + 输入框 + 字段下方的消息。
+ * 出错时输入框标记 aria-invalid，并通过 aria-describedby 关联到消息（有错误或提示时才关联）。
+ * labelAction 放在标签右侧（如"パスワードをお忘れの方"）。
+ */
+export function AuthField({
+  id,
+  label,
+  type = "text",
+  placeholder,
+  registration,
+  error,
+  hint,
+  labelAction,
+}: {
+  id: string;
+  label: string;
+  type?: "text" | "email" | "password";
+  placeholder?: string;
+  registration: UseFormRegisterReturn;
+  error?: string;
+  hint?: string;
+  labelAction?: React.ReactNode;
+}) {
+  const messageId = `${id}-message`;
+  const labelElement = <Label htmlFor={id}>{label}</Label>;
+
+  return (
+    <div className="space-y-1.5">
+      {labelAction ? (
+        <div className="flex items-center justify-between">
+          {labelElement}
+          {labelAction}
+        </div>
+      ) : (
+        labelElement
+      )}
+      <Input
+        {...registration}
+        id={id}
+        type={type}
+        placeholder={placeholder}
+        aria-invalid={!!error}
+        aria-describedby={error || hint ? messageId : undefined}
+      />
+      <FieldMessage id={messageId} error={error} hint={hint} />
+    </div>
   );
 }

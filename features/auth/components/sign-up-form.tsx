@@ -12,14 +12,12 @@ import { useTranslations } from "next-intl";
 
 import { SignUpFormValues, signUpSchema } from "@/features/auth/schemas/sign-up";
 import GoogleButton from "./google-button";
-import { AuthCard, AuthHeader, FieldMessage, authLinkClass } from "./auth-card";
+import { AuthCard, AuthField, AuthHeader, authLinkClass } from "./auth-card";
 import { useRouter, Link } from "@/i18n/navigation";
 import { signUp } from "@/features/auth/server/auth";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 const SignUpForm = () => {
   const t = useTranslations("auth.signUp");
@@ -50,73 +48,42 @@ const SignUpForm = () => {
       <AuthHeader title={t("title")} subtitle={t("subtitle")} />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-        {/* Full Name */}
-        <div className="space-y-1.5">
-          <Label htmlFor="name">{t("fullName")}</Label>
-          <Input
-            {...register("name")}
-            id="name"
-            type="text"
-            placeholder="Fujimoto"
-            aria-invalid={!!errors.name}
-            aria-describedby={errors.name ? "name-message" : undefined}
-          />
-          <FieldMessage id="name-message" error={errors.name?.message} />
-        </div>
+        <AuthField
+          id="name"
+          label={t("fullName")}
+          placeholder="Fujimoto"
+          registration={register("name")}
+          error={errors.name?.message}
+        />
 
-        {/* Email */}
-        <div className="space-y-1.5">
-          <Label htmlFor="email">{t("email")}</Label>
-          <Input
-            {...register("email")}
-            id="email"
-            type="email"
-            placeholder="fujimoto@example.com"
-            aria-invalid={!!errors.email}
-            aria-describedby="email-message"
-          />
-          <FieldMessage
-            id="email-message"
-            error={errors.email?.message}
-            hint={t("emailHint")}
-          />
-        </div>
+        <AuthField
+          id="email"
+          label={t("email")}
+          type="email"
+          placeholder="fujimoto@example.com"
+          registration={register("email")}
+          error={errors.email?.message}
+          hint={t("emailHint")}
+        />
 
-        {/* Password */}
-        <div className="space-y-1.5">
-          <Label htmlFor="password">{t("password")}</Label>
-          <Input
-            {...register("password")}
-            id="password"
-            type="password"
-            aria-invalid={!!errors.password}
-            aria-describedby="password-message"
-          />
-          <FieldMessage
-            id="password-message"
-            error={errors.password?.message}
-            hint={t("passwordHint")}
-          />
-        </div>
+        <AuthField
+          id="password"
+          label={t("password")}
+          type="password"
+          registration={register("password")}
+          error={errors.password?.message}
+          hint={t("passwordHint")}
+        />
 
-        {/* Confirm Password */}
-        <div className="space-y-1.5">
-          <Label htmlFor="confirm-password">{t("confirmPassword")}</Label>
-          <Input
-            {...register("confirmPassword")}
-            id="confirm-password"
-            type="password"
-            aria-invalid={!!errors.confirmPassword}
-            aria-describedby="confirm-message"
-          />
-          <FieldMessage
-            id="confirm-message"
-            error={errors.confirmPassword?.message}
-            hint={t("confirmHint")}
-          />
-        </div>
+        <AuthField
+          id="confirm-password"
+          label={t("confirmPassword")}
+          type="password"
+          registration={register("confirmPassword")}
+          error={errors.confirmPassword?.message}
+          hint={t("confirmHint")}
+        />
 
-        {/* Buttons */}
         <div className="space-y-3 pt-1">
           <Button type="submit" disabled={isSubmitting} className="w-full">
             {isSubmitting ? t("creating") : t("submit")}
@@ -124,7 +91,6 @@ const SignUpForm = () => {
           <GoogleButton />
         </div>
 
-        {/* Footer link */}
         <p className="text-center text-sm text-muted-foreground">
           {t("hasAccount")}{" "}
           <Link href="/sign-in" className={authLinkClass}>

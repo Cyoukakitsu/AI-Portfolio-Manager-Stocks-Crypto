@@ -18,6 +18,7 @@
 - Task 9 踩坑：给 TradingView 迷你图传主题属性时直接读 `resolvedTheme`，浅色主题下 hydration 不匹配（Next 提示 "1 Issue"）；改用 `useSyncExternalStore` 区分服务端与客户端。沙箱拦截了 TradingView 域名，迷你图深色效果未能验证，已记入 `TASKS.md`
 - Task 8 补修（Greptile 指出）：入场动画原先只靠 `MotionConfig reducedMotion="user"`，该设置不关透明度与高度动画，改用 `useFadeDuration`，开启减少动态效果时时长为 0；
 - Task 8 补修：Google 按钮改走 `messages/`（`auth.google.continue`）。仍未处理：服务端 "Validation failed" 与 Zod 校验提示的英文硬编码、顶栏旧样式（归 Task 9）、`header-icon.png` 已无引用，均记入 `TASKS.md`
+- **Task 15（A 组）**：依据 `readable-code-review` 技能对 Hero 页与登录、注册页做可读性重构，行为与页面不变。新增 `AuthField`（9 处字段重复合并）、`schemas/password.ts`（密码规则 4 处重复合并）、`LegalDocument`（隐私、条款页合并）；`NavBar` 控件只渲染一份、功能锚点改用 `Link href="/#features"`；`hero-section` 用 `useChartTheme` 取代嵌套三元；修正 `sign-in-form` 的"实时校验"注释。每步都用 `pnpm shot` 前后对比（10 张像素一致，落地页差异只在迷你图区域）。B 组（`name` 没保存、错误返回约定不统一、忘记密码失败仍提示成功）未做，等用户决定
 
 **踩坑**
 - 文档里一度把交互层写成 Radix，实际 `components/ui` 全是 Base UI（33 个文件），已更正

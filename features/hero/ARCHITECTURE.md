@@ -14,6 +14,7 @@
 | `<HeroSection>` | 首屏主视觉区域（标题、副标题、CTA 按钮） |
 | `<FeaturesSection>` | 产品功能卡片列表 |
 | `<FooterSection>` | 页脚（版权、链接） |
+| `<LegalDocument>` | 隐私政策、使用条款共用的页面（`namespace` + 章节键列表），两个页面只负责传入章节列表 |
 
 ## 依赖关系
 

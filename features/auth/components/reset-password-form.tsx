@@ -11,10 +11,8 @@ import {
   ResetPasswordFormValues,
 } from "@/features/auth/schemas/reset-password";
 import { updatePassword } from "@/features/auth/server/auth";
-import { AuthCard, AuthHeader, FieldMessage } from "./auth-card";
+import { AuthCard, AuthField, AuthHeader } from "./auth-card";
 import { useRouter } from "@/i18n/navigation";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
 const ResetPasswordForm = () => {
@@ -44,37 +42,21 @@ const ResetPasswordForm = () => {
       <AuthHeader title={t("title")} subtitle={t("subtitle")} />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-        <div className="space-y-1.5">
-          <Label htmlFor="new-password">{t("newPassword")}</Label>
-          <Input
-            {...register("password")}
-            id="new-password"
-            type="password"
-            aria-invalid={!!errors.password}
-            aria-describedby={errors.password ? "new-password-message" : undefined}
-          />
-          <FieldMessage
-            id="new-password-message"
-            error={errors.password?.message}
-          />
-        </div>
+        <AuthField
+          id="new-password"
+          label={t("newPassword")}
+          type="password"
+          registration={register("password")}
+          error={errors.password?.message}
+        />
 
-        <div className="space-y-1.5">
-          <Label htmlFor="confirm-password">{t("confirmPassword")}</Label>
-          <Input
-            {...register("confirmPassword")}
-            id="confirm-password"
-            type="password"
-            aria-invalid={!!errors.confirmPassword}
-            aria-describedby={
-              errors.confirmPassword ? "confirm-password-message" : undefined
-            }
-          />
-          <FieldMessage
-            id="confirm-password-message"
-            error={errors.confirmPassword?.message}
-          />
-        </div>
+        <AuthField
+          id="confirm-password"
+          label={t("confirmPassword")}
+          type="password"
+          registration={register("confirmPassword")}
+          error={errors.confirmPassword?.message}
+        />
 
         <div className="pt-1">
           <Button type="submit" disabled={isSubmitting} className="w-full">

@@ -71,12 +71,12 @@
 - 隐私、条款页：去掉点阵背景，标题改 600 字重，正文用 `--foreground` 以保证长文可读
 - 动效：落地页所有入场动画移除（含 `whileInView`）。原先功能区的内容在整页截图里一直是透明的
 - 删除 `globals.css` 里 Task 6 留下的过渡别名 `--font-serif`
-- 迷你图：卡片改令牌色，给 `tv-mini-chart` 传 `color-theme` 跟随主题
+- 迷你图：卡片改令牌色，给 `tv-mini-chart` 传 `theme`（`light` / `dark`）跟随主题
 - `e2e/pages.shot.ts` 的 PAGES 加入 `terms`、`privacy`
 - [x] `./init.sh` 通过（build、lint、test 12/12）
 - [x] 落地页、隐私、条款页（以及换了顶栏的三个认证页）深浅主题截图已生成，浏览器控制台无报错与警告（dark / light 各 5 个页面检查）
 - [ ] 页面截图已由用户确认
-- [ ] 在能访问 TradingView 的环境确认：深色主题下 6 张迷你图是否真的变深色（沙箱拦截了 `widgets.tradingview-widget.com`，`color-theme` 属性是否被该组件识别未验证；只验证了属性会随主题切换）
+- [ ] 在能访问 TradingView 的环境确认：深色主题下 6 张迷你图是否真的变深色（沙箱拦截了 `widgets.tradingview-widget.com`，没看到真实效果。已读脚本确认该组件的主题属性是 `theme`，不是 `color-theme`，见 `GOTCHAS.md`；仍需在本机看真实渲染）
 
 **踩坑**：把用户主题直接写进服务端渲染的 HTML 会让 hydration 不匹配（浅色主题下 Next 开发提示 "1 Issue"，且 React 声明"不会被修补"）。已记入 `GOTCHAS.md`。
 

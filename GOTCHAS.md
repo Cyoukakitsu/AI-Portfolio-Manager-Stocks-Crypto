@@ -103,13 +103,25 @@
 
 ## [2026-11-01] 服务端渲染的 HTML 里写入用户主题，会造成 hydration 不匹配
 
-**场景**：UI 重设计 Task 9，给落地页的 TradingView 迷你图传 `color-theme`，值取自 `useTheme().resolvedTheme`
+**场景**：UI 重设计 Task 9，给落地页的 TradingView 迷你图传主题属性，值取自 `useTheme().resolvedTheme`
 
 **现象**：浅色主题下页面左下角出现 Next 开发提示 "1 Issue"，控制台报 "A tree hydrated but some attributes of the server rendered HTML didn't match the client properties"；深色主题下没有。截图脚本只看 `pageerror`，这条是 `console.error`，所以脚本全部通过
 
-**根因**：用户的主题存在 localStorage，服务端不知道，渲染时按默认的深色写出 `color-theme="dark"`；客户端 hydration 时读到 light，两边不一致。React 明确说这种不一致"不会被修补"，属性会一直错下去
+**根因**：用户的主题存在 localStorage，服务端不知道，渲染时按默认的深色写出 `theme="dark"`；客户端 hydration 时读到 light，两边不一致。React 明确说这种不一致"不会被修补"，属性会一直错下去
 
 **注意**：凡是把主题（或 localStorage、`window`、时间）写进会被服务端渲染的 HTML，都要避免首次渲染就取这个值。用 `useSyncExternalStore(subscribe, () => true, () => false)` 区分服务端与客户端，主题确定前只渲染占位。验证时要在深浅两套主题下各看一次浏览器控制台，不能只看截图是否生成
+
+---
+
+## [2026-11-01] TradingView 新版 `tv-*` 组件的主题属性是 `theme`，不是 `color-theme`
+
+**场景**：UI 重设计 Task 9，落地页迷你图 `tv-mini-chart` 需要跟随深浅主题
+
+**现象**：代码一直传 `color-theme="dark"`，沙箱访问不了 TradingView，无法看到效果，只验证了属性会随主题切换
+
+**根因**：下载 `https://widgets.tradingview-widget.com/w/en/tv-mini-chart.js` 及其引用的公共模块来读：新版 `tv-*` Web 组件声明的属性是 `theme`（`light` / `dark`，默认 `light`）与 `transparent`，搜不到 `color-theme`。`color-theme` 是 TradingView 旧版 iframe 嵌入件的属性名，两套写法不通用。未设 `theme` 时组件会读自己元素的 CSS `color-scheme` 判断深浅
+
+**注意**：用 `tv-*` 组件时传 `theme`；用 iframe 形式的旧嵌入件（如股票页的 `colorTheme`）才是旧写法，Task 11 要逐个确认。拿不到真实渲染时，可以直接下载脚本读它声明的属性，比猜可靠。这仍是读脚本得出的结论，真实效果要在能访问 TradingView 的环境看
 
 ---
 

@@ -15,7 +15,7 @@
 - 在真实 dashboard 上验证：按钮变大没有造成布局错位；发现股票页、加密页的嵌入件在深色下仍是白底，已记入 Task 11
 - **Task 8**：登录、注册、重置密码页按设计稿重做。左侧品牌栏去掉网格、发光、装饰柱图，米黄色 PNG logo 去掉（顶栏已有字标，左栏不重复），内容是定宽块，在左栏内水平、垂直居中并随窗口缩放移动（参考 Supabase 注册页），标题字号按断点缩放；卡片去阴影与渐变线；入场动画从三层上滑收敛为一次淡入，并遵守 `prefers-reduced-motion`；错误态加 `aria-invalid`。四个表单共用的卡片、标题、字段提示抽到 `features/auth/components/auth-card.tsx`。`./init.sh` 通过，深浅主题截图与错误态、手机宽度已检查，待用户确认截图
 - **Task 9**：落地页、隐私、条款页按设计稿重做，顶栏同步改实色（登录、注册页共用）。去掉点阵背景、渐变文字、玻璃卡片、金色边线与全部入场动画；CTA 改用 `buttonVariants`。`./init.sh` 通过，12 张截图已生成，待用户确认
-- Task 9 踩坑：给 TradingView 迷你图传 `color-theme` 时直接读 `resolvedTheme`，浅色主题下 hydration 不匹配（Next 提示 "1 Issue"）；改用 `useSyncExternalStore` 区分服务端与客户端。沙箱拦截了 TradingView 域名，迷你图深色效果未能验证，已记入 `TASKS.md`
+- Task 9 踩坑：给 TradingView 迷你图传主题属性时直接读 `resolvedTheme`，浅色主题下 hydration 不匹配（Next 提示 "1 Issue"）；改用 `useSyncExternalStore` 区分服务端与客户端。沙箱拦截了 TradingView 域名，迷你图深色效果未能验证，已记入 `TASKS.md`
 - Task 8 补修：Google 按钮改走 `messages/`（`auth.google.continue`）。仍未处理：服务端 "Validation failed" 与 Zod 校验提示的英文硬编码、顶栏旧样式（归 Task 9）、`header-icon.png` 已无引用，均记入 `TASKS.md`
 
 **踩坑**

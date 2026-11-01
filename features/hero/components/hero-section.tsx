@@ -58,7 +58,7 @@ function TvChartCard({
       {colorTheme && (
         <div
           dangerouslySetInnerHTML={{
-            __html: `<tv-mini-chart symbol="${symbol}" time-frame="1M" color-theme="${colorTheme}" ${attrs} style="display:block;width:220px;height:160px;"></tv-mini-chart>`,
+            __html: `<tv-mini-chart symbol="${symbol}" time-frame="1M" theme="${colorTheme}" ${attrs} style="display:block;width:220px;height:160px;"></tv-mini-chart>`,
           }}
         />
       )}

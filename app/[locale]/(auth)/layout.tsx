@@ -37,7 +37,7 @@ export default async function layout({
                   {t("headlineAccent")}
                 </span>
               </h1>
-              <p className="max-w-xs text-sm leading-relaxed text-muted-foreground">
+              <p className="max-w-sm text-sm leading-relaxed text-muted-foreground">
                 {t("subtitle")}
               </p>
             </div>

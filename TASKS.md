@@ -81,7 +81,7 @@
 **踩坑**：把用户主题直接写进服务端渲染的 HTML 会让 hydration 不匹配（浅色主题下 Next 开发提示 "1 Issue"，且 React 声明"不会被修补"）。已记入 `GOTCHAS.md`。
 
 **范围外、本任务未处理**
-- 功能区四张产品截图（`public/Portfolio-Page.png` 等）是旧的米黄配色界面，与新设计不一致；需在 Task 13 之后重新截取替换
+- 功能区四张产品截图（`public/Portfolio-Page.png` 等）是旧的米黄配色界面，与新设计不一致；已记入 Task 13 的最后一步，Task 10–13 全部合并后重新截取替换
 - 手机宽度下导航只有语言与主题切换，没有登录、注册入口（落地页自身有 CTA）；属于功能与信息架构，本轮不动
 
 ### Task 10：Dashboard 外壳与首页
@@ -125,6 +125,13 @@
 - [ ] `./init.sh` 通过
 - [ ] 全仓无 `text-green-*`、`text-red-*`、`#22c55e`、`#ef4444` 等表达涨跌的写死颜色
 - [ ] 页面截图在深浅主题下已确认
+- **重截落地页功能区的四张产品截图**（Task 9 遗留，最后一步，需等 Task 10–13 全部合并后做）：
+  - 替换 `public/Portfolio-Page.png`、`AI-Agent-Analysis.png`、`Stock-Page.png`、`Crypto-Page.png`，保持原文件名，`features-section.tsx` 不用改；这四张图现在是旧的米黄配色界面
+  - 在 `e2e/` 新增截图脚本（建议 `pnpm shot:product`，文件后缀 `.shot.ts`）：默认深色主题，视口 1440×900，登录后依次打开资产、AI、股票、加密页，输出 16:9 的图；账号密码只从环境变量读取（如 `SHOT_EMAIL`、`SHOT_PASSWORD`），不进仓库
+  - 必须在能访问 TradingView 且有真实持仓数据的本机运行，沙箱做不了（需要登录、Supabase、TradingView 域名）；AI 页需要先跑出一次分析结果再截
+  - 截图前确认没有个人信息：持仓金额、邮箱、头像，必要时用测试账号的示例数据
+  - [ ] 四张图已替换为新设计，落地页功能区在深浅两套主题下截图已确认
+  - [ ] 截图里没有真实个人信息
 
 ### 清理未使用的 UI 组件（独立 PR，建议在 Task 7 之后做）
 

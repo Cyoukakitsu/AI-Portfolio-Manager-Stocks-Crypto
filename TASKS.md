@@ -202,6 +202,34 @@
 
 ---
 
+## Task 15：Hero 与认证页的可读性重构（2026-11-01，依据 `readable-code-review` 技能的评审）
+
+**范围文件**：`features/hero/`、`features/auth/`、`app/[locale]/(root)/`、`app/[locale]/(auth)/`。不动 dashboard 与其它 feature（这两处 UI 刚重做完，短期内不会再改，重构风险最低；dashboard 之后会有交互与排版变化，先不碰）。
+
+**本任务只做 A 组（纯重构，行为与页面不变）**：
+- `AuthField`：把"标签 + 输入框 + 提示"在四个表单里的 9 处重复抽到 `auth-card.tsx`，统一 `aria-describedby` 的写法
+- `NavBar`：控制区只渲染一份（原来移动端、桌面端各挂一份）；"功能"锚点改用 `Link href="/#features"`，去掉 `usePathname`、`useLocale`、`isHeroPage`
+- 密码规则：新建 `schemas/password.ts`，`MIN_PASSWORD_LENGTH`、密码字段、"两次一致"校验各一处定义，4 个文件引用
+- 隐私、条款页：抽出 `LegalDocument`，两页只剩章节列表
+- `hero-section.tsx`：`useChartTheme` 取代嵌套三元，图表尺寸只写一处，`attrs` 改名，去掉多余的 `scriptLoaded`
+- 注释修正：`sign-in-form.tsx` 的"实时校验"改成与代码一致；`auth.ts` 文件头注释补全
+- 小项：`forgot-password-form.tsx` 去掉无效的 `key`、类名改用 `cn()`；`auth.ts` 去掉没有人用的 `locale = "ja"` 默认值；`features-section.tsx` 的 `featureIds` 改名 `features`；淡入淡出三件套抽成 `FadeIn`
+
+**B 组（会改变行为，需先由用户决定，另开任务）**：
+- 注册表单收集了 `name` 但 `signUp` 没有保存（全仓库搜不到 `full_name`、`user_metadata`）：要不要保存、存到哪里
+- 三种错误返回约定并存（登录返回错误码，注册返回英文句子，`resetPasswordEmail`、`updatePassword` 的错误句没人读）：统一成"服务端返回错误码，客户端走 `messages/`"，同时消掉 `TASKS.md` 里记的 "Validation failed" 英文问题
+- 忘记密码：发送失败也提示"已发送"，需要作者补注释说明是否有意
+
+**未处理**：品牌名 "PortfolioX" 在 `hero-section.tsx`、`nav-bar.tsx` 里是硬编码，页脚用 `t("brand")`，统一哪一种需要用户定；`NavBar` 引用了 `features/dashboard` 里的 `LocaleSwitcher`、`ModeToggle`（跨 feature 依赖），等 dashboard 改完再整理；`eslint.config.mjs` 建议启用 `no-nested-ternary`。
+
+**验收标准**
+- [ ] `./init.sh` 通过
+- [ ] 重构前后各跑一次 `pnpm shot`，12 张截图逐字节对比一致（含迷你图的 `landing-*` 用像素差对比，差异只允许出现在迷你图区域）
+- [ ] 登录、注册、重置密码、忘记密码四个表单的提交、校验错误提示在浏览器里手动走一遍，行为与重构前一致
+- [ ] 顶栏的"功能"链接在首页和在登录页点击都能到达落地页功能区（`Link href="/#features"` 的实测）
+
+---
+
 ## Task 2：AI 分析页 SSE 流式推送
 
 **目标**：将 `/api/ai-analysis` 从阻塞式 JSON 改为 SSE 流，Agent 结果逐张滑入，删除 `ProgressSteps` 假进度条。

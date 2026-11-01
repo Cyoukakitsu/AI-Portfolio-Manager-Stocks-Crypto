@@ -47,8 +47,8 @@
   },
   "auth": {
     "signIn": {
-      "title": "おかえりなさい",
-      "subtitle": "ポートフォリオアカウントにサインイン",
+      "title": "サインイン",
+      "subtitle": "サインインして、資産管理を続けましょう",
       "email": "メールアドレス",
       "password": "パスワード",
       "forgotPassword": "パスワードをお忘れの方",

@@ -27,7 +27,7 @@ export function UserAvatar({ email }: UserAvatarProps) {
     <>
       <DropdownMenu>
         <DropdownMenuTrigger>
-          <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-amber-500 text-white text-sm font-semibold select-none hover:bg-amber-600 transition-colors">
+          <div className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-muted text-strong text-sm font-semibold select-none hover:bg-accent transition-colors">
             {initial}
           </div>
         </DropdownMenuTrigger>

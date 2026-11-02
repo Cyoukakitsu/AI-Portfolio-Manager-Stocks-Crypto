@@ -5,17 +5,15 @@ import { Badge } from "@/components/ui/badge";
 /* ─────────────────────────────────────────
    Icon accent colours
 ───────────────────────────────────────── */
+// 设计稿只有灰阶：key 保留以兼容各页面传入的 accent，样式一律中性
+const NEUTRAL = "bg-muted text-muted-foreground";
 export const iconStyles = {
-  primary: "bg-primary/10 text-primary",
-  amber:
-    "bg-amber-500/10 text-amber-500 dark:bg-amber-400/10 dark:text-amber-400",
-  violet:
-    "bg-violet-500/10 text-violet-500 dark:bg-violet-400/10 dark:text-violet-400",
-  emerald:
-    "bg-emerald-500/10 text-emerald-500 dark:bg-emerald-400/10 dark:text-emerald-400",
-  blue: "bg-blue-500/10 text-blue-500 dark:bg-blue-400/10 dark:text-blue-400",
-  orange:
-    "bg-orange-500/10 text-orange-500 dark:bg-orange-400/10 dark:text-orange-400",
+  primary: NEUTRAL,
+  amber: NEUTRAL,
+  violet: NEUTRAL,
+  emerald: NEUTRAL,
+  blue: NEUTRAL,
+  orange: NEUTRAL,
 } as const;
 
 export type IconAccent = keyof typeof iconStyles;
@@ -27,7 +25,7 @@ export function WidgetCard({
   icon: Icon,
   title,
   badge,
-  accent = "amber",
+  accent = "primary",
   action,
   children,
   className = "",
@@ -45,19 +43,19 @@ export function WidgetCard({
   return (
     <div
       className={[
-        "group min-w-0 w-full rounded-xl border border-border/60",
-        "bg-card shadow-sm transition-shadow duration-200 hover:shadow-md",
+        "group min-w-0 w-full rounded-xl border border-border",
+        "bg-card",
         "flex flex-col",
         className,
       ].join(" ")}
     >
-      <div className="flex items-center gap-3 px-3 py-2.5 sm:px-5 sm:py-3.5 border-b border-border/60">
+      <div className="flex items-center gap-3 px-3 py-2.5 sm:px-5 sm:py-3.5 border-b border-border">
         <span
           className={`flex items-center justify-center h-7 w-7 rounded-lg shrink-0 ${iconStyles[accent]}`}
         >
           <Icon className="h-4 w-4" />
         </span>
-        <span className="text-sm font-semibold tracking-tight flex-1 truncate">
+        <span className="text-sm font-semibold flex-1 truncate">
           {title}
         </span>
         {badge && (
@@ -83,14 +81,14 @@ export function WidgetCard({
 export function StatChip({
   icon: Icon,
   label,
-  accent = "amber",
+  accent = "primary",
 }: {
   icon: React.ElementType;
   label: string;
   accent?: IconAccent;
 }) {
   return (
-    <div className="flex items-center gap-2 rounded-full border border-border/60 bg-muted/40 px-3.5 py-1.5">
+    <div className="flex items-center gap-2 rounded-full border border-border bg-card px-3.5 py-1.5">
       <span
         className={`flex h-5 w-5 items-center justify-center rounded-full ${iconStyles[accent]}`}
       >

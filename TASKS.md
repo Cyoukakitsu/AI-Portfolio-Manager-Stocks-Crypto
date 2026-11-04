@@ -111,9 +111,9 @@
   - 加密页的 CoinGecko 组件写死白底：`marquee-ticker.tsx`、`coin-list.tsx`、`converter.tsx`（`background-color="#ffffff"`）
   - 加密页的 `crypto-heatmap.tsx`、`market-quotes.tsx`、`market-overview.tsx` 已按 `resolvedTheme` 切换，可作为参照
   - 做法：写死浅色的改成跟随 `resolvedTheme`（组件主题变化时要重新挂载），CoinGecko 组件的背景色与文字色改为随主题传值；某个嵌入件确实不支持深色的，记为已知问题
-- [ ] `./init.sh` 通过；页面截图已确认（深浅两套主题；真实页面需登录，可用 ego-browser 配合用户登录后截图）
-- [ ] 深色主题下股票页、加密页没有突兀的白底嵌入件（无法深色化的除外，并已记录）
-- [ ] 已知问题清单（哪些嵌入件无法反转涨跌色、无法深色化）已记录到 `GOTCHAS.md`
+- [x] `./init.sh` 通过；深浅两套主题效果由用户在浏览器里确认（2026-11-04，无存档截图）
+- [x] 深色主题下股票页、加密页没有突兀的白底嵌入件（用户已确认）
+- [x] 已知问题清单（哪些嵌入件无法反转涨跌色、无法深色化）已记录到 `GOTCHAS.md`
 
 ### Task 12：AI 页
 

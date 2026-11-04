@@ -2,9 +2,12 @@
 
 // TradingView 股票市场数据 Widget 封装
 import { useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 
 function MarketDataStocks() {
   const container = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+  const colorTheme = resolvedTheme === "light" ? "light" : "dark";
 
   useEffect(() => {
     const widgetContainer = container.current;
@@ -100,7 +103,7 @@ function MarketDataStocks() {
           ],
         },
       ],
-      colorTheme: "light",
+      colorTheme,
     });
 
     widgetContainer.appendChild(script);
@@ -109,7 +112,7 @@ function MarketDataStocks() {
     return () => {
       widgetContainer.innerHTML = "";
     };
-  }, []);
+  }, [colorTheme]);
 
   return (
     <div

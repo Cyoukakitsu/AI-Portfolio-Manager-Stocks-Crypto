@@ -158,3 +158,18 @@
 **根因**：`base-lyra` 风格生成的 `dropdown-menu.tsx`、`select.tsx`（以及未使用的 `menubar`、`combobox`、`context-menu`）在弹层的 className 里直接写了一个独立的 `dark` 类，等于强制让面板用 `.dark` 的令牌，不跟随主题
 
 **注意**：以后用 `shadcn add` 新增或重新生成这类弹层组件，先搜一遍 className 里有没有独立的 `dark`，有就删掉；检查弹层时必须深浅两套主题都截图看，不能只看深色
+
+---
+
+## [2026-11-04] 嵌入件跟随主题：TradingView 与 CoinGecko 的做法不同，涨跌色多数改不了
+
+**场景**：UI 重设计 Task 11，让股票页、加密页的嵌入件在深色下不再是白底
+
+**做法**：
+- TradingView 旧版 iframe 嵌入件（`advanced-chart`、`stock-heatmap`、`top-stories`、`market-data-stock`）：从 `useTheme().resolvedTheme` 取主题，传 `theme` / `colorTheme`，并把主题放进 `useEffect` 依赖，切换时脚本重新注入（与加密页已有三个一致）。`advanced-chart` 另外写死了 `backgroundColor` / `gridColor`，要随主题给深色值
+- TradingView `tv-*` Web 组件（`ticker-tape`）：属性是 `theme`，元素加 `key={theme}` 让它重新挂载
+- CoinGecko 组件（`marquee-ticker`、`coin-list`、`converter`）：色值走属性（`background-color` 等），元素不监听属性变化，所以同样用 `key` 随主题重新挂载；色值集中在 `features/crypto/components/use-gecko-theme.ts`，与 `globals.css` 令牌一致，且 `positive-color` 给红（涨）、`negative-color` 给绿（跌）
+
+**已知无法处理（读配置所得，未在真实页面逐个验证）**：TradingView 的热力图、头条新闻、市场数据、K 线嵌入件都没有可传的涨跌色属性，颜色由 TradingView 自己决定，可能仍是绿涨红跌，与设计稿的红涨绿跌不一致，只能保持原样
+
+**注意**：新增嵌入件时先看它认哪套属性（`colorTheme` 还是 `theme`、有没有涨跌色属性），并在深浅两套主题下都看一遍。真实效果需登录后在浏览器里确认

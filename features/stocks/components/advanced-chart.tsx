@@ -2,9 +2,12 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 
 function AdvancedChart() {
   const container = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+  const colorTheme = resolvedTheme === "light" ? "light" : "dark";
 
   useEffect(() => {
     const widgetContainer = container.current;
@@ -32,10 +35,10 @@ function AdvancedChart() {
           "save_image": true,
           "style": "1",
           "symbol": "NASDAQ:AAPL",
-          "theme": "light",
+          "theme": "${colorTheme}",
           "timezone": "Asia/Tokyo",
-          "backgroundColor": "#ffffff",
-          "gridColor": "rgba(46, 46, 46, 0.06)",
+          "backgroundColor": "${colorTheme === "dark" ? "#0b0e11" : "#ffffff"}",
+          "gridColor": "${colorTheme === "dark" ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.06)"}",
           "watchlist": [],
           "withdateranges": false,
           "compareSymbols": [],
@@ -48,7 +51,7 @@ function AdvancedChart() {
     return () => {
       widgetContainer.innerHTML = "";
     };
-  }, []);
+  }, [colorTheme]);
 
   return (
     <div

@@ -2,9 +2,12 @@
 
 // TradingView 股票市场热力图 Widget 封装
 import { useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 
 function TradingViewWidget() {
   const container = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+  const colorTheme = resolvedTheme === "light" ? "light" : "dark";
 
   useEffect(() => {
     const widgetContainer = container.current;
@@ -25,7 +28,7 @@ function TradingViewWidget() {
           "grouping": "sector",
           "locale": "en",
           "symbolUrl": "",
-          "colorTheme": "light",
+          "colorTheme": "${colorTheme}",
           "exchanges": [],
           "hasTopBar": false,
           "isDataSetEnabled": false,
@@ -41,7 +44,7 @@ function TradingViewWidget() {
     return () => {
       widgetContainer.innerHTML = "";
     };
-  }, []);
+  }, [colorTheme]);
 
   return <div className="tradingview-widget-container" ref={container}></div>;
 }

@@ -2,9 +2,12 @@
 
 // TradingView 股票滚动行情栏 Widget 封装
 import { useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 
 function TickerTape() {
   const scriptLoaded = useRef(false);
+  const { resolvedTheme } = useTheme();
+  const theme = resolvedTheme === "light" ? "light" : "dark";
 
   useEffect(() => {
     const existing = document.querySelector(
@@ -31,7 +34,7 @@ function TickerTape() {
   return (
     <div className="w-full overflow-hidden">
       {/* @ts-expect-error — Web Component not recognized by TypeScript */}
-      <tv-ticker-tape symbols="FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD,CMCMARKETS:GOLD" />
+      <tv-ticker-tape key={theme} theme={theme} symbols="FOREXCOM:SPXUSD,FOREXCOM:NSXUSD,FOREXCOM:DJI,FX:EURUSD,BITSTAMP:BTCUSD,BITSTAMP:ETHUSD,CMCMARKETS:GOLD" />
     </div>
   );
 }

@@ -2,9 +2,12 @@
 
 // TradingView 市场头条新闻 Widget 封装
 import { useEffect, useRef } from "react";
+import { useTheme } from "next-themes";
 
 function TopStories() {
   const container = useRef<HTMLDivElement>(null);
+  const { resolvedTheme } = useTheme();
+  const colorTheme = resolvedTheme === "light" ? "light" : "dark";
 
   useEffect(() => {
     const widgetContainer = container.current;
@@ -28,7 +31,7 @@ function TopStories() {
     script.innerHTML = JSON.stringify({
       displayMode: "regular",
       feedMode: "all_symbols", // 所有股票的新闻
-      colorTheme: "light",
+      colorTheme,
       isTransparent: false,
       locale: "ja", // 日语
       width: "100%", // 改成100%自适应
@@ -40,7 +43,7 @@ function TopStories() {
     return () => {
       widgetContainer.innerHTML = "";
     };
-  }, []);
+  }, [colorTheme]);
 
   return (
     <div

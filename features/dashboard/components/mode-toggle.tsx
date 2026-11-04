@@ -24,7 +24,7 @@ export function ModeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger
-        className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors relative overflow-hidden cursor-pointer"
+        className="inline-flex h-9 w-9 items-center justify-center rounded-md border border-border bg-background hover:bg-accent hover:text-accent-foreground transition-colors relative overflow-hidden cursor-pointer"
         aria-label={t("toggle")}
       >
         <Sun className="h-4 w-4 scale-100 dark:scale-0 transition-all" />

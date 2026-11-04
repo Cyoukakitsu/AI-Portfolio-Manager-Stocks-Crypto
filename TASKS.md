@@ -88,7 +88,18 @@
 
 **范围文件**：`app/[locale]/dashboard/layout.tsx`、`features/dashboard/*`
 
-- [ ] `./init.sh` 通过；侧边栏、顶栏与首页截图已确认
+- 顶栏：高度 `h-14` → `h-16`（设计稿 64px），底边沿用 `--border`
+- 侧边栏：去掉入场动画（与 Task 9 一致）；logo 方块改灰阶描边；图标换 Phosphor light；菜单项在 `app-sidebar.tsx` 内覆盖为 `text-sm`、6px 圆角（不改 `components/ui/sidebar.tsx`）
+- `WidgetCard`：去掉 `shadow-sm` 与悬停阴影，边线 `--border`；五种彩色图标底统一成灰阶（`accent` 的 key 保留，股票、加密页仍在传 `orange` 等值，调用方不用改）
+- `UserAvatar`：写死的 `bg-amber-500` 改成 `bg-muted`；`ModeToggle` 只换边线令牌（改成直接切换仍是独立任务）
+- `/dashboard` 首页只是重定向到资产页，无单独首页可改；资产页本体归 Task 13
+- [x] `./init.sh` 通过（build、lint、test 12/12）
+- [x] 在已登录浏览器里看过资产、股票、加密、AI 四页的外壳（深色看了资产页，浅色四页都看了），无错位、无残留彩色图标底；AI 页 Analyze 按钮与搜索框高度基本对齐
+- [x] 顶栏、侧边栏、卡片的深浅主题效果由用户在浏览器里确认（2026-11-04，无存档截图）
+
+**未处理、留给后续任务**
+- 资产页自己写的卡片（`shadow-sm`、`border-border/60`）仍有阴影，文件在 Task 13 范围内
+- 加密页浏览器开发模式出现过一次 "1 Issue" 提示，重新加载后未复现，疑似嵌入件噪音，未确认原因
 
 ### Task 11：股票与加密货币页
 

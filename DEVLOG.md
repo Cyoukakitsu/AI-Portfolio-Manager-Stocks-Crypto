@@ -4,6 +4,19 @@
 
 ---
 
+## 2026-11-04
+
+**UI 重设计 Task 10 收尾、Task 11 完成**
+- Task 10（Dashboard 外壳）：用户在浏览器确认外观，勾选验收；PR 尚未合并
+- Task 11（股票页、加密页）：新分支 `feat/ui-redesign-stocks-crypto`，叠在 Task 10 分支之上（建 PR 时目标选 Task 10 分支）
+  - 股票页 TradingView 嵌入件（`advanced-chart`、`stock-heatmap`、`top-stories`、`market-data-stock`、`ticker-tape`）改为跟随 `resolvedTheme`
+  - 加密页 CoinGecko 四个组件（含漏掉的 `coin-compare-chart`）改用 `dark-mode` 属性，逻辑集中在 `use-gecko-theme.ts`
+- 走过的弯路：第一版给 CoinGecko 传了 `background-color` 等属性，用户截图发现仍是白底。下载脚本读 props 才确认它们只认 `dark-mode`，那些属性一直无效，涨跌色因此改不了。教训：嵌入件先读脚本声明的属性，别凭文档或同类组件推断
+- `GOTCHAS.md` 记录各嵌入件的主题写法与改不了涨跌色的清单；`TASKS.md`、`progress.md` 已更新
+- 顺手：丢弃了 `Makefile` 末尾的空行改动（Makefile 是 Cloud Run 部署脚本，保留）
+
+---
+
 ## 2026-11-01
 
 **UI 视觉重设计：设计语言与前两个任务（PR #115、Task 7 叠加 PR）**

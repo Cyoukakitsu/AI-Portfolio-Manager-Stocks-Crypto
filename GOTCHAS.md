@@ -168,8 +168,8 @@
 **做法**：
 - TradingView 旧版 iframe 嵌入件（`advanced-chart`、`stock-heatmap`、`top-stories`、`market-data-stock`）：从 `useTheme().resolvedTheme` 取主题，传 `theme` / `colorTheme`，并把主题放进 `useEffect` 依赖，切换时脚本重新注入（与加密页已有三个一致）。`advanced-chart` 另外写死了 `backgroundColor` / `gridColor`，要随主题给深色值
 - TradingView `tv-*` Web 组件（`ticker-tape`）：属性是 `theme`，元素加 `key={theme}` 让它重新挂载
-- CoinGecko 组件（`marquee-ticker`、`coin-list`、`converter`）：色值走属性（`background-color` 等），元素不监听属性变化，所以同样用 `key` 随主题重新挂载；色值集中在 `features/crypto/components/use-gecko-theme.ts`，与 `globals.css` 令牌一致，且 `positive-color` 给红（涨）、`negative-color` 给绿（跌）
+- CoinGecko 组件（`marquee-ticker`、`coin-list`、`converter`、`coin-compare-chart`）：下载其脚本读 props，只有布尔属性 `dark-mode` 与 `transparent-background`，**没有** `background-color`、`font-color`、`positive-color`、`negative-color`（早先代码里传的这些属性一直是无效的）。元素不监听属性变化，所以用 `key` 随主题重新挂载；逻辑集中在 `features/crypto/components/use-gecko-theme.ts`
 
-**已知无法处理（读配置所得，未在真实页面逐个验证）**：TradingView 的热力图、头条新闻、市场数据、K 线嵌入件都没有可传的涨跌色属性，颜色由 TradingView 自己决定，可能仍是绿涨红跌，与设计稿的红涨绿跌不一致，只能保持原样
+**已知无法处理（读配置所得，未在真实页面逐个验证）**：CoinGecko 四个组件的涨跌色固定为绿涨红跌，无法改成红涨绿跌；TradingView 的热力图、头条新闻、市场数据、K 线嵌入件都没有可传的涨跌色属性，颜色由 TradingView 自己决定，可能仍是绿涨红跌，与设计稿的红涨绿跌不一致，只能保持原样
 
 **注意**：新增嵌入件时先看它认哪套属性（`colorTheme` 还是 `theme`、有没有涨跌色属性），并在深浅两套主题下都看一遍。真实效果需登录后在浏览器里确认

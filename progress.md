@@ -45,6 +45,6 @@
 
 ## 下一步
 
-0. UI 重设计：用户确认 Task 9 截图后，做 Task 10（Dashboard 外壳与首页）；同时可排"清理未使用的 UI 组件"
+0. UI 重设计：用户确认 Task 10 截图后，做 Task 11（股票与加密页）；同时可排"清理未使用的 UI 组件"
 2. AI 分析模块基础功能搭建（feat-ai）
 3. Dashboard 总览图表完善（feat-dashboard）

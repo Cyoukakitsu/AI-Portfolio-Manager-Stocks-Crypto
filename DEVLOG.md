@@ -4,6 +4,16 @@
 
 ---
 
+## 2026-11-05
+
+**UI 重设计 Task 12（AI 页）**
+- 分支 `feat/ui-redesign-ai-page`：买入、卖出、持有标签统一用 `Badge variant="outline"`，删除 `VERDICT_STYLE`；买入区间去掉绿色；搜索输入行 38px + 边框，与 40px 的 Analyze 按钮对齐
+- 验证：Google 登录拒绝 Playwright 自带的 Chromium（反自动化检测），改用 Chrome 扩展操作用户已登录的浏览器，实测按钮与搜索框同为 40px，跑了一次 Buffett 分析 AAPL 看标签与买入区间，深浅主题均正常
+- 教训：此前 Task 10、11 没先试自动截图就交给用户确认；登录页会被 Google 拦截时，直接用已登录的真实浏览器
+- Task 10 的 PR #120 已合并；Task 11 分支尚未建 PR
+
+---
+
 ## 2026-11-04
 
 **UI 重设计 Task 10 收尾、Task 11 完成**

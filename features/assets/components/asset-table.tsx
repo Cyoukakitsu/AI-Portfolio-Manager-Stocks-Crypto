@@ -27,6 +27,7 @@ import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { TransactionForm } from "@/features/assets/components/transaction-form";
 import type { Asset, Transaction } from "@/features/assets/types";
 import { useAssetsTable } from "@/features/assets/hooks/use-assets-table";
+import { directionPrefix } from "@/features/assets/lib/calculations";
 import { motion, AnimatePresence } from "motion/react";
 
 const MotionTableRow = motion.create(TableRow);
@@ -62,14 +63,8 @@ function calcReturnPct(
 function ReturnPct({ value }: { value: number | null }) {
   if (value === null) return "—";
   return (
-    <span
-      className={
-        value >= 0
-          ? "text-green-500 dark:text-green-400"
-          : "text-red-500 dark:text-red-400"
-      }
-    >
-      {value >= 0 ? "+" : ""}
+    <span className={`num ${value >= 0 ? "text-up" : "text-down"}`}>
+      {directionPrefix(value)}
       {value.toFixed(2)}%
     </span>
   );
@@ -199,21 +194,23 @@ function AssetRow({
           </Badge>
         </TableCell>
         {/* 持仓数量：无持仓时显示 — */}
-        <TableCell>
+        <TableCell className="num text-right">
           {asset.total_quantity > 0 ? asset.total_quantity : "—"}
         </TableCell>
-        <TableCell>{formatPrice(asset.avg_price)}</TableCell>
-        <TableCell>
+        <TableCell className="num text-right">
+          {formatPrice(asset.avg_price)}
+        </TableCell>
+        <TableCell className="num text-right">
           {marketPrice === undefined ? t("loading") : formatPrice(marketPrice)}
         </TableCell>
-        <TableCell>
+        <TableCell className="text-right">
           <ReturnPct value={calcReturnPct(marketPrice, asset.avg_price)} />
         </TableCell>
         {/* 操作列：删除资产 + 展开/收起交易记录 */}
         <TableCell className="text-right space-x-1">
           <Button
             variant="ghost"
-            size="icon"
+            size="icon-sm"
             className="text-destructive hover:text-destructive"
             onClick={(e) => {
               e.stopPropagation();
@@ -224,7 +221,7 @@ function AssetRow({
           </Button>
 
           {/* 点击冒泡到整行的 onClick 展开，这里不再重复绑定 */}
-          <Button variant="ghost" size="icon">
+          <Button variant="ghost" size="icon-sm">
             <motion.div
               animate={{ rotate: expanded ? 180 : 0 }}
               transition={{ duration: 0.2 }}
@@ -338,10 +335,10 @@ export function AssetsTable({ assets }: Props) {
               <TableHead>{t("table.symbol")}</TableHead>
               <TableHead>{t("table.fullName")}</TableHead>
               <TableHead>{t("table.type")}</TableHead>
-              <TableHead>{t("table.holdingQty")}</TableHead>
-              <TableHead>{t("table.holdingPrice")}</TableHead>
-              <TableHead>{t("table.marketPrice")}</TableHead>
-              <TableHead>{t("table.returnPct")}</TableHead>
+              <TableHead className="text-right">{t("table.holdingQty")}</TableHead>
+              <TableHead className="text-right">{t("table.holdingPrice")}</TableHead>
+              <TableHead className="text-right">{t("table.marketPrice")}</TableHead>
+              <TableHead className="text-right">{t("table.returnPct")}</TableHead>
               <TableHead />
             </TableRow>
           </TableHeader>

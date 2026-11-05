@@ -1,9 +1,13 @@
 "use client";
 
-// TradingView 加密货币对比走势图 Widget 封装
+// CoinGecko 加密货币对比走势图 Widget 封装
 import Script from "next/script";
+import { useGeckoTheme } from "./use-gecko-theme";
 
 export default function CoinCompareChart() {
+  const geckoTheme = useGeckoTheme();
+  if (!geckoTheme) return null;
+  const { themeKey, themeAttrs } = geckoTheme;
   return (
     <>
       <Script
@@ -16,6 +20,8 @@ export default function CoinCompareChart() {
           locale="en"
           outlined="true"
           initial-currency="usd"
+          key={themeKey}
+          {...themeAttrs}
           style={{ display: "block", width: "100%" }}
         />
       </div>

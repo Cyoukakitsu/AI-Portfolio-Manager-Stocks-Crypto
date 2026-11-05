@@ -30,7 +30,7 @@ export function PortfolioCandlestickChart({ assets, allTransactions }: Props) {
 
   return (
     <motion.div
-      className="group rounded-xl border border-border/60 bg-card shadow-sm transition-shadow duration-200 hover:shadow-md flex flex-col"
+      className="group rounded-xl border border-border bg-card flex flex-col"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" as const }}

@@ -32,10 +32,12 @@
 - [x] UI 重设计 Task 9：落地页、隐私、条款页与顶栏重做；`./init.sh` 通过，待用户确认截图，迷你图深色效果待在能访问 TradingView 的环境验证（2026-11-01）
 - [x] Task 15（A 组）：Hero 页与登录、注册页可读性重构，行为不变，截图前后对比一致（2026-11-01）
 - [x] UI 重设计 Task 10：Dashboard 外壳（顶栏 64px、侧边栏去动画与灰阶化、`WidgetCard` 去阴影与彩色、头像中性色），分支 `feat/ui-redesign-dashboard-shell`；`./init.sh` 通过，我已在已登录浏览器看过四页，用户已在浏览器确认（2026-11-04）
+- [x] UI 重设计 Task 11：股票页、加密页嵌入件跟随深浅主题（TradingView 传 `theme`、CoinGecko 传 `dark-mode`）；涨跌色改不了的已记入 `GOTCHAS.md`；用户已在浏览器确认（分支 `feat/ui-redesign-stocks-crypto`，叠在 Task 10 之上，2026-11-04）
+- [x] UI 重设计 Task 12：AI 页买入、卖出、持有标签改中性 `outline`、买入区间去绿色，Analyze 按钮与搜索框同为 40px；用户已确认（分支 `feat/ui-redesign-ai-page`，2026-11-05）
+- [x] UI 重设计 Task 13：资产页涨跌色读 `--up`/`--down` 并带 ▲▼、K 线图运行时读令牌随主题重建（推迟到下一帧避免读到旧主题）、数字列右对齐、行内按钮 32px、脉冲点中性色；用户已确认（分支 `feat/ui-redesign-assets-page`，2026-11-05）
 
 ## 进行中
 
-- [ ] UI 视觉重设计 Task 11–13（股票与加密页 → AI 页 → 资产页），见 `TASKS.md`
 - [ ] Stocks：行情图表与价格展示细化
 - [x] AI 分析页 SSE 流式推送（Task 2，2026-06-15 完成）
 
@@ -45,6 +47,6 @@
 
 ## 下一步
 
-0. UI 重设计：用户确认 Task 10 截图后，做 Task 11（股票与加密页）；同时可排"清理未使用的 UI 组件"
+0. UI 重设计：落地页四张产品截图重截（Task 9 遗留，需 Task 10–13 全部合并后）；清理未使用的 UI 组件（独立 PR）；同时可排"清理未使用的 UI 组件"
 2. AI 分析模块基础功能搭建（feat-ai）
 3. Dashboard 总览图表完善（feat-dashboard）

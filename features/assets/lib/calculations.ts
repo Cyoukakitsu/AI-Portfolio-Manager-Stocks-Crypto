@@ -33,3 +33,8 @@ export function calculateAssetHoldings(transactions: TransactionLike[]) {
     avg_price: netQty > 0 ? netCost / netQty : null,
   };
 }
+
+// 涨跌数字前的方向符号；0 按“涨”处理（与涨跌色 text-up 的 >= 0 判断一致）
+export function directionPrefix(value: number): string {
+  return value >= 0 ? "▲ +" : "▼ ";
+}

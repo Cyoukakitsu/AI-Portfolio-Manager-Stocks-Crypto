@@ -158,3 +158,42 @@
 **根因**：`base-lyra` 风格生成的 `dropdown-menu.tsx`、`select.tsx`（以及未使用的 `menubar`、`combobox`、`context-menu`）在弹层的 className 里直接写了一个独立的 `dark` 类，等于强制让面板用 `.dark` 的令牌，不跟随主题
 
 **注意**：以后用 `shadcn add` 新增或重新生成这类弹层组件，先搜一遍 className 里有没有独立的 `dark`，有就删掉；检查弹层时必须深浅两套主题都截图看，不能只看深色
+
+---
+
+## [2026-11-04] 嵌入件跟随主题：TradingView 与 CoinGecko 的做法不同，涨跌色多数改不了
+
+**场景**：UI 重设计 Task 11，让股票页、加密页的嵌入件在深色下不再是白底
+
+**做法**：
+- TradingView 旧版 iframe 嵌入件（`advanced-chart`、`stock-heatmap`、`top-stories`、`market-data-stock`）：从 `useTheme().resolvedTheme` 取主题，传 `theme` / `colorTheme`，并把主题放进 `useEffect` 依赖，切换时脚本重新注入（与加密页已有三个一致）。`advanced-chart` 另外写死了 `backgroundColor` / `gridColor`，要随主题给深色值
+- TradingView `tv-*` Web 组件（`ticker-tape`）：属性是 `theme`，元素加 `key={theme}` 让它重新挂载
+- CoinGecko 组件（`marquee-ticker`、`coin-list`、`converter`、`coin-compare-chart`）：下载其脚本读 props，只有布尔属性 `dark-mode` 与 `transparent-background`，**没有** `background-color`、`font-color`、`positive-color`、`negative-color`（早先代码里传的这些属性一直是无效的）。元素不监听属性变化，所以用 `key` 随主题重新挂载；逻辑集中在 `features/crypto/components/use-gecko-theme.ts`
+
+**已知无法处理（读配置所得，未在真实页面逐个验证）**：CoinGecko 四个组件的涨跌色固定为绿涨红跌，无法改成红涨绿跌；TradingView 的热力图、头条新闻、市场数据、K 线嵌入件都没有可传的涨跌色属性，颜色由 TradingView 自己决定，可能仍是绿涨红跌，与设计稿的红涨绿跌不一致，只能保持原样
+
+**注意**：新增嵌入件时先看它认哪套属性（`colorTheme` 还是 `theme`、有没有涨跌色属性），并在深浅两套主题下都看一遍。真实效果需登录后在浏览器里确认
+
+---
+
+## [2026-11-05] 图表库要在运行时读主题令牌，且要等 `.dark` 类切完再读
+
+**场景**：UI 重设计 Task 13，资产页 K 线图（lightweight-charts）颜色改读设计令牌
+
+**现象**：在页面里把深色切到浅色，图表重建了，但坐标轴边线仍是深色竖线
+
+**根因**：lightweight-charts 不认 `var(--x)`，只能传解析后的颜色，所以要在 effect 里读。但 `next-themes` 是在父组件里切 `.dark` 类，子组件的 effect 先于它执行，`resolvedTheme` 一变就读令牌，拿到的是旧主题的值
+
+**注意**：把建图放进 `requestAnimationFrame`，依赖里带 `resolvedTheme`，cleanup 里取消并销毁图表。读令牌用临时元素（`style.color = var(--x)` 再取 `getComputedStyle`），能把 hex 和 `rgb(0 0 0 / .06)` 都转成图表库认的 rgb()/rgba()。以后新增图表都照此办理，并在页面里实际切一次主题验证
+
+---
+
+## [2026-11-05] CoinGecko 自定义元素：服务端写进去的 `dark-mode` 属性，浅色页面硬刷新后不会被纠正
+
+**场景**：Task 11 的可读性评审后，把主题判断抽成共用钩子，再在真实页面硬刷新浅色的加密页
+
+**现象**：整页是浅色，但 CoinGecko 的滚动行情栏和比较图仍是深色，`dark-mode` 属性还是 `true`。用页面里的主题按钮切换时一切正常，只有硬刷新才出现
+
+**根因**：服务端不知道用户主题，按深色把 `dark-mode="true"` 写进 HTML；浏览器端首次渲染时 `next-themes` 已从本地存储拿到浅色，React props 里没有这个属性，但 hydration 不会去纠正已存在的属性，旧属性就留在元素上（React 的 fiber `key` 已是 `light`，DOM 却还是旧的）。页面右下角的红色“Issue”标可能与此有关
+
+**注意**：靠属性或 `key` 决定外观的自定义元素，服务端与 hydration 期间都不要渲染（`useGeckoTheme` 返回 `null`，调用方 `return null`）。验证主题相关改动时，除了点切换按钮，也要在浅色下硬刷新一次

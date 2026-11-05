@@ -4,6 +4,34 @@
 
 ---
 
+## 2026-11-05
+
+**UI 重设计 Task 12（AI 页）**
+- 分支 `feat/ui-redesign-ai-page`：买入、卖出、持有标签统一用 `Badge variant="outline"`，删除 `VERDICT_STYLE`；买入区间去掉绿色；搜索输入行 38px + 边框，与 40px 的 Analyze 按钮对齐
+- 验证：Google 登录拒绝 Playwright 自带的 Chromium（反自动化检测），改用 Chrome 扩展操作用户已登录的浏览器，实测按钮与搜索框同为 40px，跑了一次 Buffett 分析 AAPL 看标签与买入区间，深浅主题均正常
+- 教训：此前 Task 10、11 没先试自动截图就交给用户确认；登录页会被 Google 拦截时，直接用已登录的真实浏览器
+- Task 10 的 PR #120 已合并；Task 11 分支尚未建 PR
+
+**UI 重设计 Task 13（资产页）**
+- 分支 `feat/ui-redesign-assets-page`：涨跌色全部改读令牌并带 ▲▼；K 线图在运行时用临时元素把令牌解析成 rgb 后传给 lightweight-charts，依赖 `resolvedTheme` 重建；数字列右对齐、行内按钮 `icon-sm`；三页脉冲点改中性色；资产卡去阴影
+- 踩坑：浅色下 K 线坐标轴出现深色竖线。next-themes 在父组件切 `.dark` 类，子组件 effect 先跑，立刻读令牌拿到旧主题颜色，建图要推迟到下一帧
+- 在已登录的真实 Chrome 里深浅主题都实测过；未做：右侧面板切换标的的预留布局（任务写明不实现逻辑）
+
+---
+
+## 2026-11-04
+
+**UI 重设计 Task 10 收尾、Task 11 完成**
+- Task 10（Dashboard 外壳）：用户在浏览器确认外观，勾选验收；PR 尚未合并
+- Task 11（股票页、加密页）：新分支 `feat/ui-redesign-stocks-crypto`，叠在 Task 10 分支之上（建 PR 时目标选 Task 10 分支）
+  - 股票页 TradingView 嵌入件（`advanced-chart`、`stock-heatmap`、`top-stories`、`market-data-stock`、`ticker-tape`）改为跟随 `resolvedTheme`
+  - 加密页 CoinGecko 四个组件（含漏掉的 `coin-compare-chart`）改用 `dark-mode` 属性，逻辑集中在 `use-gecko-theme.ts`
+- 走过的弯路：第一版给 CoinGecko 传了 `background-color` 等属性，用户截图发现仍是白底。下载脚本读 props 才确认它们只认 `dark-mode`，那些属性一直无效，涨跌色因此改不了。教训：嵌入件先读脚本声明的属性，别凭文档或同类组件推断
+- `GOTCHAS.md` 记录各嵌入件的主题写法与改不了涨跌色的清单；`TASKS.md`、`progress.md` 已更新
+- 顺手：丢弃了 `Makefile` 末尾的空行改动（Makefile 是 Cloud Run 部署脚本，保留）
+
+---
+
 ## 2026-11-01
 
 **UI 视觉重设计：设计语言与前两个任务（PR #115、Task 7 叠加 PR）**

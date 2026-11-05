@@ -2,12 +2,11 @@
 
 // TradingView 加密货币市场总览 Widget 封装
 import { useEffect, useRef } from "react";
-import { useTheme } from "next-themes";
+import { useColorTheme } from "@/hooks/use-color-theme";
 
 export default function MarketOverview() {
   const container = useRef<HTMLDivElement>(null);
-  const { resolvedTheme } = useTheme();
-  const colorTheme = resolvedTheme === "dark" ? "dark" : "light";
+  const colorTheme = useColorTheme();
 
   useEffect(() => {
     const widgetContainer = container.current;

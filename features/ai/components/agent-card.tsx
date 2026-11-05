@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AgentResult } from "@/features/ai/types";
-import { PERSONA_META, VERDICT_STYLE } from "@/features/ai/lib/constants";
+import { PERSONA_META } from "@/features/ai/lib/constants";
 
 type AgentCardProps = AgentResult;
 
@@ -28,7 +28,7 @@ export function AgentCard({ persona, score, verdict, points, buyRange }: AgentCa
             </div>
           </div>
           {/* 右侧：verdict badge */}
-          <Badge className={VERDICT_STYLE[verdict]}>{tVerdict(verdict)}</Badge>
+          <Badge variant="outline">{tVerdict(verdict)}</Badge>
         </div>
       </CardHeader>
 
@@ -51,7 +51,7 @@ export function AgentCard({ persona, score, verdict, points, buyRange }: AgentCa
         {buyRange.low > 0 && buyRange.high > 0 && (
           <div className="flex justify-between text-sm mb-4">
             <span className="text-muted-foreground">{t("buyRange")}</span>
-            <span className="font-medium text-green-600 dark:text-green-400">
+            <span className="font-medium num">
               ${buyRange.low} – ${buyRange.high}
             </span>
           </div>

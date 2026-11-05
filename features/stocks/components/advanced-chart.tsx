@@ -2,9 +2,15 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { useColorTheme } from "@/hooks/use-color-theme";
 
 function AdvancedChart() {
   const container = useRef<HTMLDivElement>(null);
+  const colorTheme = useColorTheme();
+  // 与 globals.css 的 --background、--grid 同值；TradingView 要字面颜色，读不了 CSS 变量
+  const backgroundColor = colorTheme === "dark" ? "#0b0e11" : "#ffffff";
+  const gridColor =
+    colorTheme === "dark" ? "rgba(255, 255, 255, 0.06)" : "rgba(0, 0, 0, 0.06)";
 
   useEffect(() => {
     const widgetContainer = container.current;
@@ -32,10 +38,10 @@ function AdvancedChart() {
           "save_image": true,
           "style": "1",
           "symbol": "NASDAQ:AAPL",
-          "theme": "light",
+          "theme": "${colorTheme}",
           "timezone": "Asia/Tokyo",
-          "backgroundColor": "#ffffff",
-          "gridColor": "rgba(46, 46, 46, 0.06)",
+          "backgroundColor": "${backgroundColor}",
+          "gridColor": "${gridColor}",
           "watchlist": [],
           "withdateranges": false,
           "compareSymbols": [],
@@ -48,7 +54,7 @@ function AdvancedChart() {
     return () => {
       widgetContainer.innerHTML = "";
     };
-  }, []);
+  }, [colorTheme, backgroundColor, gridColor]);
 
   return (
     <div

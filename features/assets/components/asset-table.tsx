@@ -27,6 +27,7 @@ import { ChevronDown, Plus, Trash2 } from "lucide-react";
 import { TransactionForm } from "@/features/assets/components/transaction-form";
 import type { Asset, Transaction } from "@/features/assets/types";
 import { useAssetsTable } from "@/features/assets/hooks/use-assets-table";
+import { directionPrefix } from "@/features/assets/lib/calculations";
 import { motion, AnimatePresence } from "motion/react";
 
 const MotionTableRow = motion.create(TableRow);
@@ -63,7 +64,7 @@ function ReturnPct({ value }: { value: number | null }) {
   if (value === null) return "—";
   return (
     <span className={`num ${value >= 0 ? "text-up" : "text-down"}`}>
-      {value >= 0 ? "▲ +" : "▼ "}
+      {directionPrefix(value)}
       {value.toFixed(2)}%
     </span>
   );

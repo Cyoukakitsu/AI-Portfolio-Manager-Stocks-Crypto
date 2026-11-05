@@ -2,6 +2,7 @@
 
 // 总资产与今日盈亏摘要卡片
 import { useTranslations } from "next-intl";
+import { directionPrefix } from "@/features/assets/lib/calculations";
 import { useAssetReturn } from "@/features/assets/hooks/use-total-asset-card";
 import type { Asset } from "@/features/assets/types";
 import { Wallet } from "lucide-react";
@@ -31,25 +32,25 @@ export function TotalAssetCard({ assets }: Props) {
   const springToday = useSpring(rawToday, { stiffness: 80, damping: 20 });
   const displayToday = useTransform(
     springToday,
-    (v) => `${v >= 0 ? "▲ +" : "▼ "}$${v.toFixed(2)}`,
+    (v) => `${directionPrefix(v)}$${v.toFixed(2)}`,
   );
   const rawTodayPct = useMotionValue(todayReturnPct ?? 0);
   const springTodayPct = useSpring(rawTodayPct, { stiffness: 80, damping: 20 });
   const displayTodayPct = useTransform(
     springTodayPct,
-    (v) => `${v >= 0 ? "▲ +" : "▼ "}${v.toFixed(2)}%`,
+    (v) => `${directionPrefix(v)}${v.toFixed(2)}%`,
   );
   const rawReturn = useMotionValue(totalReturn);
   const springReturn = useSpring(rawReturn, { stiffness: 80, damping: 20 });
   const displayReturn = useTransform(
     springReturn,
-    (v) => `${v >= 0 ? "▲ +" : "▼ "}$${v.toFixed(2)}`,
+    (v) => `${directionPrefix(v)}$${v.toFixed(2)}`,
   );
   const rawPct = useMotionValue(totalReturnPct ?? 0);
   const springPct = useSpring(rawPct, { stiffness: 80, damping: 20 });
   const displayPct = useTransform(
     springPct,
-    (v) => `${v >= 0 ? "▲ +" : "▼ "}${v.toFixed(2)}%`,
+    (v) => `${directionPrefix(v)}${v.toFixed(2)}%`,
   );
 
   rawValue.set(totalValue);

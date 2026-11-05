@@ -76,7 +76,8 @@ export function SearchBar({ onAnalyze, isLoading, disabled }: SearchBarProps) {
     <div className="flex flex-col sm:flex-row gap-2">
       <div className="flex-1">
         <Command className="border rounded-md" shouldFilter={false}>
-          <div className="flex h-[38px] items-center px-6">
+          {/* 外框有上下各 1px 边框，加起来与默认按钮同高（40px） */}
+          <div className="flex h-9.5 items-center px-6">
             {/* 搜索中显示加载动画，否则显示搜索图标 */}
             {isFetching ? (
               <Loader2 className="w-4 h-4 mr-2 animate-spin text-muted-foreground shrink-0" />

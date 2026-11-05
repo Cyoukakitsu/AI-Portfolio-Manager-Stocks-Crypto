@@ -5,7 +5,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { useTheme } from "next-themes";
+import { useColorTheme } from "@/hooks/use-color-theme";
 import {
   createChart,
   CandlestickSeries,
@@ -28,6 +28,7 @@ function readToken(name: string): string {
   probe.remove();
   return color;
 }
+
 const PRICE_SCALE_OPTIONS = {
   autoScale: true,
   scaleMargins: { top: 0.1, bottom: 0.1 },
@@ -37,6 +38,85 @@ const PRICE_SCALE_OPTIONS = {
 function toReturnPct(close: number, totalCost: number) {
   if (totalCost <= 0) return 0;
   return parseFloat((((close - totalCost) / totalCost) * 100).toFixed(2));
+}
+
+type ChartParams = {
+  view: "usd" | "pct";
+  ohlcData: ReturnType<typeof computePortfolioOHLC>;
+  totalCost: number;
+};
+
+// 在容器里建图并返回清理函数；颜色每次都从当前主题的令牌读取
+function buildChart(
+  container: HTMLDivElement,
+  { view, ohlcData, totalCost }: ChartParams,
+) {
+  const upColor = readToken("--up");
+  const downColor = readToken("--down");
+  const textColor = readToken("--faint");
+  const gridColor = readToken("--grid");
+  const lineColor = readToken("--border");
+  const returnLineColor = readToken("--foreground");
+
+  const chart = createChart(container, {
+    width: container.clientWidth,
+    height: 350,
+    layout: {
+      background: { type: ColorType.Solid, color: "transparent" },
+      textColor,
+    },
+    grid: {
+      vertLines: { color: gridColor },
+      horzLines: { color: gridColor },
+    },
+    timeScale: {
+      borderColor: lineColor,
+      rightOffset: 5,
+      minBarSpacing: 2,
+    },
+    rightPriceScale: {
+      borderColor: lineColor,
+    },
+  });
+
+  if (view === "usd") {
+    const series = chart.addSeries(CandlestickSeries, {
+      upColor,
+      downColor,
+      borderUpColor: upColor,
+      borderDownColor: downColor,
+      wickUpColor: upColor,
+      wickDownColor: downColor,
+    });
+    series.setData(ohlcData);
+    series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
+  } else {
+    // 收益率模式：曲线不表达涨跌，用中性的前景色，面积填充用淡淡的网格色
+    const returnPctData = ohlcData.map((p) => ({
+      time: p.time,
+      value: toReturnPct(p.close, totalCost),
+    }));
+    const series = chart.addSeries(AreaSeries, {
+      lineColor: returnLineColor,
+      topColor: gridColor,
+      bottomColor: "rgba(0, 0, 0, 0)",
+    });
+    series.setData(returnPctData);
+    series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
+  }
+
+  chart.timeScale().fitContent();
+
+  // 响应式：监听容器尺寸变化，自动调整图表宽度
+  const observer = new ResizeObserver(() => {
+    chart.applyOptions({ width: container.clientWidth });
+  });
+  observer.observe(container);
+
+  return () => {
+    observer.disconnect();
+    chart.remove();
+  };
 }
 
 type Params = {
@@ -50,7 +130,7 @@ export function usePortfolioCandlestickChart({
 }: Params) {
   const [range, setRange] = useState<Range>("1M");
   const [view, setView] = useState<"usd" | "pct">("usd");
-  const { resolvedTheme } = useTheme();
+  const colorTheme = useColorTheme();
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
 
@@ -97,89 +177,22 @@ export function usePortfolioCandlestickChart({
     [historyData, cashAssets, tradableAssets, allTransactions],
   );
 
+  // 依赖里的 colorTheme 只用来在切换主题时重建图表（颜色在 buildChart 里读）
   useEffect(() => {
     let cleanup: (() => void) | undefined;
     // 推迟到下一帧再建图：next-themes 在父组件里切 .dark 类，子组件的 effect 先跑，
     // 立刻读令牌会拿到旧主题的颜色
     const raf = requestAnimationFrame(() => {
-      if (!chartContainerRef.current || ohlcData.length === 0) return;
-
-      const upColor = readToken("--up");
-      const downColor = readToken("--down");
-      const textColor = readToken("--faint");
-      const gridColor = readToken("--grid");
-      const lineColor = readToken("--border");
-
-      const chart = createChart(chartContainerRef.current, {
-        width: chartContainerRef.current.clientWidth,
-        height: 350,
-        layout: {
-          background: { type: ColorType.Solid, color: "transparent" },
-          textColor,
-        },
-        grid: {
-          vertLines: { color: gridColor },
-          horzLines: { color: gridColor },
-        },
-        timeScale: {
-          borderColor: lineColor,
-          rightOffset: 5,
-          minBarSpacing: 2,
-        },
-        rightPriceScale: {
-          borderColor: lineColor,
-        },
-      });
-
-      if (view === "usd") {
-        const series = chart.addSeries(CandlestickSeries, {
-          upColor,
-          downColor,
-          borderUpColor: upColor,
-          borderDownColor: downColor,
-          wickUpColor: upColor,
-          wickDownColor: downColor,
-        });
-        series.setData(ohlcData);
-        series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
-      } else {
-        // 收益率模式
-        const returnPctData = ohlcData.map((p) => ({
-          time: p.time,
-          value: toReturnPct(p.close, totalCost),
-        }));
-
-        const series = chart.addSeries(AreaSeries, {
-          // 收益率曲线不表达涨跌，用中性的前景色
-          lineColor: readToken("--foreground"),
-          topColor: gridColor,
-          bottomColor: "rgba(0, 0, 0, 0)",
-        });
-        series.setData(returnPctData);
-        series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
-      }
-
-      chart.timeScale().fitContent();
-
-      // 响应式：监听容器尺寸变化，自动调整图表宽度
-      const observer = new ResizeObserver(() => {
-        if (chartContainerRef.current) {
-          chart.applyOptions({ width: chartContainerRef.current.clientWidth });
-        }
-      });
-      observer.observe(chartContainerRef.current);
-
-      cleanup = () => {
-        observer.disconnect();
-        chart.remove();
-      };
+      const container = chartContainerRef.current;
+      if (!container || ohlcData.length === 0) return;
+      cleanup = buildChart(container, { view, ohlcData, totalCost });
     });
 
     return () => {
       cancelAnimationFrame(raf);
       cleanup?.();
     };
-  }, [ohlcData, view, totalCost, resolvedTheme]);
+  }, [ohlcData, view, totalCost, colorTheme]);
 
   return {
     range,

@@ -1,11 +1,13 @@
 "use client";
 
-// TradingView 加密货币单位换算器 Widget 封装
+// CoinGecko 加密货币单位换算器 Widget 封装
 import Script from "next/script";
 import { useGeckoTheme } from "./use-gecko-theme";
 
 export default function Converter() {
-  const { themeKey, attrs } = useGeckoTheme();
+  const geckoTheme = useGeckoTheme();
+  if (!geckoTheme) return null;
+  const { themeKey, themeAttrs } = geckoTheme;
   return (
     <>
       <Script
@@ -20,7 +22,7 @@ export default function Converter() {
           coin-id="bitcoin"
           currency="usd"
           key={themeKey}
-          {...attrs}
+          {...themeAttrs}
           style={{ display: "block", width: "100%" }}
         />
       </div>

@@ -185,3 +185,15 @@
 **根因**：lightweight-charts 不认 `var(--x)`，只能传解析后的颜色，所以要在 effect 里读。但 `next-themes` 是在父组件里切 `.dark` 类，子组件的 effect 先于它执行，`resolvedTheme` 一变就读令牌，拿到的是旧主题的值
 
 **注意**：把建图放进 `requestAnimationFrame`，依赖里带 `resolvedTheme`，cleanup 里取消并销毁图表。读令牌用临时元素（`style.color = var(--x)` 再取 `getComputedStyle`），能把 hex 和 `rgb(0 0 0 / .06)` 都转成图表库认的 rgb()/rgba()。以后新增图表都照此办理，并在页面里实际切一次主题验证
+
+---
+
+## [2026-11-05] CoinGecko 自定义元素：服务端写进去的 `dark-mode` 属性，浅色页面硬刷新后不会被纠正
+
+**场景**：Task 11 的可读性评审后，把主题判断抽成共用钩子，再在真实页面硬刷新浅色的加密页
+
+**现象**：整页是浅色，但 CoinGecko 的滚动行情栏和比较图仍是深色，`dark-mode` 属性还是 `true`。用页面里的主题按钮切换时一切正常，只有硬刷新才出现
+
+**根因**：服务端不知道用户主题，按深色把 `dark-mode="true"` 写进 HTML；浏览器端首次渲染时 `next-themes` 已从本地存储拿到浅色，React props 里没有这个属性，但 hydration 不会去纠正已存在的属性，旧属性就留在元素上（React 的 fiber `key` 已是 `light`，DOM 却还是旧的）。页面右下角的红色“Issue”标可能与此有关
+
+**注意**：靠属性或 `key` 决定外观的自定义元素，服务端与 hydration 期间都不要渲染（`useGeckoTheme` 返回 `null`，调用方 `return null`）。验证主题相关改动时，除了点切换按钮，也要在浅色下硬刷新一次

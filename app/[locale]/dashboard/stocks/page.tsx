@@ -116,7 +116,7 @@ export default async function Stocks() {
 
       {/* ── Footer ── */}
       <div className="flex items-center justify-center gap-2 pb-2">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+        <span className="h-1.5 w-1.5 rounded-full bg-muted-foreground animate-pulse" />
         <p
           className="text-center text-xs text-muted-foreground"
           suppressHydrationWarning

@@ -5,6 +5,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTheme } from "next-themes";
 import {
   createChart,
   CandlestickSeries,
@@ -17,8 +18,16 @@ import { computePortfolioOHLC } from "@/features/assets/lib/portfolio-ohlc";
 
 export const RANGES: Range[] = ["1M", "6M", "1Y", "YTD", "MAX"];
 
-const UP_COLOR = "#22c55e";
-const DOWN_COLOR = "#ef4444";
+// 图表颜色在运行时读设计令牌（lightweight-charts 不认 var()），主题变化时重建图表
+// 借一个临时元素让浏览器把令牌解析成 rgb()/rgba()，避免自己解析 hex 与 rgb(0 0 0 / .06) 两种写法
+function readToken(name: string): string {
+  const probe = document.createElement("span");
+  probe.style.color = `var(${name})`;
+  document.body.appendChild(probe);
+  const color = getComputedStyle(probe).color;
+  probe.remove();
+  return color;
+}
 const PRICE_SCALE_OPTIONS = {
   autoScale: true,
   scaleMargins: { top: 0.1, bottom: 0.1 },
@@ -38,6 +47,7 @@ type Params = {
 export function usePortfolioCandlestickChart({ assets, allTransactions }: Params) {
   const [range, setRange] = useState<Range>("1M");
   const [view, setView] = useState<"usd" | "pct">("usd");
+  const { resolvedTheme } = useTheme();
 
   const chartContainerRef = useRef<HTMLDivElement>(null);
 
@@ -85,35 +95,41 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
   useEffect(() => {
     if (!chartContainerRef.current || ohlcData.length === 0) return;
 
+    const upColor = readToken("--up");
+    const downColor = readToken("--down");
+    const textColor = readToken("--faint");
+    const gridColor = readToken("--grid");
+    const lineColor = readToken("--border");
+
     const chart = createChart(chartContainerRef.current, {
       width: chartContainerRef.current.clientWidth,
       height: 350,
       layout: {
         background: { type: ColorType.Solid, color: "transparent" },
-        textColor: "#888",
+        textColor,
       },
       grid: {
-        vertLines: { color: "rgba(0,0,0,0.05)" },
-        horzLines: { color: "rgba(0,0,0,0.05)" },
+        vertLines: { color: gridColor },
+        horzLines: { color: gridColor },
       },
       timeScale: {
-        borderColor: "rgba(0,0,0,0.1)",
+        borderColor: lineColor,
         rightOffset: 5,
         minBarSpacing: 2,
       },
       rightPriceScale: {
-        borderColor: "rgba(0,0,0,0.1)",
+        borderColor: lineColor,
       },
     });
 
     if (view === "usd") {
       const series = chart.addSeries(CandlestickSeries, {
-        upColor: UP_COLOR,
-        downColor: DOWN_COLOR,
-        borderUpColor: UP_COLOR,
-        borderDownColor: DOWN_COLOR,
-        wickUpColor: UP_COLOR,
-        wickDownColor: DOWN_COLOR,
+        upColor,
+        downColor,
+        borderUpColor: upColor,
+        borderDownColor: downColor,
+        wickUpColor: upColor,
+        wickDownColor: downColor,
       });
       series.setData(ohlcData);
       series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
@@ -125,9 +141,10 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
       }));
 
       const series = chart.addSeries(AreaSeries, {
-        lineColor: "#6366f1",
-        topColor: "rgba(99,102,241,0.3)",
-        bottomColor: "rgba(99,102,241,0)",
+        // 收益率曲线不表达涨跌，用中性的前景色
+        lineColor: readToken("--foreground"),
+        topColor: gridColor,
+        bottomColor: "rgba(0, 0, 0, 0)",
       });
       series.setData(returnPctData);
       series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
@@ -147,7 +164,7 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
       observer.disconnect();
       chart.remove();
     };
-  }, [ohlcData, view, totalCost]);
+  }, [ohlcData, view, totalCost, resolvedTheme]);
 
   return {
     range,

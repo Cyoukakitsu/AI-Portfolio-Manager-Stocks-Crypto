@@ -19,14 +19,8 @@ export function TotalAssetCard({ assets }: Props) {
     todayReturnPct,
   } = useAssetReturn({ assets });
 
-  const todayColor =
-    todayReturn >= 0
-      ? "text-emerald-600 dark:text-emerald-400"
-      : "text-red-500 dark:text-red-400";
-  const returnColor =
-    totalReturn >= 0
-      ? "text-emerald-600 dark:text-emerald-400"
-      : "text-red-500 dark:text-red-400";
+  const todayColor = todayReturn >= 0 ? "text-up" : "text-down";
+  const returnColor = totalReturn >= 0 ? "text-up" : "text-down";
 
   // MotionUI库：初始值用实际数据，缓存命中时不会从 0 归零再动画
   const rawValue = useMotionValue(totalValue);
@@ -37,25 +31,25 @@ export function TotalAssetCard({ assets }: Props) {
   const springToday = useSpring(rawToday, { stiffness: 80, damping: 20 });
   const displayToday = useTransform(
     springToday,
-    (v) => `${v >= 0 ? "+" : ""}$${v.toFixed(2)}`,
+    (v) => `${v >= 0 ? "▲ +" : "▼ "}$${v.toFixed(2)}`,
   );
   const rawTodayPct = useMotionValue(todayReturnPct ?? 0);
   const springTodayPct = useSpring(rawTodayPct, { stiffness: 80, damping: 20 });
   const displayTodayPct = useTransform(
     springTodayPct,
-    (v) => `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`,
+    (v) => `${v >= 0 ? "▲ +" : "▼ "}${v.toFixed(2)}%`,
   );
   const rawReturn = useMotionValue(totalReturn);
   const springReturn = useSpring(rawReturn, { stiffness: 80, damping: 20 });
   const displayReturn = useTransform(
     springReturn,
-    (v) => `${v >= 0 ? "+" : ""}$${v.toFixed(2)}`,
+    (v) => `${v >= 0 ? "▲ +" : "▼ "}$${v.toFixed(2)}`,
   );
   const rawPct = useMotionValue(totalReturnPct ?? 0);
   const springPct = useSpring(rawPct, { stiffness: 80, damping: 20 });
   const displayPct = useTransform(
     springPct,
-    (v) => `${v >= 0 ? "+" : ""}${v.toFixed(2)}%`,
+    (v) => `${v >= 0 ? "▲ +" : "▼ "}${v.toFixed(2)}%`,
   );
 
   rawValue.set(totalValue);
@@ -66,7 +60,7 @@ export function TotalAssetCard({ assets }: Props) {
 
   return (
     <motion.div
-      className="group h-full flex flex-col rounded-xl border border-border/60 bg-card shadow-sm transition-shadow duration-200 hover:shadow-md"
+      className="group h-full flex flex-col rounded-xl border border-border bg-card"
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.45, ease: "easeOut" as const }}

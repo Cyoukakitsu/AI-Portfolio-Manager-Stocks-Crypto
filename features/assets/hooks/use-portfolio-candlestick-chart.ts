@@ -44,7 +44,10 @@ type Params = {
   allTransactions: Transaction[];
 };
 
-export function usePortfolioCandlestickChart({ assets, allTransactions }: Params) {
+export function usePortfolioCandlestickChart({
+  assets,
+  allTransactions,
+}: Params) {
   const [range, setRange] = useState<Range>("1M");
   const [view, setView] = useState<"usd" | "pct">("usd");
   const { resolvedTheme } = useTheme();
@@ -62,7 +65,9 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
   const totalCost = assets.reduce((sum, a) => sum + a.total_cost, 0);
   const symbolsKey = tradableAssets.map((a) => a.symbol).join(",");
   // ISO 日期字符串按字典序排序即时间序，MAX 区间从最早一笔交易开始
-  const firstTradeDate = allTransactions.map((tx) => tx.traded_at.slice(0, 10)).sort()[0];
+  const firstTradeDate = allTransactions
+    .map((tx) => tx.traded_at.slice(0, 10))
+    .sort()[0];
   const from = computeFromDate(range, firstTradeDate);
 
   const { data: historyData, isFetching } = useQuery({
@@ -93,76 +98,86 @@ export function usePortfolioCandlestickChart({ assets, allTransactions }: Params
   );
 
   useEffect(() => {
-    if (!chartContainerRef.current || ohlcData.length === 0) return;
+    let cleanup: (() => void) | undefined;
+    // 推迟到下一帧再建图：next-themes 在父组件里切 .dark 类，子组件的 effect 先跑，
+    // 立刻读令牌会拿到旧主题的颜色
+    const raf = requestAnimationFrame(() => {
+      if (!chartContainerRef.current || ohlcData.length === 0) return;
 
-    const upColor = readToken("--up");
-    const downColor = readToken("--down");
-    const textColor = readToken("--faint");
-    const gridColor = readToken("--grid");
-    const lineColor = readToken("--border");
+      const upColor = readToken("--up");
+      const downColor = readToken("--down");
+      const textColor = readToken("--faint");
+      const gridColor = readToken("--grid");
+      const lineColor = readToken("--border");
 
-    const chart = createChart(chartContainerRef.current, {
-      width: chartContainerRef.current.clientWidth,
-      height: 350,
-      layout: {
-        background: { type: ColorType.Solid, color: "transparent" },
-        textColor,
-      },
-      grid: {
-        vertLines: { color: gridColor },
-        horzLines: { color: gridColor },
-      },
-      timeScale: {
-        borderColor: lineColor,
-        rightOffset: 5,
-        minBarSpacing: 2,
-      },
-      rightPriceScale: {
-        borderColor: lineColor,
-      },
-    });
-
-    if (view === "usd") {
-      const series = chart.addSeries(CandlestickSeries, {
-        upColor,
-        downColor,
-        borderUpColor: upColor,
-        borderDownColor: downColor,
-        wickUpColor: upColor,
-        wickDownColor: downColor,
+      const chart = createChart(chartContainerRef.current, {
+        width: chartContainerRef.current.clientWidth,
+        height: 350,
+        layout: {
+          background: { type: ColorType.Solid, color: "transparent" },
+          textColor,
+        },
+        grid: {
+          vertLines: { color: gridColor },
+          horzLines: { color: gridColor },
+        },
+        timeScale: {
+          borderColor: lineColor,
+          rightOffset: 5,
+          minBarSpacing: 2,
+        },
+        rightPriceScale: {
+          borderColor: lineColor,
+        },
       });
-      series.setData(ohlcData);
-      series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
-    } else {
-      // 收益率模式
-      const returnPctData = ohlcData.map((p) => ({
-        time: p.time,
-        value: toReturnPct(p.close, totalCost),
-      }));
 
-      const series = chart.addSeries(AreaSeries, {
-        // 收益率曲线不表达涨跌，用中性的前景色
-        lineColor: readToken("--foreground"),
-        topColor: gridColor,
-        bottomColor: "rgba(0, 0, 0, 0)",
-      });
-      series.setData(returnPctData);
-      series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
-    }
+      if (view === "usd") {
+        const series = chart.addSeries(CandlestickSeries, {
+          upColor,
+          downColor,
+          borderUpColor: upColor,
+          borderDownColor: downColor,
+          wickUpColor: upColor,
+          wickDownColor: downColor,
+        });
+        series.setData(ohlcData);
+        series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
+      } else {
+        // 收益率模式
+        const returnPctData = ohlcData.map((p) => ({
+          time: p.time,
+          value: toReturnPct(p.close, totalCost),
+        }));
 
-    chart.timeScale().fitContent();
-
-    // 响应式：监听容器尺寸变化，自动调整图表宽度
-    const observer = new ResizeObserver(() => {
-      if (chartContainerRef.current) {
-        chart.applyOptions({ width: chartContainerRef.current.clientWidth });
+        const series = chart.addSeries(AreaSeries, {
+          // 收益率曲线不表达涨跌，用中性的前景色
+          lineColor: readToken("--foreground"),
+          topColor: gridColor,
+          bottomColor: "rgba(0, 0, 0, 0)",
+        });
+        series.setData(returnPctData);
+        series.priceScale().applyOptions(PRICE_SCALE_OPTIONS);
       }
+
+      chart.timeScale().fitContent();
+
+      // 响应式：监听容器尺寸变化，自动调整图表宽度
+      const observer = new ResizeObserver(() => {
+        if (chartContainerRef.current) {
+          chart.applyOptions({ width: chartContainerRef.current.clientWidth });
+        }
+      });
+      observer.observe(chartContainerRef.current);
+
+      cleanup = () => {
+        observer.disconnect();
+        chart.remove();
+      };
     });
-    observer.observe(chartContainerRef.current);
 
     return () => {
-      observer.disconnect();
-      chart.remove();
+      cancelAnimationFrame(raf);
+      cleanup?.();
     };
   }, [ohlcData, view, totalCost, resolvedTheme]);
 

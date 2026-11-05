@@ -49,9 +49,3 @@ export const VERDICT_LABEL: Record<Verdict, string> = {
   sell: "Sell",
 };
 
-/** verdict の badge 様式 */
-export const VERDICT_STYLE: Record<Verdict, string> = {
-  buy:  "bg-green-100 text-green-700 border-green-200 dark:bg-green-900/30 dark:text-green-400 dark:border-green-800",
-  hold: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-900/30 dark:text-amber-400 dark:border-amber-800",
-  sell: "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800",
-};

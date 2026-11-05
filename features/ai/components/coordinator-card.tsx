@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { CoordinatorResult } from "@/features/ai/types";
-import { VERDICT_STYLE } from "@/features/ai/lib/constants";
 
 export function CoordinatorCard({
   verdict,
@@ -28,7 +27,7 @@ export function CoordinatorCard({
           </div>
           {/* verdict 标签 + score 进度条 */}
           <div className="flex items-center gap-2 flex-wrap">
-            <Badge className={`text-sm px-3 py-1 ${VERDICT_STYLE[verdict]}`}>{tVerdict(verdict)}</Badge>
+            <Badge variant="outline" className="text-sm px-3 py-1">{tVerdict(verdict)}</Badge>
             <span className="text-sm text-muted-foreground">{tVerdict("score")}</span>
             <div className="w-20 sm:w-24 h-2 rounded-full bg-muted overflow-hidden">
               <div
@@ -54,7 +53,7 @@ export function CoordinatorCard({
               <p className="text-xs font-medium text-muted-foreground mb-2">
                 {t("targetPriceRange")}
               </p>
-              <p className="text-lg font-semibold text-green-600 dark:text-green-400">
+              <p className="text-lg font-semibold num">
                 ${buyRange.low} – ${buyRange.high}
               </p>
               <p className="text-xs text-muted-foreground mt-1">

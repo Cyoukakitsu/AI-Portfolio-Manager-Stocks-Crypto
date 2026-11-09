@@ -149,7 +149,9 @@
 - `docs/knip-report.md`（2026-10-01）已列出 `components/ui` 下 32 个未使用文件，当时建议整文件删除，待用户确认
 - 删除前用 `knip` 重新跑一遍，并确认 `pnpm build`、`./init.sh` 通过；删除后检查是否能一并移除无人使用的依赖（如只被 `chart.tsx` 使用的 `recharts`，删前需确认）
 - 保留未使用的导出（属于组件库完整 API，删了下次 `shadcn add` 会回来）
-- [ ] 用户已确认删除清单；[ ] `./init.sh` 通过
+- [x] 用户已确认删除清单（2026-11-09 用户指示执行；knip 重跑后 32 个文件，逐个核对无引用，`toggle.tsx` 仅被同样删除的 `toggle-group.tsx` 引用）；[x] `./init.sh` 通过、`pnpm build-storybook` 通过
+- 已同时移除只被这些文件使用的依赖：`recharts`、`embla-carousel-react`、`input-otp`、`react-resizable-panels`、`vaul`
+- 未处理（与本次删除无关）：`@ai-sdk/groq`（随 Task 2.1）、`@ai-sdk/react`、`@radix-ui/react-dropdown-menu` 仍显示未使用，需另行确认；`coin-list.tsx`、`converter.tsx` 是加密页业务组件，等确认是否为已规划功能
 
 ### 明暗模式切换按钮改为直接切换（独立 PR，2026-11-01 用户新增）
 
@@ -170,7 +172,7 @@
 ### 已发现、不在本次范围的问题
 
 - `app/layout.tsx` 中 `<html lang>` 写死为 `"ja"`，不随 locale 变化
-- `components/ui/chart.tsx`（recharts 封装）没有任何使用点，可考虑清理
+- ~~`components/ui/chart.tsx`（recharts 封装）没有任何使用点~~：已在清理任务中删除
 
 ---
 

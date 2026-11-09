@@ -201,13 +201,13 @@
 - `AgentResult`、`CoordinatorResult` 与 zod schema 重复定义，改用 `z.infer` 推导
 
 **验收标准**
-- [ ] 未登录 `curl` 调用 `/api/ai-analysis` 返回 401
+- [x] 未登录 `curl` 调用 `/api/ai-analysis` 返回 401（2026-11-09 实测，含畸形 body）
 - [ ] 传未知或重复的 persona、非法 symbol 返回 400
 - [ ] 分析途中关闭页面或点击重新分析后，服务端日志显示上一次请求已中止
 - [ ] 模拟 agent 或 coordinator 失败时，前端只看到通用错误文案，服务端日志有详情
 - [ ] 行情接口失败时 coordinator 不再收到 `$0`
 - [ ] 连续点击两次分析，第二次的占位卡片与加载状态正常
-- [ ] `./init.sh` 通过，并补充对应的 schema / 入参校验测试
+- [x] `./init.sh` 通过，并补充对应的 schema / 入参校验测试（新增 `analysisRequestSchema`、放宽后的输出 schema、`parseSseEvent` 的测试，共 35 个）
 
 **同时发现、不在本任务范围**：`app/api` 下其余路由同样没有调用 `getAuthSession()`（`yahoofinance/*`、`assets/news`、`assets/ai-summary`），排期时一并确认哪些需要加登录保护。
 

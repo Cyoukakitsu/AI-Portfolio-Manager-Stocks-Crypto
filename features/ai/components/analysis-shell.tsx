@@ -10,6 +10,7 @@ import { AgentSelector } from "./agent-selector";
 import { AgentCard } from "./agent-card";
 import { AgentPendingCard } from "./agent-pending-card";
 import { CoordinatorCard } from "./coordinator-card";
+import { parseSseEvent } from "@/features/ai/lib/parse-sse";
 
 import { Brain, Loader2 } from "lucide-react";
 import { Card, CardHeader } from "@/components/ui/card";
@@ -27,6 +28,20 @@ export function AnalysisShell() {
   const [running, setRunning] = useState<AgentPersona[]>([]);
   const [steps, setSteps] = useState<Partial<Record<AgentPersona, string>>>({});
   const abortRef = useRef<AbortController | null>(null);
+
+  const handleEvent = (event: string, data: unknown) => {
+    if (event === "agent1_done" || event === "agent2_done") {
+      setAgentResults((prev) => [...prev, data as AgentResult]);
+    } else if (event === "step") {
+      const { persona, tool } = data as { persona: AgentPersona; tool: string };
+      setSteps((prev) => ({ ...prev, [persona]: tool }));
+    } else if (event === "coordinator_done") {
+      setCoordinator(data as CoordinatorResult);
+    } else if (event === "error") {
+      // 服务端只发通用错误，详情在服务端日志里
+      toast.error(t("fetchError"));
+    }
+  };
 
   const handleAnalyze = async (inputSymbol: string) => {
     abortRef.current?.abort();
@@ -58,27 +73,14 @@ export function AnalysisShell() {
         const { done, value } = await reader.read();
         if (done) break;
 
+        // 事件以空行（两个换行）结尾；最后一段可能不完整，留到下一个 chunk 再处理
         buffer += decoder.decode(value, { stream: true });
-        const lines = buffer.split("\n");
-        buffer = lines.pop() ?? "";
+        const blocks = buffer.split("\n\n");
+        buffer = blocks.pop() ?? "";
 
-        let currentEvent = "";
-        for (const line of lines) {
-          if (line.startsWith("event: ")) {
-            currentEvent = line.slice(7).trim();
-          } else if (line.startsWith("data: ") && currentEvent) {
-            const data = JSON.parse(line.slice(6));
-            if (currentEvent === "agent1_done" || currentEvent === "agent2_done") {
-              setAgentResults((prev) => [...prev, data as AgentResult]);
-            } else if (currentEvent === "step") {
-              setSteps((prev) => ({ ...prev, [data.persona]: data.tool }));
-            } else if (currentEvent === "coordinator_done") {
-              setCoordinator(data as CoordinatorResult);
-            } else if (currentEvent === "error") {
-              toast.error(data.message ?? t("fetchError"));
-            }
-            currentEvent = "";
-          }
+        for (const block of blocks) {
+          const parsed = parseSseEvent(block);
+          if (parsed) handleEvent(parsed.event, parsed.data);
         }
       }
     } catch (e: unknown) {
@@ -86,7 +88,8 @@ export function AnalysisShell() {
         toast.error(t("fetchError"));
       }
     } finally {
-      setIsPending(false);
+      // 重新分析时旧请求会被中止，它的 finally 不能把新一轮的加载状态清掉
+      if (abortRef.current === ctrl) setIsPending(false);
     }
   };
 

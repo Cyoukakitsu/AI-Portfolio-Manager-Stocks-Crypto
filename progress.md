@@ -2,9 +2,9 @@
 
 ## 当前状态
 
-- 最新 commit：feat/add-agent-harness 分支（待 PR 合并）
+- 最新合并：PR #121（UI 重设计 Task 11–13）；当前分支 `chore/remove-unused-ui-components`
 - 测试状态：CI 通过（GitHub Actions vitest 自动运行）
-- Lint：通过（1 个已知 warning，use-portfolio-candlestick-chart.ts useMemo）
+- Lint：通过
 - Build：通过
 
 ## 已完成
@@ -35,6 +35,7 @@
 - [x] UI 重设计 Task 11：股票页、加密页嵌入件跟随深浅主题（TradingView 传 `theme`、CoinGecko 传 `dark-mode`）；涨跌色改不了的已记入 `GOTCHAS.md`；用户已在浏览器确认（分支 `feat/ui-redesign-stocks-crypto`，叠在 Task 10 之上，2026-11-04）
 - [x] UI 重设计 Task 12：AI 页买入、卖出、持有标签改中性 `outline`、买入区间去绿色，Analyze 按钮与搜索框同为 40px；用户已确认（分支 `feat/ui-redesign-ai-page`，2026-11-05）
 - [x] UI 重设计 Task 13：资产页涨跌色读 `--up`/`--down` 并带 ▲▼、K 线图运行时读令牌随主题重建（推迟到下一帧避免读到旧主题）、数字列右对齐、行内按钮 32px、脉冲点中性色；用户已确认（分支 `feat/ui-redesign-assets-page`，2026-11-05）
+- [x] 清理未使用的 UI 组件：删除 `components/ui` 下 32 个无引用文件，并移除 `recharts` 等 5 个只被它们使用的依赖；`./init.sh` 与 `pnpm build-storybook` 通过（分支 `chore/remove-unused-ui-components`，2026-11-09）
 
 ## 进行中
 
@@ -43,10 +44,11 @@
 
 ## 已知问题
 
-- UI 重设计期间，资产页等处仍是旧的绿涨红跌写死颜色，股票页、加密页部分嵌入件在深色下仍是白底（分别在 Task 13、Task 11 处理）
+- TradingView 的热力图、头条新闻、市场数据、K 线嵌入件，以及 CoinGecko 四个组件，涨跌色无法改成红涨绿跌（详见 `GOTCHAS.md`）
+- 加密页开发模式下右下角有一个 “1 Issue” 提示，原因未查
 
 ## 下一步
 
-0. UI 重设计：落地页四张产品截图重截（Task 9 遗留，需 Task 10–13 全部合并后）；清理未使用的 UI 组件（独立 PR）；同时可排"清理未使用的 UI 组件"
+0. UI 重设计：落地页四张产品截图重截（Task 9 遗留，Task 10–13 已全部合并，需在本机登录并有真实数据的环境做）；早先任务里留的用户确认项；Task 14（AI 分析路由与前端加固）
 2. AI 分析模块基础功能搭建（feat-ai）
 3. Dashboard 总览图表完善（feat-dashboard）

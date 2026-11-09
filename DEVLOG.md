@@ -4,6 +4,16 @@
 
 ---
 
+## 2026-11-09
+
+**清理未使用的 UI 组件**
+- 重跑 `knip`：`components/ui` 下 32 个文件无引用；逐个用脚本核对（含 Storybook、`.storybook/`、测试、markdown），`toggle.tsx` 只被同样要删的 `toggle-group.tsx` 引用，`sonner.tsx` 的 `Toaster` 实际是 `app/layout.tsx` 直接从 npm 包引入，封装未用
+- 删除 32 个文件，移除 `recharts`、`embla-carousel-react`、`input-otp`、`react-resizable-panels`、`vaul`；保留未使用的导出（组件库完整 API）；`coin-list.tsx`、`converter.tsx` 是业务组件，等确认
+- 验证：`./init.sh` 与 `pnpm build-storybook` 通过
+- 顺手：改正 `progress.md` 里过时的“当前状态”“已知问题”“下一步”
+
+---
+
 ## 2026-11-05
 
 **UI 重设计 Task 12（AI 页）**
